@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#07111f"
+    >
+
+    <title>Radar • Atmosphere Weather</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        :root {
+
+            --background: #07111f;
+
+            --card:
+                rgba(255,255,255,0.075);
+
+            --border:
+                rgba(255,255,255,0.11);
+
+            --blue: #7dd3fc;
+
+            --muted:
+                rgba(255,255,255,0.62);
+
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            color: white;
+
+            background:
+
+                radial-gradient(
+                    circle at 15% 0%,
+                    rgba(56,189,248,0.16),
+                    transparent 35%
+                ),
+
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(37,99,235,0.15),
+                    transparent 35%
+                ),
+
+                var(--background);
+
+            padding-bottom: 100px;
+
+            overflow-x: hidden;
+        }
+
+
+        .app {
+
+            width: 100%;
+
+            max-width: 1000px;
+
+            margin: 0 auto;
+
+            padding:
+                24px 14px 30px;
+        }
+
+
+        /* HEADER */
+
+        .header {
+
+            text-align: center;
+
+            margin-bottom: 20px;
+        }
+
+
+        .header h1 {
+
+            font-size: 27px;
+
+            font-weight: 750;
+
+            letter-spacing: -0.7px;
+        }
+
+
+        .header p {
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            margin-top: 5px;
+        }
+
+
+        /* LAYER PICKER */
+
+        .layer-picker {
+
+            display: flex;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+            justify-content: center;
+
+            margin-bottom: 14px;
+        }
+
+
+        .layer-button {
+
+            padding:
+                9px 15px;
+
+            border-radius: 13px;
+
+            border:
+                1px solid
+                rgba(0,242,255,0.15);
+
+            cursor: pointer;
+
+            font-weight: 650;
+
+            font-size: 13px;
+
+            color:
+                rgba(255,255,255,0.70);
+
+            background:
+                rgba(0,242,255,0.06);
+
+            transition:
+                transform 0.15s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+
+            box-shadow:
+                0 4px 16px
+                rgba(0,120,255,0.10);
+        }
+
+
+        .layer-button:hover {
+
+            transform:
+                translateY(-1px);
+
+            background:
+                rgba(0,242,255,0.11);
+        }
+
+
+        .layer-button:active {
+
+            transform:
+                scale(0.96);
+        }
+
+
+        .layer-button.active {
+
+            border-color:
+                transparent;
+
+            color:
+                #07111f;
+        }
+
+
+        /* MAP */
+
+        .map-wrapper {
+
+            position: relative;
+
+            width: 100%;
+
+            height: 78vh;
+
+            min-height: 500px;
+
+            max-height: 850px;
+
+            border-radius: 24px;
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(0,242,255,0.18);
+
+            box-shadow:
+
+                0 8px 40px
+                rgba(0,120,255,0.20),
+
+                0 1.5px 0
+                rgba(0,242,255,0.20)
+                inset;
+
+            background: #0b1626;
+        }
+
+
+        .map-wrapper iframe {
+
+            display: block;
+
+            position: absolute;
+
+            left: 0;
+
+            top: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            margin: 0;
+
+            padding: 0;
+
+            border: 0;
+        }
+
+
+        /* MAP LABEL */
+
+        .map-label {
+
+            position: absolute;
+
+            top: 12px;
+
+            left: 12px;
+
+            z-index: 10;
+
+            padding:
+                8px 12px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(7,17,31,0.78);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.12);
+
+            backdrop-filter:
+                blur(12px);
+
+            -webkit-backdrop-filter:
+                blur(12px);
+
+            color:
+                rgba(255,255,255,0.78);
+
+            font-size: 12px;
+
+            pointer-events: none;
+        }
+
+
+        /* BOTTOM NAV */
+
+        .bottom-nav {
+
+            position: fixed;
+
+            left: 50%;
+
+            bottom: 12px;
+
+            transform:
+                translateX(-50%);
+
+            width:
+                calc(100% - 24px);
+
+            max-width: 620px;
+
+            height: 70px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-around;
+
+            background:
+                rgba(12,24,42,0.92);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.10);
+
+            border-radius: 24px;
+
+            backdrop-filter:
+                blur(20px);
+
+            -webkit-backdrop-filter:
+                blur(20px);
+
+            box-shadow:
+                0 15px 40px
+                rgba(0,0,0,0.35);
+
+            z-index: 1000;
+        }
+
+
+        .nav-item {
+
+            text-decoration: none;
+
+            color:
+                rgba(255,255,255,0.45);
+
+            text-align: center;
+
+            font-size: 11px;
+
+            min-width: 55px;
+        }
+
+
+        .nav-icon {
+
+            display: block;
+
+            font-size: 21px;
+
+            margin-bottom: 3px;
+        }
+
+
+        .nav-item.active {
+
+            color: var(--blue);
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+
+            .app {
+
+                padding-top: 20px;
+
+                padding-left: 10px;
+
+                padding-right: 10px;
+            }
+
+
+            .header h1 {
+
+                font-size: 24px;
+            }
+
+
+            .layer-picker {
+
+                justify-content: flex-start;
+
+                overflow-x: auto;
+
+                flex-wrap: nowrap;
+
+                padding-bottom: 5px;
+
+                scrollbar-width: none;
+            }
+
+
+            .layer-picker::-webkit-scrollbar {
+
+                display: none;
+            }
+
+
+            .layer-button {
+
+                flex-shrink: 0;
+            }
+
+
+            .map-wrapper {
+
+                height: 72vh;
+
+                min-height: 450px;
+
+                border-radius: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <h1>
+            Atmosphere Radar
+        </h1>
+
+        <p>
+            Interactive weather conditions
+        </p>
+
+    </header>
+
+
+    <!-- LAYER BUTTONS -->
+
+    <div class="layer-picker">
+
+
+        <button
+            class="layer-button active"
+            data-layer="wind"
+            data-color="#38bdf8">
+
+            💨 Wind
+
+        </button>
+
+
+        <button
+            class="layer-button"
+            data-layer="rain"
+            data-color="#818cf8">
+
+            🌧️ Rain
+
+        </button>
+
+
+        <button
+            class="layer-button"
+            data-layer="temp"
+            data-color="#f97316">
+
+            🌡️ Temp
+
+        </button>
+
+
+        <button
+            class="layer-button"
+            data-layer="clouds"
+            data-color="#94a3b8">
+
+            ☁️ Clouds
+
+        </button>
+
+
+        <button
+            class="layer-button"
+            data-layer="pressure"
+            data-color="#34d399">
+
+            🔵 Pressure
+
+        </button>
+
+
+    </div>
+
+
+    <!-- MAP -->
+
+    <div class="map-wrapper">
+
+
+        <div class="map-label">
+
+            📍 Maryland & surrounding region
+
+        </div>
+
+
+        <iframe
+            id="windy-map"
+            src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=°F&metricWind=mph&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=38.5&lon=-77.0&message=true"
+            title="Atmosphere Weather Radar"
+            loading="lazy"
+            allowfullscreen>
+        </iframe>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- NAVIGATION -->
+
+<nav class="bottom-nav">
+
+
+    <a
+        href="index.html"
+        class="nav-item">
+
+        <span class="nav-icon">
+            ⌂
+        </span>
+
+        Home
+
+    </a>
+
+
+    <a
+        href="alerts.html"
+        class="nav-item">
+
+        <span class="nav-icon">
+            ⚠
+        </span>
+
+        Alerts
+
+    </a>
+
+
+    <a
+        href="radar.html"
+        class="nav-item active">
+
+        <span class="nav-icon">
+            ◉
+        </span>
+
+        Radar
+
+    </a>
+
+
+    <a
+        href="more.html"
+        class="nav-item">
+
+        <span class="nav-icon">
+            •••
+        </span>
+
+        More
+
+    </a>
+
+
+</nav>
+
+
+<script>
+
+
+/* =========================================================
+   WINDY LAYERS
+========================================================= */
+
+
+const buttons =
+    document.querySelectorAll(
+        ".layer-button"
+    );
+
+
+const map =
+    document.getElementById(
+        "windy-map"
+    );
+
+
+buttons.forEach(
+
+    button => {
+
+
+        button.addEventListener(
+
+            "click",
+
+            () => {
+
+
+                /*
+                    Remove active state
+                    from every button.
+                */
+
+                buttons.forEach(
+
+                    other => {
+
+                        other.classList.remove(
+                            "active"
+                        );
+
+                        other.style.background =
+                            "";
+
+                        other.style.boxShadow =
+                            "";
+
+                    }
+
+                );
+
+
+                /*
+                    Activate selected button.
+                */
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                const layer =
+                    button.dataset.layer;
+
+
+                const color =
+                    button.dataset.color;
+
+
+                button.style.background =
+                    color;
+
+
+                button.style.boxShadow =
+                    `0 0 14px ${color}55`;
+
+
+                /*
+                    Rebuild the Windy URL.
+                */
+
+                const src =
+
+                    "https://embed.windy.com/embed.html" +
+
+                    "?type=map" +
+
+                    "&location=coordinates" +
+
+                    "&metricRain=in" +
+
+                    "&metricTemp=°F" +
+
+                    "&metricWind=mph" +
+
+                    "&zoom=5" +
+
+                    "&overlay=" +
+                    encodeURIComponent(
+                        layer
+                    ) +
+
+                    "&product=ecmwf" +
+
+                    "&level=surface" +
+
+                    "&lat=38.5" +
+
+                    "&lon=-77.0" +
+
+                    "&message=true";
+
+
+                /*
+                    Changing the src reloads
+                    the map with the new layer.
+                */
+
+                map.src = src;
+
+            }
+
+        );
+
+    }
+
+);
+
+
+/*
+    Set the initial active button color.
+*/
+
+const initial =
+    document.querySelector(
+        ".layer-button.active"
+    );
+
+
+if (initial) {
+
+    initial.style.background =
+        initial.dataset.color;
+
+    initial.style.boxShadow =
+        `0 0 14px ${initial.dataset.color}55`;
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
