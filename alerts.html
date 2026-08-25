@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#07111f"
+    >
+
+    <title>Alerts • Atmosphere Weather</title>
+
+
+    <!-- Leaflet -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        :root {
+            --background: #07111f;
+            --card: rgba(255,255,255,0.085);
+            --border: rgba(255,255,255,0.12);
+            --text: #ffffff;
+            --muted: rgba(255,255,255,0.62);
+            --blue: #7dd3fc;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            color: var(--text);
+
+            background:
+
+                radial-gradient(
+                    circle at 15% 0%,
+                    rgba(56,189,248,0.16),
+                    transparent 35%
+                ),
+
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(37,99,235,0.15),
+                    transparent 35%
+                ),
+
+                var(--background);
+
+            padding-bottom: 100px;
+
+            overflow-x: hidden;
+        }
+
+
+        .app {
+
+            width: 100%;
+            max-width: 760px;
+
+            margin: 0 auto;
+
+            padding: 24px 16px 30px;
+        }
+
+
+        /* HEADER */
+
+        .header {
+
+            text-align: center;
+
+            margin-bottom: 20px;
+        }
+
+
+        .header h1 {
+
+            font-size: 27px;
+
+            font-weight: 750;
+
+            letter-spacing: -0.7px;
+        }
+
+
+        .header p {
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            margin-top: 5px;
+        }
+
+
+        /* SECTION HEADERS */
+
+        .section-title {
+
+            color: var(--blue);
+
+            font-size: 20px;
+
+            font-weight: 700;
+
+            text-align: center;
+
+            margin: 24px 0 14px;
+        }
+
+
+        .section-subtitle {
+
+            text-align: center;
+
+            color: var(--muted);
+
+            font-size: 12px;
+
+            margin-top: -8px;
+
+            margin-bottom: 14px;
+        }
+
+
+        /* MAP */
+
+        .map-container {
+
+            width: 100%;
+
+            height: 380px;
+
+            border-radius: 22px;
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(0,242,255,0.18);
+
+            box-shadow:
+
+                0 12px 40px
+                rgba(0,80,180,0.20),
+
+                0 1px 0
+                rgba(0,242,255,0.12)
+                inset;
+        }
+
+
+        #map {
+
+            width: 100%;
+            height: 100%;
+        }
+
+
+        /* GLASS CARD */
+
+        .glass {
+
+            background:
+                rgba(255,255,255,0.075);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.11);
+
+            box-shadow:
+                0 10px 35px
+                rgba(0,0,0,0.18);
+
+            backdrop-filter:
+                blur(16px);
+
+            -webkit-backdrop-filter:
+                blur(16px);
+        }
+
+
+        /* STATUS */
+
+        .status {
+
+            padding: 26px 18px;
+
+            border-radius: 19px;
+
+            text-align: center;
+
+            margin-bottom: 10px;
+        }
+
+
+        .success {
+
+            color: #80ffb0;
+        }
+
+
+        .error {
+
+            color: #ff8080;
+        }
+
+
+        .loading {
+
+            color: rgba(255,255,255,0.55);
+        }
+
+
+        /* ALERT CARDS */
+
+        .alert-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            border-radius: 19px;
+
+            padding: 15px 17px;
+
+            margin-bottom: 10px;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.18s ease,
+                background 0.18s ease;
+        }
+
+
+        .alert-card:active {
+
+            transform: scale(0.985);
+        }
+
+
+        .alert-row {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 11px;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .alert-icon {
+
+            font-size: 21px;
+
+            flex-shrink: 0;
+        }
+
+
+        .alert-content {
+
+            flex: 1;
+
+            min-width: 0;
+        }
+
+
+        .alert-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 10px;
+        }
+
+
+        .alert-name {
+
+            font-weight: 700;
+
+            font-size: 15px;
+
+            color: white;
+        }
+
+
+        .severity {
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            opacity: 0.75;
+
+            white-space: nowrap;
+        }
+
+
+        .headline {
+
+            color:
+                rgba(255,255,255,0.84);
+
+            font-size: 13px;
+
+            line-height: 1.45;
+
+            margin-top: 5px;
+        }
+
+
+        .alert-meta {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin-top: 9px;
+
+            font-size: 10px;
+
+            color:
+                rgba(255,255,255,0.42);
+        }
+
+
+        .description {
+
+            color:
+                rgba(255,255,255,0.72);
+
+            font-size: 12px;
+
+            line-height: 1.55;
+
+            margin-top: 12px;
+
+            white-space: pre-wrap;
+        }
+
+
+        /* SEVERITY */
+
+        .extreme {
+
+            background:
+                rgba(180,0,0,0.48);
+
+            border:
+                2px solid #ff4444;
+        }
+
+
+        .severe {
+
+            background:
+                rgba(200,50,0,0.42);
+
+            border:
+                1px solid #ff7744;
+        }
+
+
+        .moderate {
+
+            background:
+                rgba(180,100,0,0.42);
+
+            border:
+                1px solid #ffaa00;
+        }
+
+
+        .minor {
+
+            background:
+                rgba(150,130,0,0.32);
+
+            border:
+                1px solid #ddcc00;
+        }
+
+
+        .unknown {
+
+            background:
+                rgba(60,80,120,0.34);
+
+            border:
+                1px solid
+                rgba(100,160,255,0.25);
+        }
+
+
+        /* FIREBASE ALERT COLORS */
+
+        .fb-warning {
+
+            background:
+                rgba(180,0,0,0.48);
+
+            border:
+                2px solid #ff4444;
+        }
+
+
+        .fb-watch {
+
+            background:
+                rgba(200,50,0,0.42);
+
+            border:
+                1px solid #ff7744;
+        }
+
+
+        .fb-advisory {
+
+            background:
+                rgba(180,100,0,0.42);
+
+            border:
+                1px solid #ffaa00;
+        }
+
+
+        .fb-summary {
+
+            background:
+                rgba(0,120,60,0.38);
+
+            border:
+                1px solid #00dd88;
+        }
+
+
+        .fb-wind {
+
+            background:
+                rgba(0,60,200,0.40);
+
+            border:
+                1px solid #4488ff;
+        }
+
+
+        /* EDUCATION */
+
+        .education {
+
+            margin-top: 28px;
+
+            padding: 20px;
+
+            border-radius: 20px;
+        }
+
+
+        .education h3 {
+
+            color: var(--blue);
+
+            font-size: 17px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .education p {
+
+            color:
+                rgba(255,255,255,0.68);
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        .education-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 10px;
+
+            margin-top: 15px;
+        }
+
+
+        .education-item {
+
+            padding: 14px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255,255,255,0.055);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+
+        .education-item strong {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            font-size: 13px;
+        }
+
+
+        .education-item span {
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            line-height: 1.4;
+        }
+
+
+        /* BOTTOM NAV */
+
+        .bottom-nav {
+
+            position: fixed;
+
+            left: 50%;
+
+            bottom: 12px;
+
+            transform:
+                translateX(-50%);
+
+            width:
+                calc(100% - 24px);
+
+            max-width: 620px;
+
+            height: 70px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-around;
+
+            background:
+                rgba(12,24,42,0.92);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.10);
+
+            border-radius: 24px;
+
+            backdrop-filter:
+                blur(20px);
+
+            -webkit-backdrop-filter:
+                blur(20px);
+
+            box-shadow:
+                0 15px 40px
+                rgba(0,0,0,0.35);
+
+            z-index: 1000;
+        }
+
+
+        .nav-item {
+
+            text-decoration: none;
+
+            color:
+                rgba(255,255,255,0.45);
+
+            text-align: center;
+
+            font-size: 11px;
+
+            min-width: 55px;
+        }
+
+
+        .nav-icon {
+
+            display: block;
+
+            font-size: 21px;
+
+            margin-bottom: 3px;
+        }
+
+
+        .nav-item.active {
+
+            color: var(--blue);
+        }
+
+
+        @media (max-width: 480px) {
+
+            .map-container {
+
+                height: 330px;
+            }
+
+            .alert-meta {
+
+                flex-direction: column;
+
+                gap: 4px;
+            }
+
+            .education-grid {
+
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <header class="header">
+
+        <h1>
+            Atmosphere Weather
+        </h1>
+
+        <p>
+            Live Maryland weather alerts
+        </p>
+
+    </header>
+
+
+    <!-- NWS SECTION -->
+
+    <h2 class="section-title">
+        Maryland Live NWS Alerts
+    </h2>
+
+    <p class="section-subtitle">
+        National Weather Service active alerts
+    </p>
+
+
+    <!-- MAP -->
+
+    <div class="map-container">
+
+        <div id="map"></div>
+
+    </div>
+
+
+    <!-- NWS ALERTS -->
+
+    <div id="nws-status"
+         class="glass status loading">
+
+        Loading alerts...
+
+    </div>
+
+
+    <div id="nws-alerts"></div>
+
+
+    <!-- ATMOSPHERE ALERTS -->
+
+    <h2 class="section-title">
+
+        Atmosphere Weather Alerts
+
+    </h2>
+
+
+    <p class="section-subtitle">
+
+        Alerts issued by Atmosphere Weather
+
+    </p>
+
+
+    <div
+        id="firebase-status"
+        class="glass status loading">
+
+        Loading Atmosphere alerts...
+
+    </div>
+
+
+    <div id="firebase-alerts"></div>
+
+
+    <!-- EDUCATION -->
+
+    <div class="education glass">
+
+        <h3>
+            🌩️ Severe Weather Safety
+        </h3>
+
+        <p>
+            Know what weather alerts mean and
+            what to do when severe weather
+            threatens your area.
+        </p>
+
+
+        <div class="education-grid">
+
+            <div class="education-item">
+
+                <strong>
+                    🚨 Warning
+                </strong>
+
+                <span>
+                    Dangerous weather is occurring
+                    or imminent. Take action now.
+                </span>
+
+            </div>
+
+
+            <div class="education-item">
+
+                <strong>
+                    ⚠️ Watch
+                </strong>
+
+                <span>
+                    Conditions are favorable for
+                    dangerous weather.
+                </span>
+
+            </div>
+
+
+            <div class="education-item">
+
+                <strong>
+                    🔶 Advisory
+                </strong>
+
+                <span>
+                    Weather may cause inconvenience
+                    or hazards.
+                </span>
+
+            </div>
+
+
+            <div class="education-item">
+
+                <strong>
+                    📢 Stay Informed
+                </strong>
+
+                <span>
+                    Continue monitoring Atmosphere
+                    Weather for updates.
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- NAVIGATION -->
+
+<nav class="bottom-nav">
+
+
+    <a
+        href="index.html"
+        class="nav-item">
+
+        <span class="nav-icon">
+            ⌂
+        </span>
+
+        Home
+
+    </a>
+
+
+    <a
+        href="alerts.html"
+        class="nav-item active">
+
+        <span class="nav-icon">
+            ⚠
+        </span>
+
+        Alerts
+
+    </a>
+
+
+    <a
+        href="radar.html"
+        class="nav-item">
+
+        <span class="nav-icon">
+            ◉
+        </span>
+
+        Radar
+
+    </a>
+
+
+    <a
+        href="more.html"
+        class="nav-item">
+
+        <span class="nav-icon">
+            •••
+        </span>
+
+        More
+
+    </a>
+
+
+</nav>
+
+
+<!-- LEAFLET -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<script>
+
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+
+const FIREBASE_URL =
+    "https://atmosphere-weather-alert-18797-default-rtdb.firebaseio.com/weatherAlerts.json";
+
+
+const firebaseSeverity = {
+
+    warning: {
+
+        className: "fb-warning",
+
+        icon: "🚨",
+
+        label: "WARNING"
+
+    },
+
+    watch: {
+
+        className: "fb-watch",
+
+        icon: "⚠️",
+
+        label: "WATCH"
+
+    },
+
+    advisory: {
+
+        className: "fb-advisory",
+
+        icon: "🔶",
+
+        label: "ADVISORY"
+
+    },
+
+    "daily-summary": {
+
+        className: "fb-summary",
+
+        icon: "📄",
+
+        label: "SUMMARY"
+
+    },
+
+    "wind-advisory": {
+
+        className: "fb-wind",
+
+        icon: "💨",
+
+        label: "WIND"
+
+    }
+
+};
+
+
+let firebaseOpen = {};
+
+
+/* =========================================================
+   NWS SEVERITY
+========================================================= */
+
+
+const nwsSeverity = {
+
+    Extreme: {
+
+        className: "extreme",
+
+        icon: "🚨",
+
+        label: "EXTREME",
+
+        color: "#ff2222"
+
+    },
+
+    Severe: {
+
+        className: "severe",
+
+        icon: "⚠️",
+
+        label: "SEVERE",
+
+        color: "#ff6600"
+
+    },
+
+    Moderate: {
+
+        className: "moderate",
+
+        icon: "🔶",
+
+        label: "MODERATE",
+
+        color: "#ffaa00"
+
+    },
+
+    Minor: {
+
+        className: "minor",
+
+        icon: "📢",
+
+        label: "MINOR",
+
+        color: "#ddcc00"
+
+    },
+
+    Unknown: {
+
+        className: "unknown",
+
+        icon: "📋",
+
+        label: "NOTICE",
+
+        color: "#88aaff"
+
+    }
+
+};
+
+
+let nwsOpen = {};
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+
+const map =
+    L.map("map", {
+
+        zoomControl: true,
+
+        scrollWheelZoom: true
+
+    });
+
+
+L.tileLayer(
+
+    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+
+    {
+
+        attribution:
+            "© OpenStreetMap © CARTO",
+
+        maxZoom: 19
+
+    }
+
+).addTo(map);
+
+
+map.setView(
+
+    [39.0458, -76.6413],
+
+    7
+
+);
+
+
+let zoneLayers = [];
+
+
+/* =========================================================
+   FETCH NWS ALERTS
+========================================================= */
+
+
+async function loadNWSAlerts() {
+
+
+    const status =
+        document.getElementById(
+            "nws-status"
+        );
+
+
+    const container =
+        document.getElementById(
+            "nws-alerts"
+        );
+
+
+    try {
+
+
+        const response =
+            await fetch(
+
+                "https://api.weather.gov/alerts/active?area=MD",
+
+                {
+
+                    headers: {
+
+                        "User-Agent":
+                            "(Atmosphere Weather, xambrogio918@gmail.com)",
+
+                        "Accept":
+                            "application/geo+json"
+
+                    }
+
+                }
+
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "NWS request failed"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const alerts =
+            data.features || [];
+
+
+        status.style.display =
+            "none";
+
+
+        container.innerHTML = "";
+
+
+        if (alerts.length === 0) {
+
+            status.style.display =
+                "block";
+
+            status.className =
+                "glass status success";
+
+            status.textContent =
+                "✅ No active NWS alerts for Maryland right now.";
+
+            return;
+
+        }
+
+
+        alerts.forEach(
+
+            (feature, index) => {
+
+                createNWSAlert(
+                    feature,
+                    container,
+                    index
+                );
+
+                drawAlertZones(
+                    feature
+                );
+
+            }
+
+        );
+
+
+    } catch (error) {
+
+
+        console.error(error);
+
+
+        status.className =
+            "glass status error";
+
+        status.textContent =
+            "Failed to load National Weather Service alerts.";
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE NWS ALERT
+========================================================= */
+
+
+function createNWSAlert(
+
+    feature,
+    container,
+    index
+
+) {
+
+
+    const p =
+        feature.properties || {};
+
+
+    const id =
+        feature.id ||
+        `nws-${index}`;
+
+
+    const severity =
+        nwsSeverity[p.severity] ||
+        nwsSeverity.Unknown;
+
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        `glass alert-card ${severity.className}`;
+
+
+    card.innerHTML = `
+
+        <div class="alert-row">
+
+            <span class="alert-icon">
+                ${severity.icon}
+            </span>
+
+            <div class="alert-content">
+
+                <div class="alert-header">
+
+                    <span class="alert-name">
+                        ${escapeHTML(
+                            p.event ||
+                            "Weather Alert"
+                        )}
+                    </span>
+
+                    <span class="severity">
+                        ${severity.label}
+                    </span>
+
+                </div>
+
+
+                <div class="headline">
+
+                    ${escapeHTML(
+                        p.headline ||
+                        ""
+                    )}
+
+                </div>
+
+
+                <div
+                    class="description"
+                    id="${safeId(id)}"
+                    style="display:none;">
+
+                    ${escapeHTML(
+                        p.description ||
+                        "No additional information."
+                    )}
+
+                </div>
+
+
+                <div class="alert-meta">
+
+                    <span>
+
+                        ${escapeHTML(
+                            p.areaDesc ||
+                            ""
+                        )}
+
+                    </span>
+
+                    <span>
+
+                        ${p.effective
+                            ? new Date(
+                                p.effective
+                              ).toLocaleString()
+                            : ""}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    card.onclick = () => {
+
+        nwsOpen[id] =
+            !nwsOpen[id];
+
+
+        const description =
+            card.querySelector(
+                ".description"
+            );
+
+
+        description.style.display =
+            nwsOpen[id]
+                ? "block"
+                : "none";
+
+    };
+
+
+    container.appendChild(card);
+
+}
+
+
+/* =========================================================
+   DRAW NWS ALERT ZONES
+========================================================= */
+
+
+async function drawAlertZones(
+
+    feature
+
+) {
+
+
+    const p =
+        feature.properties || {};
+
+
+    const severity =
+        nwsSeverity[p.severity] ||
+        nwsSeverity.Unknown;
+
+
+    const zones =
+        p.affectedZones || [];
+
+
+    for (
+        const zoneURL of zones
+    ) {
+
+
+        try {
+
+
+            const response =
+                await fetch(
+
+                    zoneURL,
+
+                    {
+
+                        headers: {
+
+                            "User-Agent":
+                                "(Atmosphere Weather, xambrogio918@gmail.com)",
+
+                            "Accept":
+                                "application/geo+json"
+
+                        }
+
+                    }
+
+                );
+
+
+            const zoneData =
+                await response.json();
+
+
+            if (
+                !zoneData.geometry
+            ) continue;
+
+
+            const layer =
+                L.geoJSON(
+
+                    zoneData.geometry,
+
+                    {
+
+                        style: {
+
+                            color:
+                                severity.color,
+
+                            weight: 2,
+
+                            fillColor:
+                                severity.color,
+
+                            fillOpacity:
+                                0.28
+
+                        }
+
+                    }
+
+                );
+
+
+            layer.bindPopup(
+
+                `<strong>
+                    ${escapeHTML(
+                        p.event || ""
+                    )}
+                </strong>
+                <br>
+                ${escapeHTML(
+                    p.headline || ""
+                )}`
+
+            );
+
+
+            layer.addTo(map);
+
+
+            zoneLayers.push(layer);
+
+
+        } catch (error) {
+
+            console.warn(
+                "Could not load alert zone",
+                error
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   FIREBASE ALERTS
+========================================================= */
+
+
+async function loadFirebaseAlerts() {
+
+
+    const status =
+        document.getElementById(
+            "firebase-status"
+        );
+
+
+    const container =
+        document.getElementById(
+            "firebase-alerts"
+        );
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                FIREBASE_URL
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Firebase request failed"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        container.innerHTML =
+            "";
+
+
+        if (!data) {
+
+            showNoFirebaseAlerts();
+
+            return;
+
+        }
+
+
+        const now =
+            Date.now();
+
+
+        const active =
+            Object.entries(data)
+
+                .filter(
+
+                    ([, alert]) => {
+
+                        if (!alert.endTime)
+                            return true;
+
+                        return (
+                            new Date(
+                                alert.endTime
+                            ).getTime()
+                            > now
+                        );
+
+                    }
+
+                )
+
+                .map(
+
+                    ([key, alert]) => ({
+
+                        key,
+                        ...alert
+
+                    })
+
+                );
+
+
+        if (
+            active.length === 0
+        ) {
+
+            showNoFirebaseAlerts();
+
+            return;
+
+        }
+
+
+        status.style.display =
+            "none";
+
+
+        active.forEach(
+
+            (alert, index) => {
+
+                createFirebaseAlert(
+                    alert,
+                    container,
+                    index
+                );
+
+            }
+
+        );
+
+
+    } catch (error) {
+
+
+        console.error(error);
+
+
+        status.className =
+            "glass status error";
+
+        status.textContent =
+            "Unable to load Atmosphere Weather alerts.";
+
+    }
+
+}
+
+
+/* =========================================================
+   NO FIREBASE ALERTS
+========================================================= */
+
+
+function showNoFirebaseAlerts() {
+
+
+    const status =
+        document.getElementById(
+            "firebase-status"
+        );
+
+
+    status.style.display =
+        "block";
+
+
+    status.className =
+        "glass status success";
+
+
+    status.textContent =
+        "✅ No active Atmosphere alerts right now.";
+
+}
+
+
+/* =========================================================
+   CREATE FIREBASE ALERT
+========================================================= */
+
+
+function createFirebaseAlert(
+
+    alert,
+    container,
+    index
+
+) {
+
+
+    const severity =
+        firebaseSeverity[
+            alert.severity
+        ] ||
+        firebaseSeverity.advisory;
+
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        `glass alert-card ${severity.className}`;
+
+
+    const descriptionID =
+        `firebase-description-${index}`;
+
+
+    card.innerHTML = `
+
+        <div class="alert-row">
+
+            <span class="alert-icon">
+                ${severity.icon}
+            </span>
+
+            <div class="alert-content">
+
+                <div class="alert-header">
+
+                    <span class="alert-name">
+
+                        ${escapeHTML(
+                            alert.type ||
+                            "Atmosphere Alert"
+                        )}
+
+                        ${
+                            alert.location
+                                ? " — " +
+                                  escapeHTML(
+                                      alert.location
+                                  )
+                                : ""
+                        }
+
+                    </span>
+
+
+                    <span class="severity">
+
+                        ${severity.label}
+
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="description"
+                    id="${descriptionID}"
+                    style="display:none;">
+
+                    ${escapeHTML(
+                        alert.description ||
+                        "No additional information."
+                    )}
+
+                </div>
+
+
+                <div class="alert-meta">
+
+                    <span>
+                        Atmosphere Weather
+                    </span>
+
+                    <span>
+
+                        ${
+                            alert.endTime
+                                ? "Until " +
+                                  new Date(
+                                      alert.endTime
+                                  ).toLocaleString()
+                                : ""
+                        }
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    card.onclick = () => {
+
+        firebaseOpen[
+            alert.key
+        ] =
+            !firebaseOpen[
+                alert.key
+            ];
+
+
+        document.getElementById(
+            descriptionID
+        ).style.display =
+            firebaseOpen[
+                alert.key
+            ]
+                ? "block"
+                : "none";
+
+    };
+
+
+    container.appendChild(card);
+
+}
+
+
+/* =========================================================
+   HTML SAFETY
+========================================================= */
+
+
+function escapeHTML(value) {
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   SAFE ID
+========================================================= */
+
+
+function safeId(value) {
+
+
+    return String(value)
+
+        .replace(
+            /[^a-zA-Z0-9_-]/g,
+            "-"
+        );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+
+loadNWSAlerts();
+
+loadFirebaseAlerts();
+
+
+/*
+    Refresh Atmosphere alerts every minute.
+*/
+
+setInterval(
+
+    loadFirebaseAlerts,
+
+    60000
+
+);
+
+
+/*
+    Refresh NWS alerts every 2 minutes.
+*/
+
+setInterval(
+
+    loadNWSAlerts,
+
+    120000
+
+);
+
+
+</script>
+
+
+</body>
+</html>
