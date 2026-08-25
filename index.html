@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07111f">
+
+    <title>Atmosphere Weather</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #07111f;
+            --card: rgba(255, 255, 255, 0.10);
+            --border: rgba(255, 255, 255, 0.13);
+            --text: #ffffff;
+            --muted: rgba(255, 255, 255, 0.65);
+            --accent: #65c7ff;
+        }
+
+        body {
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
+            min-height: 100vh;
+            color: var(--text);
+            background:
+                radial-gradient(
+                    circle at 20% 0%,
+                    rgba(56, 189, 248, 0.20),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(37, 99, 235, 0.18),
+                    transparent 35%
+                ),
+                var(--bg);
+
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255,255,255,0.03),
+                    transparent 40%
+                );
+
+            z-index: -1;
+        }
+
+        .app {
+            max-width: 650px;
+            margin: auto;
+            padding-bottom: 100px;
+        }
+
+        /* HEADER */
+
+        header {
+            padding: 28px 22px 10px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-left h1 {
+            font-size: 27px;
+            font-weight: 750;
+            letter-spacing: -0.8px;
+        }
+
+        .brand-left p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .refresh-button {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.08);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .refresh-button:active {
+            transform: scale(0.90);
+        }
+
+        /* MAIN WEATHER CARD */
+
+        .weather-card {
+            margin: 18px 18px 0;
+            padding: 27px;
+            border-radius: 30px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(56, 189, 248, 0.30),
+                    rgba(37, 99, 235, 0.17)
+                );
+
+            border: 1px solid rgba(255,255,255,0.14);
+
+            box-shadow:
+                0 25px 60px rgba(0,0,0,0.30),
+                inset 0 1px 0 rgba(255,255,255,0.10);
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weather-card::after {
+            content: "";
+
+            position: absolute;
+            width: 220px;
+            height: 220px;
+
+            right: -90px;
+            top: -90px;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,0.08);
+
+            filter: blur(10px);
+        }
+
+        .location {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            color: rgba(255,255,255,0.82);
+            font-size: 15px;
+
+            position: relative;
+            z-index: 1;
+        }
+
+        .location-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+            background: #70d6ff;
+
+            box-shadow:
+                0 0 10px rgba(112,214,255,0.8);
+        }
+
+        .main-weather {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-top: 20px;
+
+            position: relative;
+            z-index: 1;
+        }
+
+        .temperature {
+            font-size: 76px;
+            line-height: 0.95;
+            font-weight: 300;
+            letter-spacing: -4px;
+        }
+
+        .temperature sup {
+            font-size: 28px;
+            vertical-align: top;
+            position: relative;
+            top: 10px;
+            letter-spacing: 0;
+        }
+
+        .weather-icon {
+            width: 110px;
+            height: 110px;
+            object-fit: contain;
+
+            filter:
+                drop-shadow(
+                    0 8px 15px rgba(0,0,0,0.20)
+                );
+        }
+
+        .condition {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .feels {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* WEATHER DETAILS */
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+
+            margin: 15px 18px 0;
+        }
+
+        .detail-card {
+            padding: 18px;
+
+            border-radius: 21px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .detail-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .detail-icon {
+            font-size: 17px;
+        }
+
+        .detail-value {
+            font-size: 19px;
+            font-weight: 650;
+
+            margin-top: 9px;
+        }
+
+        /* SUN CARD */
+
+        .sun-card {
+            margin: 15px 18px 0;
+
+            padding: 20px;
+
+            border-radius: 22px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .sun-title {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .sun-times {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sun-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sun-icon {
+            font-size: 28px;
+        }
+
+        .sun-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .sun-value {
+            margin-top: 2px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* LOADING */
+
+        .loading {
+            text-align: center;
+            padding: 80px 25px;
+            color: var(--muted);
+        }
+
+        .spinner {
+            width: 38px;
+            height: 38px;
+
+            margin: 0 auto 18px;
+
+            border-radius: 50%;
+
+            border: 3px solid rgba(255,255,255,0.15);
+            border-top-color: var(--accent);
+
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ERROR */
+
+        .error {
+            display: none;
+
+            margin: 20px;
+
+            padding: 20px;
+
+            border-radius: 20px;
+
+            background: rgba(239,68,68,0.12);
+
+            border: 1px solid rgba(239,68,68,0.25);
+
+            color: #fecaca;
+        }
+
+        /* NAVIGATION */
+
+        .bottom-nav {
+            position: fixed;
+
+            left: 50%;
+            bottom: 12px;
+
+            transform: translateX(-50%);
+
+            width: calc(100% - 24px);
+            max-width: 620px;
+
+            height: 70px;
+
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+
+            background: rgba(12, 24, 42, 0.90);
+
+            border: 1px solid rgba(255,255,255,0.10);
+
+            border-radius: 24px;
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.35);
+
+            z-index: 100;
+        }
+
+        .nav-item {
+            text-decoration: none;
+
+            color: rgba(255,255,255,0.45);
+
+            text-align: center;
+
+            font-size: 11px;
+
+            min-width: 55px;
+
+            transition: 0.2s;
+        }
+
+        .nav-icon {
+            display: block;
+
+            font-size: 21px;
+
+            margin-bottom: 3px;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        @media (min-width: 700px) {
+
+            .app {
+                padding-top: 20px;
+            }
+
+            .weather-card {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .details-grid {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .sun-card {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header>
+
+        <div class="brand">
+
+            <div class="brand-left">
+                <h1>Atmosphere Weather</h1>
+                <p>Live conditions & forecasts</p>
+            </div>
+
+            <button
+                class="refresh-button"
+                onclick="loadWeather()"
+                aria-label="Refresh weather">
+                ↻
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <div id="loading" class="loading">
+
+        <div class="spinner"></div>
+
+        <div>
+            Getting your weather...
+        </div>
+
+    </div>
+
+
+    <div id="error" class="error"></div>
+
+
+    <main id="weather-content" style="display:none;">
+
+        <section class="weather-card">
+
+            <div class="location">
+
+                <span class="location-dot"></span>
+
+                <span id="location">
+                    Loading location...
+                </span>
+
+            </div>
+
+
+            <div class="main-weather">
+
+                <div>
+
+                    <div class="temperature">
+
+                        <span id="temperature">
+                            --
+                        </span>
+
+                        <sup>°F</sup>
+
+                    </div>
+
+                    <div
+                        class="condition"
+                        id="condition">
+                        --
+                    </div>
+
+                    <div class="feels">
+
+                        Feels like
+                        <span id="feels">
+                            --°
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <img
+                    id="weather-icon"
+                    class="weather-icon"
+                    src=""
+                    alt="Weather condition">
+
+            </div>
+
+        </section>
+
+
+        <section class="details-grid">
+
+            <div class="detail-card">
+
+                <div class="detail-top">
+                    <span class="detail-icon">💧</span>
+                    Humidity
+                </div>
+
+                <div
+                    class="detail-value"
+                    id="humidity">
+                    --%
+                </div>
+
+            </div>
+
+
+            <div class="detail-card">
+
+                <div class="detail-top">
+                    <span class="detail-icon">💨</span>
+                    Wind
+                </div>
+
+                <div
+                    class="detail-value"
+                    id="wind">
+                    -- mph
+                </div>
+
+            </div>
+
+
+            <div class="detail-card">
+
+                <div class="detail-top">
+                    <span class="detail-icon">👁️</span>
+                    Visibility
+                </div>
+
+                <div
+                    class="detail-value"
+                    id="visibility">
+                    -- mi
+                </div>
+
+            </div>
+
+
+            <div class="detail-card">
+
+                <div class="detail-top">
+                    <span class="detail-icon">🌡️</span>
+                    Pressure
+                </div>
+
+                <div
+                    class="detail-value"
+                    id="pressure">
+                    -- hPa
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="sun-card">
+
+            <div class="sun-title">
+                SUN & DAYLIGHT
+            </div>
+
+            <div class="sun-times">
+
+                <div class="sun-item">
+
+                    <div class="sun-icon">
+                        🌅
+                    </div>
+
+                    <div>
+
+                        <div class="sun-label">
+                            Sunrise
+                        </div>
+
+                        <div
+                            class="sun-value"
+                            id="sunrise">
+                            --
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sun-item">
+
+                    <div class="sun-icon">
+                        🌇
+                    </div>
+
+                    <div>
+
+                        <div class="sun-label">
+                            Sunset
+                        </div>
+
+                        <div
+                            class="sun-value"
+                            id="sunset">
+                            --
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<nav class="bottom-nav">
+
+    <a
+        href="index.html"
+        class="nav-item active">
+
+        <span class="nav-icon">⌂</span>
+
+        Home
+
+    </a>
+
+
+    <a
+        href="forecast.html"
+        class="nav-item">
+
+        <span class="nav-icon">☀</span>
+
+        Forecast
+
+    </a>
+
+
+    <a
+        href="radar.html"
+        class="nav-item">
+
+        <span class="nav-icon">◉</span>
+
+        Radar
+
+    </a>
+
+
+    <a
+        href="alerts.html"
+        class="nav-item">
+
+        <span class="nav-icon">⚠</span>
+
+        Alerts
+
+    </a>
+
+
+    <a
+        href="more.html"
+        class="nav-item">
+
+        <span class="nav-icon">•••</span>
+
+        More
+
+    </a>
+
+</nav>
+
+
+<script>
+
+    const API_KEY =
+        "32d1a667e7a939e838e64f89f0bb1015";
+
+
+    function showError(message) {
+
+        document.getElementById("loading").style.display =
+            "none";
+
+        document.getElementById("weather-content").style.display =
+            "none";
+
+        const error =
+            document.getElementById("error");
+
+        error.style.display = "block";
+
+        error.innerHTML = `
+            <strong>Unable to get weather</strong>
+            <br><br>
+            ${message}
+            <br><br>
+            Check your internet connection and try refreshing.
+        `;
+    }
+
+
+    function formatTime(timestamp, timezone) {
+
+        const date =
+            new Date(
+                (timestamp + timezone) * 1000
+            );
+
+        let hours =
+            date.getUTCHours();
+
+        const minutes =
+            String(
+                date.getUTCMinutes()
+            ).padStart(2, "0");
+
+        const ampm =
+            hours >= 12
+                ? "PM"
+                : "AM";
+
+        hours =
+            hours % 12 || 12;
+
+        return `${hours}:${minutes} ${ampm}`;
+    }
+
+
+    async function getLocation() {
+
+        return new Promise(
+            (resolve, reject) => {
+
+                if (!navigator.geolocation) {
+
+                    reject(
+                        new Error(
+                            "Geolocation is not supported."
+                        )
+                    );
+
+                    return;
+                }
+
+
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+
+                        resolve({
+                            lat:
+                                position.coords.latitude,
+
+                            lon:
+                                position.coords.longitude
+                        });
+
+                    },
+
+                    error => {
+
+                        reject(error);
+
+                    },
+
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 300000
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    async function loadWeather() {
+
+        const loading =
+            document.getElementById("loading");
+
+        const content =
+            document.getElementById("weather-content");
+
+        const error =
+            document.getElementById("error");
+
+
+        loading.style.display =
+            "block";
+
+        content.style.display =
+            "none";
+
+        error.style.display =
+            "none";
+
+
+        try {
+
+            const position =
+                await getLocation();
+
+
+            const url =
+                `https://api.openweathermap.org/data/2.5/weather` +
+                `?lat=${position.lat}` +
+                `&lon=${position.lon}` +
+                `&units=imperial` +
+                `&appid=${API_KEY}`;
+
+
+            const response =
+                await fetch(url);
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Weather API returned ${response.status}`
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            document.getElementById("location")
+                .textContent =
+                `${data.name}, ${data.sys.country}`;
+
+
+            document.getElementById("temperature")
+                .textContent =
+                Math.round(data.main.temp);
+
+
+            document.getElementById("condition")
+                .textContent =
+                capitalize(
+                    data.weather[0].description
+                );
+
+
+            document.getElementById("feels")
+                .textContent =
+                `${Math.round(data.main.feels_like)}°`;
+
+
+            document.getElementById("humidity")
+                .textContent =
+                `${data.main.humidity}%`;
+
+
+            document.getElementById("wind")
+                .textContent =
+                `${Math.round(data.wind.speed)} mph`;
+
+
+            document.getElementById("visibility")
+                .textContent =
+                `${(data.visibility / 1609.34).toFixed(1)} mi`;
+
+
+            document.getElementById("pressure")
+                .textContent =
+                `${data.main.pressure} hPa`;
+
+
+            document.getElementById("sunrise")
+                .textContent =
+                formatTime(
+                    data.sys.sunrise,
+                    data.timezone
+                );
+
+
+            document.getElementById("sunset")
+                .textContent =
+                formatTime(
+                    data.sys.sunset,
+                    data.timezone
+                );
+
+
+            document.getElementById("weather-icon")
+                .src =
+                `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
+
+
+            document.getElementById("weather-icon")
+                .alt =
+                data.weather[0].description;
+
+
+            loading.style.display =
+                "none";
+
+            content.style.display =
+                "block";
+
+
+        } catch (err) {
+
+            console.error(err);
+
+            showError(
+                "Atmosphere Weather couldn't access your current location or the weather service."
+            );
+
+        }
+
+    }
+
+
+    function capitalize(text) {
+
+        return text
+            .split(" ")
+            .map(
+                word =>
+                    word.charAt(0).toUpperCase() +
+                    word.slice(1)
+            )
+            .join(" ");
+
+    }
+
+
+    loadWeather();
+
+</script>
+
+</body>
+</html>
