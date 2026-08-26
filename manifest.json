@@ -1,0 +1,9 @@
+{
+  "name": "Atmosphere Weather",
+  "short_name": "Atmosphere Weather",
+  "start_url": "/atmosphereweatherpwa/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": []
+}
