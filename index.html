@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,9 +10,6 @@
   window.OneSignalDeferred = window.OneSignalDeferred || [];
 
   OneSignalDeferred.push(async function(OneSignal) {
-
-    window.AtmosphereOneSignal = OneSignal;
-
     await OneSignal.init({
       appId: "cc4fb605-2518-4661-bd12-7e758d182341",
       safari_web_id: "web.onesignal.auto.40785b5b-169b-4884-a5e0-8aeabe17c634",
@@ -350,49 +346,6 @@ serviceWorkerParam: {
             font-weight: 600;
         }
 
-        /* NOTIFICATIONS */
-
-        .notification-button {
-            display: block;
-
-            margin: 15px 18px 0;
-
-            width: calc(100% - 36px);
-
-            padding: 13px 18px;
-
-            border:
-                1px solid
-                rgba(125,211,252,0.35);
-
-            border-radius: 16px;
-
-            background:
-                rgba(125,211,252,0.10);
-
-            color:
-                #7dd3fc;
-
-            font-size: 14px;
-
-            font-weight: 700;
-
-            cursor: pointer;
-
-            transition:
-                transform 0.15s ease,
-                background 0.2s ease;
-
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .notification-button:active {
-            transform: scale(0.98);
-
-            background:
-                rgba(125,211,252,0.16);
-        }
-
         /* LOADING */
 
         .loading {
@@ -518,12 +471,6 @@ serviceWorkerParam: {
             .sun-card {
                 margin-left: 0;
                 margin-right: 0;
-            }
-
-            .notification-button {
-                margin-left: 0;
-                margin-right: 0;
-                width: 100%;
             }
         }
     </style>
@@ -751,13 +698,6 @@ serviceWorkerParam: {
 
         </section>
 
-
-        <button
-            id="enable-notifications"
-            class="notification-button">
-            🔔 Enable Weather Notifications
-        </button>
-
     </main>
 
 </div>
@@ -830,13 +770,13 @@ serviceWorkerParam: {
 
         error.style.display = "block";
 
-        error.innerHTML = `
+        error.innerHTML = 
             <strong>Unable to get weather</strong>
             <br><br>
             ${message}
             <br><br>
             Check your internet connection and try refreshing.
-        `;
+        ;
     }
 
 
@@ -863,7 +803,7 @@ serviceWorkerParam: {
         hours =
             hours % 12 || 12;
 
-        return `${hours}:${minutes} ${ampm}`;
+        return ${hours}:${minutes} ${ampm};
     }
 
 
@@ -945,11 +885,11 @@ serviceWorkerParam: {
 
 
             const url =
-                `https://api.openweathermap.org/data/2.5/weather` +
-                `?lat=${position.lat}` +
-                `&lon=${position.lon}` +
-                `&units=imperial` +
-                `&appid=${API_KEY}`;
+                https://api.openweathermap.org/data/2.5/weather +
+                ?lat=${position.lat} +
+                &lon=${position.lon} +
+                &units=imperial +
+                &appid=${API_KEY};
 
 
             const response =
@@ -959,7 +899,7 @@ serviceWorkerParam: {
             if (!response.ok) {
 
                 throw new Error(
-                    `Weather API returned ${response.status}`
+                    Weather API returned ${response.status}
                 );
 
             }
@@ -971,7 +911,7 @@ serviceWorkerParam: {
 
             document.getElementById("location")
                 .textContent =
-                `${data.name}, ${data.sys.country}`;
+                ${data.name}, ${data.sys.country};
 
 
             document.getElementById("temperature")
@@ -988,27 +928,27 @@ serviceWorkerParam: {
 
             document.getElementById("feels")
                 .textContent =
-                `${Math.round(data.main.feels_like)}°`;
+                ${Math.round(data.main.feels_like)}°;
 
 
             document.getElementById("humidity")
                 .textContent =
-                `${data.main.humidity}%`;
+                ${data.main.humidity}%;
 
 
             document.getElementById("wind")
                 .textContent =
-                `${Math.round(data.wind.speed)} mph`;
+                ${Math.round(data.wind.speed)} mph;
 
 
             document.getElementById("visibility")
                 .textContent =
-                `${(data.visibility / 1609.34).toFixed(1)} mi`;
+                ${(data.visibility / 1609.34).toFixed(1)} mi;
 
 
             document.getElementById("pressure")
                 .textContent =
-                `${data.main.pressure} hPa`;
+                ${data.main.pressure} hPa;
 
 
             document.getElementById("sunrise")
@@ -1029,7 +969,7 @@ serviceWorkerParam: {
 
             document.getElementById("weather-icon")
                 .src =
-                `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
+                https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png;
 
 
             document.getElementById("weather-icon")
@@ -1071,68 +1011,9 @@ serviceWorkerParam: {
     }
 
 
-    /* =========================================================
-       NOTIFICATION BUTTON
-    ========================================================= */
-
-
-    const notificationButton =
-        document.getElementById(
-            "enable-notifications"
-        );
-
-
-    if (notificationButton) {
-
-        notificationButton.addEventListener(
-            "click",
-            async () => {
-
-                try {
-
-                    if (
-                        window.AtmosphereOneSignal
-                    ) {
-
-                        await window.AtmosphereOneSignal.Notifications.requestPermission();
-
-                        notificationButton.style.display =
-                            "none";
-
-                    } else {
-
-                        OneSignalDeferred.push(
-                            async function(OneSignal) {
-
-                                await OneSignal.Notifications.requestPermission();
-
-                                notificationButton.style.display =
-                                    "none";
-
-                            }
-                        );
-
-                    }
-
-                } catch (error) {
-
-                    console.error(
-                        "Notification permission error:",
-                        error
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-
     loadWeather();
 
 </script>
 
 </body>
 </html>
-```
