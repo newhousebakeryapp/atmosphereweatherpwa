@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +11,9 @@
   window.OneSignalDeferred = window.OneSignalDeferred || [];
 
   OneSignalDeferred.push(async function(OneSignal) {
+
+    window.AtmosphereOneSignal = OneSignal;
+
     await OneSignal.init({
       appId: "cc4fb605-2518-4661-bd12-7e758d182341",
       safari_web_id: "web.onesignal.auto.40785b5b-169b-4884-a5e0-8aeabe17c634",
@@ -346,6 +350,49 @@ serviceWorkerParam: {
             font-weight: 600;
         }
 
+        /* NOTIFICATIONS */
+
+        .notification-button {
+            display: block;
+
+            margin: 15px 18px 0;
+
+            width: calc(100% - 36px);
+
+            padding: 13px 18px;
+
+            border:
+                1px solid
+                rgba(125,211,252,0.35);
+
+            border-radius: 16px;
+
+            background:
+                rgba(125,211,252,0.10);
+
+            color:
+                #7dd3fc;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.15s ease,
+                background 0.2s ease;
+
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .notification-button:active {
+            transform: scale(0.98);
+
+            background:
+                rgba(125,211,252,0.16);
+        }
+
         /* LOADING */
 
         .loading {
@@ -471,6 +518,12 @@ serviceWorkerParam: {
             .sun-card {
                 margin-left: 0;
                 margin-right: 0;
+            }
+
+            .notification-button {
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
             }
         }
     </style>
@@ -697,6 +750,13 @@ serviceWorkerParam: {
             </div>
 
         </section>
+
+
+        <button
+            id="enable-notifications"
+            class="notification-button">
+            🔔 Enable Weather Notifications
+        </button>
 
     </main>
 
@@ -1011,9 +1071,68 @@ serviceWorkerParam: {
     }
 
 
+    /* =========================================================
+       NOTIFICATION BUTTON
+    ========================================================= */
+
+
+    const notificationButton =
+        document.getElementById(
+            "enable-notifications"
+        );
+
+
+    if (notificationButton) {
+
+        notificationButton.addEventListener(
+            "click",
+            async () => {
+
+                try {
+
+                    if (
+                        window.AtmosphereOneSignal
+                    ) {
+
+                        await window.AtmosphereOneSignal.Notifications.requestPermission();
+
+                        notificationButton.style.display =
+                            "none";
+
+                    } else {
+
+                        OneSignalDeferred.push(
+                            async function(OneSignal) {
+
+                                await OneSignal.Notifications.requestPermission();
+
+                                notificationButton.style.display =
+                                    "none";
+
+                            }
+                        );
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Notification permission error:",
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
     loadWeather();
 
 </script>
 
 </body>
 </html>
+```
