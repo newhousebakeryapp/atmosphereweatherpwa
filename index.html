@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 
 <html lang="en">
@@ -17,9 +18,9 @@
       safari_web_id: "web.onesignal.auto.40785b5b-169b-4884-a5e0-8aeabe17c634",
 
       serviceWorkerPath: "atmosphereweatherpwa/push/onesignal/OneSignalSDKWorker.js",
-serviceWorkerParam: {
-  scope: "/atmosphereweatherpwa/push/onesignal/"
-},
+      serviceWorkerParam: {
+        scope: "/atmosphereweatherpwa/push/onesignal/"
+      },
 
       notifyButton: {
         enable: true,
@@ -330,6 +331,7 @@ serviceWorkerParam: {
         content: "";
 
         position: absolute;
+
         width: 220px;
         height: 220px;
 
@@ -507,6 +509,156 @@ serviceWorkerParam: {
         font-weight: 600;
     }
 
+    /* FIVE DAY FORECAST */
+
+    .forecast-card {
+        margin: 15px 18px 0;
+
+        padding: 20px;
+
+        border-radius: 22px;
+
+        background: var(--card);
+
+        border: 1px solid var(--border);
+
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+
+        overflow: hidden;
+    }
+
+    .forecast-title {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 15px;
+    }
+
+    .forecast-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .forecast-day {
+        display: grid;
+
+        grid-template-columns:
+            70px
+            45px
+            1fr
+            auto;
+
+        align-items: center;
+
+        gap: 10px;
+
+        padding: 12px 10px;
+
+        border-radius: 16px;
+
+        background:
+            rgba(255,255,255,0.055);
+
+        border:
+            1px solid
+            rgba(255,255,255,0.06);
+    }
+
+    .forecast-day-name {
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .forecast-date {
+        color: rgba(255,255,255,0.42);
+        font-size: 10px;
+        margin-top: 2px;
+    }
+
+    .forecast-icon {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+    }
+
+    .forecast-condition {
+        color: rgba(255,255,255,0.68);
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .forecast-temps {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        white-space: nowrap;
+    }
+
+    .forecast-high {
+        font-size: 14px;
+        font-weight: 750;
+    }
+
+    .forecast-low {
+        color: rgba(255,255,255,0.45);
+        font-size: 13px;
+    }
+
+    .forecast-rain {
+        color: #7dd3fc;
+        font-size: 10px;
+        margin-top: 3px;
+    }
+
+    .forecast-loading {
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+        padding: 18px 5px;
+    }
+
+    @media (max-width: 520px) {
+
+        .forecast-card {
+            margin-left: 14px;
+            margin-right: 14px;
+        }
+
+        .forecast-day {
+            grid-template-columns:
+                62px
+                42px
+                1fr
+                auto;
+
+            gap: 7px;
+
+            padding: 11px 7px;
+        }
+
+        .forecast-day-name {
+            font-size: 12px;
+        }
+
+        .forecast-condition {
+            font-size: 11px;
+        }
+
+        .forecast-high {
+            font-size: 13px;
+        }
+
+        .forecast-low {
+            font-size: 12px;
+        }
+
+    }
+
     /* LOADING */
 
     .loading {
@@ -630,6 +782,11 @@ serviceWorkerParam: {
         }
 
         .sun-card {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .forecast-card {
             margin-left: 0;
             margin-right: 0;
         }
@@ -923,6 +1080,27 @@ serviceWorkerParam: {
 
     </section>
 
+
+    <!-- FIVE DAY FORECAST -->
+
+    <section class="forecast-card">
+
+        <div class="forecast-title">
+            5-DAY FORECAST
+        </div>
+
+        <div
+            id="forecast-list"
+            class="forecast-list">
+
+            <div class="forecast-loading">
+                Loading 5-day forecast...
+            </div>
+
+        </div>
+
+    </section>
+
 </main>
 
 
@@ -1095,6 +1273,315 @@ serviceWorkerParam: {
     }
 
 
+    /*
+     * FILTER THE 3-HOUR FORECAST
+     *
+     * OpenWeather returns many forecast points
+     * throughout each day.
+     *
+     * We group them by local calendar date and
+     * choose the point whose time is closest to
+     * 12:00 PM.
+     *
+     * This gives us exactly one clean forecast
+     * point per day instead of displaying the
+     * entire 3-hour forecast array.
+     */
+
+    function getDailyForecast(list, timezone) {
+
+        const days = {};
+
+        list.forEach(item => {
+
+            const localDate =
+                new Date(
+                    (item.dt + timezone) * 1000
+                );
+
+            const year =
+                localDate.getUTCFullYear();
+
+            const month =
+                String(
+                    localDate.getUTCMonth() + 1
+                ).padStart(2, "0");
+
+            const day =
+                String(
+                    localDate.getUTCDate()
+                ).padStart(2, "0");
+
+            const dateKey =
+                `${year}-${month}-${day}`;
+
+
+            const hour =
+                localDate.getUTCHours();
+
+
+            const distanceFromNoon =
+                Math.abs(hour - 12);
+
+
+            if (
+                !days[dateKey] ||
+                distanceFromNoon <
+                    days[dateKey].distanceFromNoon
+            ) {
+
+                days[dateKey] = {
+
+                    item: item,
+
+                    distanceFromNoon:
+                        distanceFromNoon
+
+                };
+
+            }
+
+        });
+
+
+        return Object.keys(days)
+            .sort()
+            .slice(0, 5)
+            .map(
+                date =>
+                    days[date].item
+            );
+
+    }
+
+
+    function formatForecastDay(timestamp, timezone) {
+
+        const date =
+            new Date(
+                (timestamp + timezone) * 1000
+            );
+
+        return new Intl.DateTimeFormat(
+            "en-US",
+            {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+                timeZone: "UTC"
+            }
+        ).format(date);
+
+    }
+
+
+    function getForecastWeekday(timestamp, timezone) {
+
+        const date =
+            new Date(
+                (timestamp + timezone) * 1000
+            );
+
+        return new Intl.DateTimeFormat(
+            "en-US",
+            {
+                weekday: "short",
+                timeZone: "UTC"
+            }
+        ).format(date);
+
+    }
+
+
+    function renderForecast(forecast, timezone) {
+
+        const forecastList =
+            document.getElementById("forecast-list");
+
+
+        if (!forecast || forecast.length === 0) {
+
+            forecastList.innerHTML = `
+                <div class="forecast-loading">
+                    Forecast unavailable.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        forecastList.innerHTML =
+            forecast.map(item => {
+
+                const icon =
+                    item.weather &&
+                    item.weather[0]
+                        ? item.weather[0].icon
+                        : "01d";
+
+
+                const description =
+                    item.weather &&
+                    item.weather[0]
+                        ? capitalize(
+                            item.weather[0].description
+                        )
+                        : "Unknown";
+
+
+                const high =
+                    Math.round(
+                        item.main.temp_max
+                    );
+
+
+                const low =
+                    Math.round(
+                        item.main.temp_min
+                    );
+
+
+                const rain =
+                    Math.round(
+                        (item.pop || 0) * 100
+                    );
+
+
+                return `
+
+                    <div class="forecast-day">
+
+                        <div>
+
+                            <div class="forecast-day-name">
+                                ${getForecastWeekday(
+                                    item.dt,
+                                    timezone
+                                )}
+                            </div>
+
+                            <div class="forecast-date">
+                                ${formatForecastDay(
+                                    item.dt,
+                                    timezone
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <img
+                            class="forecast-icon"
+                            src="https://openweathermap.org/img/wn/${icon}@2x.png"
+                            alt="${description}">
+
+
+                        <div>
+
+                            <div class="forecast-condition">
+                                ${description}
+                            </div>
+
+                            <div class="forecast-rain">
+                                💧 ${rain}% precipitation
+                            </div>
+
+                        </div>
+
+
+                        <div class="forecast-temps">
+
+                            <span class="forecast-high">
+                                ${high}°
+                            </span>
+
+                            <span class="forecast-low">
+                                ${low}°
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }).join("");
+
+    }
+
+
+    async function loadForecast(lat, lon, timezone) {
+
+        try {
+
+            const url =
+                `https://api.openweathermap.org/data/2.5/forecast` +
+                `?lat=${lat}` +
+                `&lon=${lon}` +
+                `&units=imperial` +
+                `&appid=${API_KEY}`;
+
+
+            const response =
+                await fetch(url);
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Forecast API returned ${response.status}`
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            /*
+             * FILTER THE ARRAY TO ONE DATA POINT
+             * PER DAY, CLOSEST TO 12:00 PM.
+             */
+
+            const dailyForecast =
+                getDailyForecast(
+                    data.list,
+                    data.city.timezone
+                );
+
+
+            renderForecast(
+                dailyForecast,
+                data.city.timezone
+            );
+
+
+        } catch (err) {
+
+            console.error(
+                "Forecast error:",
+                err
+            );
+
+
+            document.getElementById(
+                "forecast-list"
+            ).innerHTML = `
+
+                <div class="forecast-loading">
+                    Unable to load forecast.
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
     async function loadWeather() {
 
         const loading =
@@ -1216,6 +1703,18 @@ serviceWorkerParam: {
                 data.weather[0].description;
 
 
+            /*
+             * LOAD THE 5-DAY FORECAST USING THE
+             * SAME LOCATION.
+             */
+
+            loadForecast(
+                position.lat,
+                position.lon,
+                data.timezone
+            );
+
+
             loading.style.display =
                 "none";
 
@@ -1256,3 +1755,4 @@ serviceWorkerParam: {
 
 </body>
 </html>
+```
