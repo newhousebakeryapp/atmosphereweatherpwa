@@ -705,6 +705,15 @@ header {
     margin-top: 4px;
 }
 
+.hourly-note {
+    color: rgba(255,255,255,0.48);
+    font-size: 10px;
+    font-style: italic;
+    line-height: 1.45;
+    margin-top: 8px;
+    padding: 0 2px;
+}
+
 /* PRECIPITATION */
 
 .precipitation-card {
@@ -1393,17 +1402,19 @@ header {
 
 <div class="pollen-header">
 
-    <div class="pollen-icon">
-        🌿
-    </div>
+```
+<div class="pollen-icon">
+    🌿
+</div>
 
-    <h2 class="pollen-title">
-        Pollen Alert: Medium-High Levels
-    </h2>
+<h2 class="pollen-title">
+    Pollen Alert: Medium-High Levels
+</h2>
 
-    <span class="pollen-level">
-        MED-HIGH
-    </span>
+<span class="pollen-level">
+    MED-HIGH
+</span>
+```
 
 </div>
 
@@ -1413,13 +1424,15 @@ header {
 
 <div class="pollen-footer">
 
-    <span>
-        Maryland • Today
-    </span>
+```
+<span>
+    Maryland • Today
+</span>
 
-    <span class="pollen-tap">
-        Tap to view 5-day breakdown →
-    </span>
+<span class="pollen-tap">
+    Tap to view 5-day breakdown →
+</span>
+```
 
 </div>
 
@@ -1429,18 +1442,20 @@ header {
 
 <div class="brand">
 
-    <div class="brand-left">
-        <h1>Atmosphere Weather</h1>
-        <p>Live conditions & forecasts</p>
-    </div>
+```
+<div class="brand-left">
+    <h1>Atmosphere Weather</h1>
+    <p>Live conditions & forecasts</p>
+</div>
 
-    <button
-        class="refresh-button"
-        id="refresh-button"
-        onclick="loadWeather()"
-        aria-label="Refresh weather">
-        ↻
-    </button>
+<button
+    class="refresh-button"
+    id="refresh-button"
+    onclick="loadWeather()"
+    aria-label="Refresh weather">
+    ↻
+</button>
+```
 
 </div>
 
@@ -1462,379 +1477,391 @@ header {
 
 <section class="weather-card">
 
-    <div class="location">
+```
+<div class="location">
 
-        <span class="location-dot"></span>
+    <span class="location-dot"></span>
 
-        <span id="location">
-            Loading location...
-        </span>
+    <span id="location">
+        Loading location...
+    </span>
 
-    </div>
+</div>
 
-    <div class="location-info">
-        📍 Current location • Updated <span id="updated-time">just now</span>
-    </div>
+<div class="location-info">
+    📍 Current location • Updated <span id="updated-time">just now</span>
+</div>
 
-    <div class="main-weather">
+<div class="main-weather">
 
-        <div>
+    <div>
 
-            <div class="temperature">
+        <div class="temperature">
 
-                <span id="temperature">
-                    --
-                </span>
-
-                <sup>°F</sup>
-
-            </div>
-
-            <div
-                class="condition"
-                id="condition">
+            <span id="temperature">
                 --
-            </div>
+            </span>
 
-            <div class="feels">
-
-                Feels like
-                <span id="feels">
-                    --°
-                </span>
-
-            </div>
+            <sup>°F</sup>
 
         </div>
 
-        <img
-            id="weather-icon"
-            class="weather-icon"
-            src=""
-            alt="Weather condition">
+        <div
+            class="condition"
+            id="condition">
+            --
+        </div>
+
+        <div class="feels">
+
+            Feels like
+            <span id="feels">
+                --°
+            </span>
+
+        </div>
 
     </div>
 
-    <section class="right-now">
+    <img
+        id="weather-icon"
+        class="weather-icon"
+        src=""
+        alt="Weather condition">
 
-        <div class="section-label">
-            RIGHT NOW
+</div>
+
+<section class="right-now">
+
+    <div class="section-label">
+        RIGHT NOW
+    </div>
+
+    <div
+        class="right-now-title"
+        id="right-now-title">
+        Conditions are comfortable
+    </div>
+
+    <div
+        class="right-now-description"
+        id="right-now-description">
+        Loading current conditions...
+    </div>
+
+</section>
+
+<section class="hourly-section">
+
+    <div class="section-label">
+        HOURLY FORECAST
+    </div>
+
+    <div
+        id="hourly-scroll"
+        class="hourly-scroll">
+
+        <div class="forecast-loading">
+            Loading hourly forecast...
+        </div>
+
+    </div>
+
+    <div class="hourly-note">
+        Hourly forecast temperatures are the average temperature for each hour. Not the current temperature.
+    </div>
+
+</section>
+
+<section class="precipitation-card">
+
+    <div class="precip-header">
+
+        <div class="precip-title">
+            🌧️ Next Few Hours
         </div>
 
         <div
-            class="right-now-title"
-            id="right-now-title">
-            Conditions are comfortable
+            class="precip-status"
+            id="precip-status">
+            Checking...
         </div>
 
-        <div
-            class="right-now-description"
-            id="right-now-description">
-            Loading current conditions...
-        </div>
+    </div>
 
-    </section>
+    <div
+        class="precip-description"
+        id="precip-description">
+        Looking for precipitation near you.
+    </div>
 
-    <section class="hourly-section">
+    <div
+        id="precip-timeline"
+        class="precip-timeline">
 
-        <div class="section-label">
-            HOURLY FORECAST
-        </div>
+    </div>
 
-        <div
-            id="hourly-scroll"
-            class="hourly-scroll">
+</section>
 
-            <div class="forecast-loading">
-                Loading hourly forecast...
+<section class="insights-section">
+
+    <div class="section-label">
+        ✨ ATMOSPHERE INSIGHTS
+    </div>
+
+    <div class="insights-grid">
+
+        <div class="insight-card">
+
+            <div class="insight-icon">
+                🌧️
             </div>
 
-        </div>
-
-    </section>
-
-    <section class="precipitation-card">
-
-        <div class="precip-header">
-
-            <div class="precip-title">
-                🌧️ Next Few Hours
+            <div class="insight-title">
+                Rain Window
             </div>
 
             <div
-                class="precip-status"
-                id="precip-status">
-                Checking...
+                class="insight-text"
+                id="insight-rain">
+                Analyzing precipitation timing...
             </div>
 
         </div>
 
-        <div
-            class="precip-description"
-            id="precip-description">
-            Looking for precipitation near you.
-        </div>
+        <div class="insight-card">
 
-        <div
-            id="precip-timeline"
-            class="precip-timeline">
-
-        </div>
-
-    </section>
-
-    <section class="insights-section">
-
-        <div class="section-label">
-            ✨ ATMOSPHERE INSIGHTS
-        </div>
-
-        <div class="insights-grid">
-
-            <div class="insight-card">
-
-                <div class="insight-icon">
-                    🌧️
-                </div>
-
-                <div class="insight-title">
-                    Rain Window
-                </div>
-
-                <div
-                    class="insight-text"
-                    id="insight-rain">
-                    Analyzing precipitation timing...
-                </div>
-
+            <div class="insight-icon">
+                🌡️
             </div>
 
-            <div class="insight-card">
-
-                <div class="insight-icon">
-                    🌡️
-                </div>
-
-                <div class="insight-title">
-                    Temperature Trend
-                </div>
-
-                <div
-                    class="insight-text"
-                    id="insight-temperature">
-                    Analyzing temperature trend...
-                </div>
-
+            <div class="insight-title">
+                Temperature Trend
             </div>
 
-            <div class="insight-card">
-
-                <div class="insight-icon">
-                    🌬️
-                </div>
-
-                <div class="insight-title">
-                    Wind
-                </div>
-
-                <div
-                    class="insight-text"
-                    id="insight-wind">
-                    Analyzing wind conditions...
-                </div>
-
-            </div>
-
-            <div class="insight-card">
-
-                <div class="insight-icon">
-                    ☀️
-                </div>
-
-                <div class="insight-title">
-                    Best Outdoor Time
-                </div>
-
-                <div
-                    class="insight-text"
-                    id="insight-outdoor">
-                    Finding the best conditions...
-                </div>
-
+            <div
+                class="insight-text"
+                id="insight-temperature">
+                Analyzing temperature trend...
             </div>
 
         </div>
 
-    </section>
+        <div class="insight-card">
+
+            <div class="insight-icon">
+                🌬️
+            </div>
+
+            <div class="insight-title">
+                Wind
+            </div>
+
+            <div
+                class="insight-text"
+                id="insight-wind">
+                Analyzing wind conditions...
+            </div>
+
+        </div>
+
+        <div class="insight-card">
+
+            <div class="insight-icon">
+                ☀️
+            </div>
+
+            <div class="insight-title">
+                Best Outdoor Time
+            </div>
+
+            <div
+                class="insight-text"
+                id="insight-outdoor">
+                Finding the best conditions...
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+```
 
 </section>
 
 <section class="details-grid">
 
-    <div class="detail-card">
+```
+<div class="detail-card">
 
-        <div class="detail-top">
-            <span class="detail-icon">💧</span>
-            Humidity
-        </div>
-
-        <div
-            class="detail-value"
-            id="humidity">
-            --%
-        </div>
-
+    <div class="detail-top">
+        <span class="detail-icon">💧</span>
+        Humidity
     </div>
 
-    <div class="detail-card">
-
-        <div class="detail-top">
-            <span class="detail-icon">💨</span>
-            Wind
-        </div>
-
-        <div
-            class="detail-value"
-            id="wind">
-            -- mph
-        </div>
-
+    <div
+        class="detail-value"
+        id="humidity">
+        --%
     </div>
 
-    <div class="detail-card">
+</div>
 
-        <div class="detail-top">
-            <span class="detail-icon">👁️</span>
-            Visibility
-        </div>
+<div class="detail-card">
 
-        <div
-            class="detail-value"
-            id="visibility">
-            -- mi
-        </div>
-
+    <div class="detail-top">
+        <span class="detail-icon">💨</span>
+        Wind
     </div>
 
-    <div class="detail-card">
-
-        <div class="detail-top">
-            <span class="detail-icon">🌡️</span>
-            Pressure
-        </div>
-
-        <div
-            class="detail-value"
-            id="pressure">
-            -- hPa
-        </div>
-
+    <div
+        class="detail-value"
+        id="wind">
+        -- mph
     </div>
+
+</div>
+
+<div class="detail-card">
+
+    <div class="detail-top">
+        <span class="detail-icon">👁️</span>
+        Visibility
+    </div>
+
+    <div
+        class="detail-value"
+        id="visibility">
+        -- mi
+    </div>
+
+</div>
+
+<div class="detail-card">
+
+    <div class="detail-top">
+        <span class="detail-icon">🌡️</span>
+        Pressure
+    </div>
+
+    <div
+        class="detail-value"
+        id="pressure">
+        -- hPa
+    </div>
+
+</div>
+```
 
 </section>
 
 <section class="sun-card">
 
-    <div class="sun-title">
-        SUN & DAYLIGHT
-    </div>
+```
+<div class="sun-title">
+    SUN & DAYLIGHT
+</div>
 
-    <div class="sun-times">
+<div class="sun-times">
 
-        <div class="sun-item">
+    <div class="sun-item">
 
-            <div class="sun-icon">
-                🌅
-            </div>
-
-            <div>
-
-                <div class="sun-label">
-                    Sunrise
-                </div>
-
-                <div
-                    class="sun-value"
-                    id="sunrise">
-                    --
-                </div>
-
-            </div>
-
+        <div class="sun-icon">
+            🌅
         </div>
 
-        <div class="sun-item">
+        <div>
 
-            <div class="sun-icon">
-                🌇
+            <div class="sun-label">
+                Sunrise
             </div>
-
-            <div>
-
-                <div class="sun-label">
-                    Sunset
-                </div>
-
-                <div
-                    class="sun-value"
-                    id="sunset">
-                    --
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="daylight-progress">
-
-        <div class="daylight-track">
 
             <div
-                class="daylight-dot"
-                id="daylight-dot">
+                class="sun-value"
+                id="sunrise">
+                --
             </div>
 
         </div>
 
-        <div class="daylight-labels">
+    </div>
 
-            <span id="daylight-start">
-                Sunrise
-            </span>
+    <div class="sun-item">
 
-            <span id="daylight-end">
-                Sunset
-            </span>
-
+        <div class="sun-icon">
+            🌇
         </div>
 
-        <div
-            class="daylight-duration"
-            id="daylight-duration">
-            Calculating daylight...
+        <div>
+
+            <div class="sun-label">
+                Sunset
+            </div>
+
+            <div
+                class="sun-value"
+                id="sunset">
+                --
+            </div>
+
         </div>
 
     </div>
+
+</div>
+
+<div class="daylight-progress">
+
+    <div class="daylight-track">
+
+        <div
+            class="daylight-dot"
+            id="daylight-dot">
+        </div>
+
+    </div>
+
+    <div class="daylight-labels">
+
+        <span id="daylight-start">
+            Sunrise
+        </span>
+
+        <span id="daylight-end">
+            Sunset
+        </span>
+
+    </div>
+
+    <div
+        class="daylight-duration"
+        id="daylight-duration">
+        Calculating daylight...
+    </div>
+
+</div>
+```
 
 </section>
 
 <section class="forecast-card">
 
-    <div class="forecast-title">
-        5-DAY OUTLOOK
+```
+<div class="forecast-title">
+    5-DAY OUTLOOK
+</div>
+
+<div
+    id="forecast-list"
+    class="forecast-list">
+
+    <div class="forecast-loading">
+        Loading 5-day forecast...
     </div>
 
-    <div
-        id="forecast-list"
-        class="forecast-list">
-
-        <div class="forecast-loading">
-            Loading 5-day forecast...
-        </div>
-
-    </div>
+</div>
+```
 
 </section>
 
@@ -1845,8 +1872,8 @@ header {
 <nav class="bottom-nav">
 
 <a
- href="index.html"
- class="nav-item active">
+href="index.html"
+class="nav-item active">
 
 <span class="nav-icon">⌂</span>
 
@@ -1855,8 +1882,8 @@ Home
 </a>
 
 <a
- href="radar.html"
- class="nav-item">
+href="radar.html"
+class="nav-item">
 
 <span class="nav-icon">◉</span>
 
@@ -1865,8 +1892,8 @@ Radar
 </a>
 
 <a
- href="alerts.html"
- class="nav-item">
+href="alerts.html"
+class="nav-item">
 
 <span class="nav-icon">⚠</span>
 
@@ -1875,8 +1902,8 @@ Alerts
 </a>
 
 <a
- href="updates.html"
- class="nav-item">
+href="updates.html"
+class="nav-item">
 
 <span class="nav-icon">✨</span>
 
