@@ -3227,7 +3227,6 @@ function capitalize(text) {
         .join(" ");
 
 }
-
 function updateLiveTime() {
 
     if (
@@ -3237,24 +3236,24 @@ function updateLiveTime() {
     }
 
     const now =
-        new Date();
-
-    const timezone =
-        currentWeatherData.timezone;
-
-    const local =
-        new Date(
-            now.getTime() +
-            timezone * 1000 +
-            now.getTimezoneOffset() * -60000
+        Math.floor(
+            Date.now() / 1000
         );
 
-    const hours =
-        local.getHours();
+    const localTimestamp =
+        now + currentWeatherData.timezone;
+
+    const localDate =
+        new Date(
+            localTimestamp * 1000
+        );
+
+    let hours =
+        localDate.getUTCHours();
 
     const minutes =
         String(
-            local.getMinutes()
+            localDate.getUTCMinutes()
         ).padStart(2, "0");
 
     const ampm =
