@@ -1142,7 +1142,6 @@ header {
         );
 
     position: absolute;
-    left: 0;
     top: 0;
 
     min-width: 18%;
@@ -1393,17 +1392,19 @@ header {
 
 <div class="pollen-header">
 
-    <div class="pollen-icon">
-        🌿
-    </div>
+```
+<div class="pollen-icon">
+    🌿
+</div>
 
-    <h2 class="pollen-title">
-        Pollen Alert: Medium-High Levels
-    </h2>
+<h2 class="pollen-title">
+    Pollen Alert: Medium-High Levels
+</h2>
 
-    <span class="pollen-level">
-        MED-HIGH
-    </span>
+<span class="pollen-level">
+    MED-HIGH
+</span>
+```
 
 </div>
 
@@ -1413,13 +1414,15 @@ header {
 
 <div class="pollen-footer">
 
-    <span>
-        Maryland • Today
-    </span>
+```
+<span>
+    Maryland • Today
+</span>
 
-    <span class="pollen-tap">
-        Tap to view 5-day breakdown →
-    </span>
+<span class="pollen-tap">
+    Tap to view 5-day breakdown →
+</span>
+```
 
 </div>
 
@@ -1429,18 +1432,20 @@ header {
 
 <div class="brand">
 
-    <div class="brand-left">
-        <h1>Atmosphere Weather</h1>
-        <p>Live conditions & forecasts</p>
-    </div>
+```
+<div class="brand-left">
+    <h1>Atmosphere Weather</h1>
+    <p>Live conditions & forecasts</p>
+</div>
 
-    <button
-        class="refresh-button"
-        id="refresh-button"
-        onclick="loadWeather()"
-        aria-label="Refresh weather">
-        ↻
-    </button>
+<button
+    class="refresh-button"
+    id="refresh-button"
+    onclick="loadWeather()"
+    aria-label="Refresh weather">
+    ↻
+</button>
+```
 
 </div>
 
@@ -1462,379 +1467,387 @@ header {
 
 <section class="weather-card">
 
-    <div class="location">
+```
+<div class="location">
 
-        <span class="location-dot"></span>
+    <span class="location-dot"></span>
 
-        <span id="location">
-            Loading location...
-        </span>
+    <span id="location">
+        Loading location...
+    </span>
 
-    </div>
+</div>
 
-    <div class="location-info">
-        📍 Current location • Updated <span id="updated-time">just now</span>
-    </div>
+<div class="location-info">
+    📍 Current location • Updated <span id="updated-time">just now</span>
+</div>
 
-    <div class="main-weather">
+<div class="main-weather">
 
-        <div>
+    <div>
 
-            <div class="temperature">
+        <div class="temperature">
 
-                <span id="temperature">
-                    --
-                </span>
-
-                <sup>°F</sup>
-
-            </div>
-
-            <div
-                class="condition"
-                id="condition">
+            <span id="temperature">
                 --
-            </div>
+            </span>
 
-            <div class="feels">
-
-                Feels like
-                <span id="feels">
-                    --°
-                </span>
-
-            </div>
+            <sup>°F</sup>
 
         </div>
 
-        <img
-            id="weather-icon"
-            class="weather-icon"
-            src=""
-            alt="Weather condition">
+        <div
+            class="condition"
+            id="condition">
+            --
+        </div>
+
+        <div class="feels">
+
+            Feels like
+            <span id="feels">
+                --°
+            </span>
+
+        </div>
 
     </div>
 
-    <section class="right-now">
+    <img
+        id="weather-icon"
+        class="weather-icon"
+        src=""
+        alt="Weather condition">
 
-        <div class="section-label">
-            RIGHT NOW
+</div>
+
+<section class="right-now">
+
+    <div class="section-label">
+        RIGHT NOW
+    </div>
+
+    <div
+        class="right-now-title"
+        id="right-now-title">
+        Conditions are comfortable
+    </div>
+
+    <div
+        class="right-now-description"
+        id="right-now-description">
+        Loading current conditions...
+    </div>
+
+</section>
+
+<section class="hourly-section">
+
+    <div class="section-label">
+        HOURLY FORECAST
+    </div>
+
+    <div
+        id="hourly-scroll"
+        class="hourly-scroll">
+
+        <div class="forecast-loading">
+            Loading hourly forecast...
+        </div>
+
+    </div>
+
+</section>
+
+<section class="precipitation-card">
+
+    <div class="precip-header">
+
+        <div class="precip-title">
+            🌧️ Next Few Hours
         </div>
 
         <div
-            class="right-now-title"
-            id="right-now-title">
-            Conditions are comfortable
+            class="precip-status"
+            id="precip-status">
+            Checking...
         </div>
 
-        <div
-            class="right-now-description"
-            id="right-now-description">
-            Loading current conditions...
-        </div>
+    </div>
 
-    </section>
+    <div
+        class="precip-description"
+        id="precip-description">
+        Looking for precipitation near you.
+    </div>
 
-    <section class="hourly-section">
+    <div
+        id="precip-timeline"
+        class="precip-timeline">
 
-        <div class="section-label">
-            HOURLY FORECAST
-        </div>
+    </div>
 
-        <div
-            id="hourly-scroll"
-            class="hourly-scroll">
+</section>
 
-            <div class="forecast-loading">
-                Loading hourly forecast...
+<section class="insights-section">
+
+    <div class="section-label">
+        ✨ ATMOSPHERE INSIGHTS
+    </div>
+
+    <div class="insights-grid">
+
+        <div class="insight-card">
+
+            <div class="insight-icon">
+                🌧️
             </div>
 
-        </div>
-
-    </section>
-
-    <section class="precipitation-card">
-
-        <div class="precip-header">
-
-            <div class="precip-title">
-                🌧️ Next Few Hours
+            <div class="insight-title">
+                Rain Window
             </div>
 
             <div
-                class="precip-status"
-                id="precip-status">
-                Checking...
+                class="insight-text"
+                id="insight-rain">
+                Analyzing precipitation timing...
             </div>
 
         </div>
 
-        <div
-            class="precip-description"
-            id="precip-description">
-            Looking for precipitation near you.
-        </div>
+        <div class="insight-card">
 
-        <div
-            id="precip-timeline"
-            class="precip-timeline">
-
-        </div>
-
-    </section>
-
-    <section class="insights-section">
-
-        <div class="section-label">
-            ✨ ATMOSPHERE INSIGHTS
-        </div>
-
-        <div class="insights-grid">
-
-            <div class="insight-card">
-
-                <div class="insight-icon">
-                    🌧️
-                </div>
-
-                <div class="insight-title">
-                    Rain Window
-                </div>
-
-                <div
-                    class="insight-text"
-                    id="insight-rain">
-                    Analyzing precipitation timing...
-                </div>
-
+            <div class="insight-icon">
+                🌡️
             </div>
 
-            <div class="insight-card">
-
-                <div class="insight-icon">
-                    🌡️
-                </div>
-
-                <div class="insight-title">
-                    Temperature Trend
-                </div>
-
-                <div
-                    class="insight-text"
-                    id="insight-temperature">
-                    Analyzing temperature trend...
-                </div>
-
+            <div class="insight-title">
+                Temperature Trend
             </div>
 
-            <div class="insight-card">
-
-                <div class="insight-icon">
-                    🌬️
-                </div>
-
-                <div class="insight-title">
-                    Wind
-                </div>
-
-                <div
-                    class="insight-text"
-                    id="insight-wind">
-                    Analyzing wind conditions...
-                </div>
-
-            </div>
-
-            <div class="insight-card">
-
-                <div class="insight-icon">
-                    ☀️
-                </div>
-
-                <div class="insight-title">
-                    Best Outdoor Time
-                </div>
-
-                <div
-                    class="insight-text"
-                    id="insight-outdoor">
-                    Finding the best conditions...
-                </div>
-
+            <div
+                class="insight-text"
+                id="insight-temperature">
+                Analyzing temperature trend...
             </div>
 
         </div>
 
-    </section>
+        <div class="insight-card">
+
+            <div class="insight-icon">
+                🌬️
+            </div>
+
+            <div class="insight-title">
+                Wind
+            </div>
+
+            <div
+                class="insight-text"
+                id="insight-wind">
+                Analyzing wind conditions...
+            </div>
+
+        </div>
+
+        <div class="insight-card">
+
+            <div class="insight-icon">
+                ☀️
+            </div>
+
+            <div class="insight-title">
+                Best Outdoor Time
+            </div>
+
+            <div
+                class="insight-text"
+                id="insight-outdoor">
+                Finding the best conditions...
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+```
 
 </section>
 
 <section class="details-grid">
 
-    <div class="detail-card">
+```
+<div class="detail-card">
 
-        <div class="detail-top">
-            <span class="detail-icon">💧</span>
-            Humidity
-        </div>
-
-        <div
-            class="detail-value"
-            id="humidity">
-            --%
-        </div>
-
+    <div class="detail-top">
+        <span class="detail-icon">💧</span>
+        Humidity
     </div>
 
-    <div class="detail-card">
-
-        <div class="detail-top">
-            <span class="detail-icon">💨</span>
-            Wind
-        </div>
-
-        <div
-            class="detail-value"
-            id="wind">
-            -- mph
-        </div>
-
+    <div
+        class="detail-value"
+        id="humidity">
+        --%
     </div>
 
-    <div class="detail-card">
+</div>
 
-        <div class="detail-top">
-            <span class="detail-icon">👁️</span>
-            Visibility
-        </div>
+<div class="detail-card">
 
-        <div
-            class="detail-value"
-            id="visibility">
-            -- mi
-        </div>
-
+    <div class="detail-top">
+        <span class="detail-icon">💨</span>
+        Wind
     </div>
 
-    <div class="detail-card">
-
-        <div class="detail-top">
-            <span class="detail-icon">🌡️</span>
-            Pressure
-        </div>
-
-        <div
-            class="detail-value"
-            id="pressure">
-            -- hPa
-        </div>
-
+    <div
+        class="detail-value"
+        id="wind">
+        -- mph
     </div>
+
+</div>
+
+<div class="detail-card">
+
+    <div class="detail-top">
+        <span class="detail-icon">👁️</span>
+        Visibility
+    </div>
+
+    <div
+        class="detail-value"
+        id="visibility">
+        -- mi
+    </div>
+
+</div>
+
+<div class="detail-card">
+
+    <div class="detail-top">
+        <span class="detail-icon">🌡️</span>
+        Pressure
+    </div>
+
+    <div
+        class="detail-value"
+        id="pressure">
+        -- hPa
+    </div>
+
+</div>
+```
 
 </section>
 
 <section class="sun-card">
 
-    <div class="sun-title">
-        SUN & DAYLIGHT
-    </div>
+```
+<div class="sun-title">
+    SUN & DAYLIGHT
+</div>
 
-    <div class="sun-times">
+<div class="sun-times">
 
-        <div class="sun-item">
+    <div class="sun-item">
 
-            <div class="sun-icon">
-                🌅
-            </div>
-
-            <div>
-
-                <div class="sun-label">
-                    Sunrise
-                </div>
-
-                <div
-                    class="sun-value"
-                    id="sunrise">
-                    --
-                </div>
-
-            </div>
-
+        <div class="sun-icon">
+            🌅
         </div>
 
-        <div class="sun-item">
+        <div>
 
-            <div class="sun-icon">
-                🌇
+            <div class="sun-label">
+                Sunrise
             </div>
-
-            <div>
-
-                <div class="sun-label">
-                    Sunset
-                </div>
-
-                <div
-                    class="sun-value"
-                    id="sunset">
-                    --
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="daylight-progress">
-
-        <div class="daylight-track">
 
             <div
-                class="daylight-dot"
-                id="daylight-dot">
+                class="sun-value"
+                id="sunrise">
+                --
             </div>
 
         </div>
 
-        <div class="daylight-labels">
+    </div>
 
-            <span id="daylight-start">
-                Sunrise
-            </span>
+    <div class="sun-item">
 
-            <span id="daylight-end">
-                Sunset
-            </span>
-
+        <div class="sun-icon">
+            🌇
         </div>
 
-        <div
-            class="daylight-duration"
-            id="daylight-duration">
-            Calculating daylight...
+        <div>
+
+            <div class="sun-label">
+                Sunset
+            </div>
+
+            <div
+                class="sun-value"
+                id="sunset">
+                --
+            </div>
+
         </div>
 
     </div>
+
+</div>
+
+<div class="daylight-progress">
+
+    <div class="daylight-track">
+
+        <div
+            class="daylight-dot"
+            id="daylight-dot">
+        </div>
+
+    </div>
+
+    <div class="daylight-labels">
+
+        <span id="daylight-start">
+            Sunrise
+        </span>
+
+        <span id="daylight-end">
+            Sunset
+        </span>
+
+    </div>
+
+    <div
+        class="daylight-duration"
+        id="daylight-duration">
+        Calculating daylight...
+    </div>
+
+</div>
+```
 
 </section>
 
 <section class="forecast-card">
 
-    <div class="forecast-title">
-        5-DAY OUTLOOK
+```
+<div class="forecast-title">
+    5-DAY OUTLOOK
+</div>
+
+<div
+    id="forecast-list"
+    class="forecast-list">
+
+    <div class="forecast-loading">
+        Loading 5-day forecast...
     </div>
 
-    <div
-        id="forecast-list"
-        class="forecast-list">
-
-        <div class="forecast-loading">
-            Loading 5-day forecast...
-        </div>
-
-    </div>
+</div>
+```
 
 </section>
 
@@ -1845,8 +1858,8 @@ header {
 <nav class="bottom-nav">
 
 <a
- href="index.html"
- class="nav-item active">
+href="index.html"
+class="nav-item active">
 
 <span class="nav-icon">⌂</span>
 
@@ -1855,8 +1868,8 @@ Home
 </a>
 
 <a
- href="radar.html"
- class="nav-item">
+href="radar.html"
+class="nav-item">
 
 <span class="nav-icon">◉</span>
 
@@ -1865,8 +1878,8 @@ Radar
 </a>
 
 <a
- href="alerts.html"
- class="nav-item">
+href="alerts.html"
+class="nav-item">
 
 <span class="nav-icon">⚠</span>
 
@@ -1875,8 +1888,8 @@ Alerts
 </a>
 
 <a
- href="updates.html"
- class="nav-item">
+href="updates.html"
+class="nav-item">
 
 <span class="nav-icon">✨</span>
 
@@ -1989,66 +2002,30 @@ function formatHour(timestamp, timezone, first = false) {
 
 }
 
-async function getLocation() {
-
-    return new Promise(
-        (resolve, reject) => {
-
-            if (!navigator.geolocation) {
-
-                reject(
-                    new Error(
-                        "Geolocation is not supported."
-                    )
-                );
-
-                return;
-
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                position => {
-
-                    resolve({
-
-                        lat:
-                            position.coords.latitude,
-
-                        lon:
-                            position.coords.longitude
-
-                    });
-
-                },
-
-                error => {
-
-                    reject(error);
-
-                },
-
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 300000
-                }
-
-            );
-
-        }
-    );
-
-}
-
-function getDailyForecast(list, timezone) {
+/*
+ * FIXED:
+ * Groups every 3-hour forecast entry by the actual
+ * local calendar date instead of selecting five entries
+ * closest to noon.
+ *
+ * Each day's:
+ * - high = highest forecast temperature
+ * - low = lowest forecast temperature
+ * - precipitation = highest probability during that day
+ *
+ * Today's current temperature is also included so the
+ * current observed temperature contributes to today's range.
+ */
+function getDailyForecast(list, timezone, currentWeather) {
 
     const days = {};
 
     list.forEach(item => {
 
         const localDate =
-            new Date(
-                (item.dt + timezone) * 1000
+            getLocalDate(
+                item.dt,
+                timezone
             );
 
         const year =
@@ -2070,34 +2047,170 @@ function getDailyForecast(list, timezone) {
         const hour =
             localDate.getUTCHours();
 
-        const distanceFromNoon =
-            Math.abs(hour - 12);
-
-        if (
-            !days[dateKey] ||
-            distanceFromNoon <
-                days[dateKey].distanceFromNoon
-        ) {
+        if (!days[dateKey]) {
 
             days[dateKey] = {
 
-                item: item,
+                dateKey: dateKey,
 
-                distanceFromNoon:
-                    distanceFromNoon
+                timestamp: item.dt,
+
+                entries: [],
+
+                high: -Infinity,
+
+                low: Infinity,
+
+                maxPop: 0,
+
+                representative: null,
+
+                representativeDistance:
+                    Infinity
 
             };
 
         }
 
+        days[dateKey].entries.push(item);
+
+        const temperature =
+            Number(item.main.temp);
+
+        if (temperature > days[dateKey].high) {
+
+            days[dateKey].high =
+                temperature;
+
+        }
+
+        if (temperature < days[dateKey].low) {
+
+            days[dateKey].low =
+                temperature;
+
+        }
+
+        const pop =
+            Number(item.pop || 0);
+
+        if (pop > days[dateKey].maxPop) {
+
+            days[dateKey].maxPop =
+                pop;
+
+        }
+
+        /*
+         * Use the forecast period closest to noon only
+         * for the day's representative icon/condition.
+         * This does NOT determine the high or low.
+         */
+        const distanceFromNoon =
+            Math.abs(hour - 12);
+
+        if (
+            distanceFromNoon <
+            days[dateKey].representativeDistance
+        ) {
+
+            days[dateKey].representative =
+                item;
+
+            days[dateKey].representativeDistance =
+                distanceFromNoon;
+
+        }
+
     });
 
+    /*
+     * Add the actual current observation to today's
+     * high/low if today's date is represented.
+     */
+    if (currentWeather && currentWeather.dt) {
+
+        const currentLocalDate =
+            getLocalDate(
+                currentWeather.dt,
+                timezone
+            );
+
+        const currentYear =
+            currentLocalDate.getUTCFullYear();
+
+        const currentMonth =
+            String(
+                currentLocalDate.getUTCMonth() + 1
+            ).padStart(2, "0");
+
+        const currentDay =
+            String(
+                currentLocalDate.getUTCDate()
+            ).padStart(2, "0");
+
+        const currentDateKey =
+            `${currentYear}-${currentMonth}-${currentDay}`;
+
+        if (days[currentDateKey]) {
+
+            const currentTemperature =
+                Number(
+                    currentWeather.main.temp
+                );
+
+            days[currentDateKey].high =
+                Math.max(
+                    days[currentDateKey].high,
+                    currentTemperature
+                );
+
+            days[currentDateKey].low =
+                Math.min(
+                    days[currentDateKey].low,
+                    currentTemperature
+                );
+
+        }
+
+    }
+
+    /*
+     * Return the first five actual calendar days represented
+     * by the API.
+     */
     return Object.keys(days)
         .sort()
         .slice(0, 5)
         .map(
-            date =>
-                days[date].item
+            dateKey => {
+
+                const day =
+                    days[dateKey];
+
+                return {
+
+                    dt:
+                        day.timestamp,
+
+                    dateKey:
+                        day.dateKey,
+
+                    item:
+                        day.representative,
+
+                    high:
+                        day.high,
+
+                    low:
+                        day.low,
+
+                    pop:
+                        day.maxPop
+
+                };
+
+            }
         );
 
 }
@@ -2342,7 +2455,15 @@ function generateRightNow(data) {
 
 }
 
-function renderHourly(forecast, timezone) {
+/*
+ * FIXED:
+ * The first card is now the actual current weather
+ * observation and is labeled "Now".
+ *
+ * After that, the cards are the next available
+ * OpenWeather 3-hour forecast periods.
+ */
+function renderHourly(forecast, timezone, currentWeather) {
 
     const container =
         document.getElementById(
@@ -2363,8 +2484,44 @@ function renderHourly(forecast, timezone) {
 
     }
 
+    const nowItem = {
+
+        dt:
+            currentWeather.dt,
+
+        main: {
+
+            temp:
+                currentWeather.main.temp
+
+        },
+
+        weather:
+            currentWeather.weather,
+
+        pop:
+            0
+
+    };
+
+    /*
+     * Only show forecast periods that are actually
+     * after the current observation.
+     */
+    const futureForecast =
+        forecast
+            .filter(
+                item =>
+                    item.dt >
+                    currentWeather.dt
+            )
+            .slice(0, 9);
+
     const hours =
-        forecast.slice(0, 10);
+        [
+            nowItem,
+            ...futureForecast
+        ].slice(0, 10);
 
     container.innerHTML =
         hours.map(
@@ -2718,6 +2875,18 @@ function renderInsights(forecast, current) {
 
 }
 
+/*
+ * FIXED:
+ * Daily high/low values now come from the aggregated
+ * calendar-day objects.
+ *
+ * Range bars now represent:
+ *
+ *       daily LOW -------- daily HIGH
+ *
+ * positioned against the complete 5-day temperature
+ * range.
+ */
 function renderForecast(forecast, timezone) {
 
     const forecastList =
@@ -2739,17 +2908,27 @@ function renderForecast(forecast, timezone) {
 
     }
 
-    const temperatures =
+    const dailyLows =
         forecast.map(
-            item =>
-                item.main.temp
+            day =>
+                day.low
+        );
+
+    const dailyHighs =
+        forecast.map(
+            day =>
+                day.high
         );
 
     const minTemp =
-        Math.min(...temperatures);
+        Math.min(
+            ...dailyLows
+        );
 
     const maxTemp =
-        Math.max(...temperatures);
+        Math.max(
+            ...dailyHighs
+        );
 
     const range =
         Math.max(
@@ -2759,55 +2938,75 @@ function renderForecast(forecast, timezone) {
 
     forecastList.innerHTML =
         forecast.map(
-            item => {
+            day => {
+
+                const item =
+                    day.item || {};
+
+                const weather =
+                    item.weather &&
+                    item.weather[0]
+                        ? item.weather[0]
+                        : {
+                            icon: "01d",
+                            id: 800,
+                            description: "Unknown"
+                        };
 
                 const icon =
-                    item.weather &&
-                    item.weather[0]
-                        ? item.weather[0].icon
-                        : "01d";
+                    weather.icon ||
+                    "01d";
 
                 const description =
-                    item.weather &&
-                    item.weather[0]
+                    weather.description
                         ? capitalize(
-                            item.weather[0].description
+                            weather.description
                         )
                         : "Unknown";
 
                 const high =
                     Math.round(
-                        item.main.temp_max
+                        day.high
                     );
 
                 const low =
                     Math.round(
-                        item.main.temp_min
+                        day.low
                     );
 
-                const rain =
-                    Math.round(
-                        (item.pop || 0) * 100
-                    );
-
-                const position =
+                /*
+                 * Position the LEFT edge at the actual
+                 * daily low.
+                 */
+                const left =
                     Math.max(
-                        10,
+                        0,
                         Math.min(
                             100,
-                            ((high - minTemp) /
+                            ((day.low - minTemp) /
                                 range) *
                                 100
                         )
                     );
 
+                /*
+                 * Width represents the actual temperature
+                 * span from that day's low to high.
+                 */
                 const width =
                     Math.max(
-                        18,
+                        6,
                         Math.min(
-                            100,
-                            position
+                            100 - left,
+                            ((day.high - day.low) /
+                                range) *
+                                100
                         )
+                    );
+
+                const rain =
+                    Math.round(
+                        (day.pop || 0) * 100
                     );
 
                 return `
@@ -2818,14 +3017,14 @@ function renderForecast(forecast, timezone) {
 
                             <div class="forecast-day-name">
                                 ${getForecastWeekday(
-                                    item.dt,
+                                    day.dt,
                                     timezone
                                 )}
                             </div>
 
                             <div class="forecast-date">
                                 ${formatForecastDay(
-                                    item.dt,
+                                    day.dt,
                                     timezone
                                 )}
                             </div>
@@ -2848,10 +3047,15 @@ function renderForecast(forecast, timezone) {
                             </div>
 
                             <div class="forecast-range">
+
                                 <div
                                     class="forecast-range-fill"
-                                    style="width:${width}%">
+                                    style="
+                                        left:${left}%;
+                                        width:${width}%;
+                                    ">
                                 </div>
+
                             </div>
 
                         </div>
@@ -2967,9 +3171,15 @@ async function loadForecast(lat, lon, timezone) {
         currentForecastData =
             data;
 
+        /*
+         * Hourly section uses the actual current
+         * observation first, followed by future
+         * 3-hour forecast periods.
+         */
         renderHourly(
             data.list,
-            data.city.timezone
+            data.city.timezone,
+            currentWeatherData
         );
 
         renderPrecipitation(
@@ -2982,10 +3192,14 @@ async function loadForecast(lat, lon, timezone) {
             currentWeatherData
         );
 
+        /*
+         * Build true calendar-day aggregates.
+         */
         const dailyForecast =
             getDailyForecast(
                 data.list,
-                data.city.timezone
+                data.city.timezone,
+                currentWeatherData
             );
 
         renderForecast(
@@ -3227,6 +3441,7 @@ function capitalize(text) {
         .join(" ");
 
 }
+
 function updateLiveTime() {
 
     if (
