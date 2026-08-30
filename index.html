@@ -184,6 +184,236 @@ body::before {
     padding-bottom: 100px;
 }
 
+/* WEATHER ADVISORY */
+
+.weather-advisory {
+    margin: 18px 18px 0;
+    padding: 21px 20px;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(245, 158, 11, 0.34),
+            rgba(234, 88, 12, 0.18)
+        );
+
+    border:
+        1px solid
+        rgba(251, 191, 36, 0.48);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.22),
+        0 0 24px rgba(245,158,11,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+
+    position: relative;
+    overflow: hidden;
+
+    animation:
+        advisoryAppear 0.7s ease both,
+        advisoryGlow 3.5s ease-in-out infinite;
+}
+
+.weather-advisory::before {
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+    height: 190px;
+
+    right: -85px;
+    top: -95px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.09);
+
+    filter: blur(14px);
+
+    pointer-events: none;
+}
+
+.weather-advisory::after {
+    content: "";
+
+    position: absolute;
+
+    left: -120px;
+    top: 0;
+
+    width: 90px;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,0.12),
+            transparent
+        );
+
+    transform: skewX(-20deg);
+
+    animation:
+        advisoryShine 5s ease-in-out infinite;
+
+    pointer-events: none;
+}
+
+@keyframes advisoryAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes advisoryGlow {
+    0%, 100% {
+        box-shadow:
+            0 18px 45px rgba(0,0,0,0.22),
+            0 0 18px rgba(245,158,11,0.08),
+            inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+
+    50% {
+        box-shadow:
+            0 18px 45px rgba(0,0,0,0.22),
+            0 0 30px rgba(245,158,11,0.20),
+            inset 0 1px 0 rgba(255,255,255,0.13);
+    }
+}
+
+@keyframes advisoryShine {
+    0%, 65% {
+        left: -120px;
+    }
+
+    85%, 100% {
+        left: 120%;
+    }
+}
+
+.weather-advisory:active {
+    transform: scale(0.98);
+}
+
+.advisory-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    position: relative;
+    z-index: 1;
+
+    margin-bottom: 10px;
+}
+
+.advisory-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(245, 158, 11, 0.22);
+
+    border:
+        1px solid
+        rgba(251, 191, 36, 0.38);
+
+    font-size: 18px;
+
+    flex-shrink: 0;
+
+    box-shadow:
+        0 0 14px rgba(245,158,11,0.16);
+}
+
+.advisory-title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+}
+
+.advisory-level {
+    margin-left: auto;
+
+    padding:
+        4px 10px;
+
+    border-radius: 99px;
+
+    background:
+        rgba(245, 158, 11, 0.25);
+
+    border:
+        1px solid
+        rgba(251, 191, 36, 0.38);
+
+    color: #fef3c7;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    white-space: nowrap;
+}
+
+.advisory-description {
+    color:
+        rgba(255,255,255,0.82);
+
+    font-size: 13.5px;
+    line-height: 1.55;
+
+    position: relative;
+    z-index: 1;
+}
+
+.advisory-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 14px;
+
+    color:
+        rgba(255,255,255,0.54);
+
+    font-size: 12px;
+
+    position: relative;
+    z-index: 1;
+}
+
+.advisory-tap {
+    color: #fcd34d;
+    font-weight: 700;
+}
+
 /* POLLEN ALERT */
 
 .pollen-alert {
@@ -199,9 +429,9 @@ body::before {
         rgba(234, 88, 12, 0.15)
     );
 
-border:
-    1px solid
-    rgba(239, 68, 68, 0.35);
+    border:
+        1px solid
+        rgba(239, 68, 68, 0.35);
 
     box-shadow:
         0 18px 45px rgba(0,0,0,0.22),
@@ -269,7 +499,7 @@ border:
     background:
     rgba(239, 68, 68, 0.20);
 
-border:
+    border:
     1px solid
     rgba(239, 68, 68, 0.30);
 
@@ -295,11 +525,11 @@ border:
     background:
     rgba(239, 68, 68, 0.25);
 
-border:
+    border:
     1px solid
     rgba(239, 68, 68, 0.35);
 
-color: #fee2e2;
+    color: #fee2e2;
 
     font-size: 10px;
     font-weight: 800;
@@ -1304,9 +1534,28 @@ header {
         margin-left: 0;
         margin-right: 0;
     }
+
+    .weather-advisory {
+        margin-left: 0;
+        margin-right: 0;
+    }
 }
 
 @media (max-width: 520px) {
+
+    .weather-advisory {
+        margin-left: 14px;
+        margin-right: 14px;
+    }
+
+    .advisory-title {
+        font-size: 17px;
+    }
+
+    .advisory-level {
+        font-size: 9px;
+        padding: 4px 8px;
+    }
 
     .pollen-alert {
         margin-left: 14px;
@@ -1398,6 +1647,42 @@ header {
 
 <div class="app">
 
+<section class="weather-advisory" onclick="showWeatherAdvisory()">
+
+<div class="advisory-header">
+
+<div class="advisory-icon">
+    ⚠️
+</div>
+
+<h2 class="advisory-title">
+    Weather Advisory: High Heat & Humidity Ahead
+</h2>
+
+<span class="advisory-level">
+    ADVISORY
+</span>
+
+</div>
+
+<p class="advisory-description">
+    Hotter and more humid conditions are expected across the region this week, with increasing heat index values and a growing chance for afternoon and evening thunderstorms.
+</p>
+
+<div class="advisory-footer">
+
+<span>
+    Maryland • Aug 31 – Sep 3
+</span>
+
+<span class="advisory-tap">
+    Tap for details →
+</span>
+
+</div>
+
+</section>
+
 <section class="pollen-alert" onclick="showPollenDetails()">
 
 <div class="pollen-header">
@@ -1444,12 +1729,11 @@ header {
 </div>
 
 <button
-    class="refresh-button"
-    id="refresh-button"
-    onclick="loadWeather()"
-    aria-label="Refresh weather">
-    ↻
-</button>
+ class="refresh-button"
+ id="refresh-button"
+ onclick="loadWeather()"
+ aria-label="Refresh weather">
+↻ </button>
 
 </div>
 
@@ -1470,14 +1754,16 @@ header {
 <main id="weather-content" style="display:none;">
 
 <section class="weather-card">
-    
+
 <div class="location">
 
-    <span class="location-dot"></span>
+```
+<span class="location-dot"></span>
 
-    <span id="location">
-        Loading location...
-    </span>
+<span id="location">
+    Loading location...
+</span>
+```
 
 </div>
 
@@ -1487,196 +1773,206 @@ header {
 
 <div class="main-weather">
 
-    <div>
+```
+<div>
 
-        <div class="temperature">
+    <div class="temperature">
 
-            <span id="temperature">
-                --
-            </span>
-
-            <sup>°F</sup>
-
-        </div>
-
-        <div
-            class="condition"
-            id="condition">
+        <span id="temperature">
             --
-        </div>
+        </span>
 
-        <div class="feels">
-
-            Feels like
-            <span id="feels">
-                --°
-            </span>
-
-        </div>
+        <sup>°F</sup>
 
     </div>
 
-    <img
-        id="weather-icon"
-        class="weather-icon"
-        src=""
-        alt="Weather condition">
+    <div
+        class="condition"
+        id="condition">
+        --
+    </div>
+
+    <div class="feels">
+
+        Feels like
+        <span id="feels">
+            --°
+        </span>
+
+    </div>
+
+</div>
+
+<img
+    id="weather-icon"
+    class="weather-icon"
+    src=""
+    alt="Weather condition">
+```
 
 </div>
 
 <section class="right-now">
 
-    <div class="section-label">
-        RIGHT NOW
-    </div>
+```
+<div class="section-label">
+    RIGHT NOW
+</div>
 
-    <div
-        class="right-now-title"
-        id="right-now-title">
-        Conditions are comfortable
-    </div>
+<div
+    class="right-now-title"
+    id="right-now-title">
+    Conditions are comfortable
+</div>
 
-    <div
-        class="right-now-description"
-        id="right-now-description">
-        Loading current conditions...
-    </div>
+<div
+    class="right-now-description"
+    id="right-now-description">
+    Loading current conditions...
+</div>
+```
 
 </section>
 
 <section class="hourly-section">
 
-    <div class="section-label">
-        HOURLY FORECAST
+```
+<div class="section-label">
+    HOURLY FORECAST
+</div>
+
+<div
+    id="hourly-scroll"
+    class="hourly-scroll">
+
+    <div class="forecast-loading">
+        Loading hourly forecast...
     </div>
 
-    <div
-        id="hourly-scroll"
-        class="hourly-scroll">
+</div>
 
-        <div class="forecast-loading">
-            Loading hourly forecast...
-        </div>
-
-    </div>
-
-    <div class="hourly-note">
-        Hourly forecast temperatures are the average temperature for each hour. Not the current temperature.
-    </div>
+<div class="hourly-note">
+    Hourly forecast temperatures are the average temperature for each hour. Not the current temperature.
+</div>
+```
 
 </section>
 
 <section class="precipitation-card">
 
-    <div class="precip-header">
+```
+<div class="precip-header">
 
-        <div class="precip-title">
-            🌧️ Next Few Hours
-        </div>
-
-        <div
-            class="precip-status"
-            id="precip-status">
-            Checking...
-        </div>
-
+    <div class="precip-title">
+        🌧️ Next Few Hours
     </div>
 
     <div
-        class="precip-description"
-        id="precip-description">
-        Looking for precipitation near you.
+        class="precip-status"
+        id="precip-status">
+        Checking...
     </div>
 
-    <div
-        id="precip-timeline"
-        class="precip-timeline">
+</div>
 
-    </div>
+<div
+    class="precip-description"
+    id="precip-description">
+    Looking for precipitation near you.
+</div>
+
+<div
+    id="precip-timeline"
+    class="precip-timeline">
+
+</div>
+```
 
 </section>
 
 <section class="insights-section">
 
-    <div class="section-label">
-        ✨ ATMOSPHERE INSIGHTS
-    </div>
+```
+<div class="section-label">
+    ✨ ATMOSPHERE INSIGHTS
+</div>
 
-    <div class="insights-grid">
+<div class="insights-grid">
 
-        <div class="insight-card">
+    <div class="insight-card">
 
-            <div class="insight-icon">
-                🌧️
-            </div>
-
-            <div class="insight-title">
-                Rain Window
-            </div>
-
-            <div
-                class="insight-text"
-                id="insight-rain">
-                Analyzing precipitation timing...
-            </div>
-
+        <div class="insight-icon">
+            🌧️
         </div>
 
-        <div class="insight-card">
-
-            <div class="insight-icon">
-                🌡️
-            </div>
-
-            <div class="insight-title">
-                Temperature Trend
-            </div>
-
-            <div
-                class="insight-text"
-                id="insight-temperature">
-                Analyzing temperature trend...
-            </div>
-
+        <div class="insight-title">
+            Rain Window
         </div>
 
-        <div class="insight-card">
-
-            <div class="insight-icon">
-                🌬️
-            </div>
-
-            <div class="insight-title">
-                Wind
-            </div>
-
-            <div
-                class="insight-text"
-                id="insight-wind">
-                Analyzing wind conditions...
-            </div>
-
-        </div>
-
-        <div class="insight-card">
-
-            <div class="insight-icon">
-                ☀️
-            </div>
-
-            <div class="insight-title">
-                Best Outdoor Time
-            </div>
-
-            <div
-                class="insight-text"
-                id="insight-outdoor">
-                Finding the best conditions...
-            </div>
-
+        <div
+            class="insight-text"
+            id="insight-rain">
+            Analyzing precipitation timing...
         </div>
 
     </div>
+
+    <div class="insight-card">
+
+        <div class="insight-icon">
+            🌡️
+        </div>
+
+        <div class="insight-title">
+            Temperature Trend
+        </div>
+
+        <div
+            class="insight-text"
+            id="insight-temperature">
+            Analyzing temperature trend...
+        </div>
+
+    </div>
+
+    <div class="insight-card">
+
+        <div class="insight-icon">
+            🌬️
+        </div>
+
+        <div class="insight-title">
+            Wind
+        </div>
+
+        <div
+            class="insight-text"
+            id="insight-wind">
+            Analyzing wind conditions...
+        </div>
+
+    </div>
+
+    <div class="insight-card">
+
+        <div class="insight-icon">
+            ☀️
+        </div>
+
+        <div class="insight-title">
+            Best Outdoor Time
+        </div>
+
+        <div
+            class="insight-text"
+            id="insight-outdoor">
+            Finding the best conditions...
+        </div>
+
+    </div>
+
+</div>
+```
 
 </section>
 
@@ -1686,61 +1982,69 @@ header {
 
 <div class="detail-card">
 
-    <div class="detail-top">
-        <span class="detail-icon">💧</span>
-        Humidity
-    </div>
+```
+<div class="detail-top">
+    <span class="detail-icon">💧</span>
+    Humidity
+</div>
 
-    <div
-        class="detail-value"
-        id="humidity">
-        --%
-    </div>
+<div
+    class="detail-value"
+    id="humidity">
+    --%
+</div>
+```
 
 </div>
 
 <div class="detail-card">
 
-    <div class="detail-top">
-        <span class="detail-icon">💨</span>
-        Wind
-    </div>
+```
+<div class="detail-top">
+    <span class="detail-icon">💨</span>
+    Wind
+</div>
 
-    <div
-        class="detail-value"
-        id="wind">
-        -- mph
-    </div>
+<div
+    class="detail-value"
+    id="wind">
+    -- mph
+</div>
+```
 
 </div>
 
 <div class="detail-card">
 
-    <div class="detail-top">
-        <span class="detail-icon">👁️</span>
-        Visibility
-    </div>
+```
+<div class="detail-top">
+    <span class="detail-icon">👁️</span>
+    Visibility
+</div>
 
-    <div
-        class="detail-value"
-        id="visibility">
-        -- mi
-    </div>
+<div
+    class="detail-value"
+    id="visibility">
+    -- mi
+</div>
+```
 
 </div>
 
 <div class="detail-card">
 
-    <div class="detail-top">
-        <span class="detail-icon">🌡️</span>
-        Pressure
-    </div>
+```
+<div class="detail-top">
+    <span class="detail-icon">🌡️</span>
+    Pressure
+</div>
 
-    <div
-        class="detail-value"
-        id="pressure">
-        -- hPa
-    </div>
+<div
+    class="detail-value"
+    id="pressure">
+    -- hPa
+</div>
+```
 
 </div>
 
@@ -1754,87 +2058,91 @@ header {
 
 <div class="sun-times">
 
-    <div class="sun-item">
+```
+<div class="sun-item">
 
-        <div class="sun-icon">
-            🌅
-        </div>
-
-        <div>
-
-            <div class="sun-label">
-                Sunrise
-            </div>
-
-            <div
-                class="sun-value"
-                id="sunrise">
-                --
-            </div>
-
-        </div>
-
+    <div class="sun-icon">
+        🌅
     </div>
 
-    <div class="sun-item">
+    <div>
 
-        <div class="sun-icon">
-            🌇
+        <div class="sun-label">
+            Sunrise
         </div>
 
-        <div>
-
-            <div class="sun-label">
-                Sunset
-            </div>
-
-            <div
-                class="sun-value"
-                id="sunset">
-                --
-            </div>
-
+        <div
+            class="sun-value"
+            id="sunrise">
+            --
         </div>
 
     </div>
 
 </div>
 
-<div class="daylight-progress">
+<div class="sun-item">
 
-    <div class="daylight-track">
+    <div class="sun-icon">
+        🌇
+    </div>
+
+    <div>
+
+        <div class="sun-label">
+            Sunset
+        </div>
 
         <div
-            class="daylight-dot"
-            id="daylight-dot">
+            class="sun-value"
+            id="sunset">
+            --
         </div>
 
     </div>
 
-    <div class="daylight-labels">
+</div>
+```
 
-        <span id="daylight-start">
-            Sunrise
-        </span>
+</div>
 
-        <span id="daylight-end">
-            Sunset
-        </span>
+<div class="daylight-progress">
 
-    </div>
+```
+<div class="daylight-track">
 
     <div
-        class="daylight-duration"
-        id="daylight-duration">
-        Calculating daylight...
+        class="daylight-dot"
+        id="daylight-dot">
     </div>
+
+</div>
+
+<div class="daylight-labels">
+
+    <span id="daylight-start">
+        Sunrise
+    </span>
+
+    <span id="daylight-end">
+        Sunset
+    </span>
+
+</div>
+
+<div
+    class="daylight-duration"
+    id="daylight-duration">
+    Calculating daylight...
+</div>
+```
 
 </div>
 
 </section>
 
 <section class="forecast-card">
-    
+
 <div class="forecast-title">
     5-DAY OUTLOOK
 </div>
@@ -1843,9 +2151,11 @@ header {
     id="forecast-list"
     class="forecast-list">
 
-    <div class="forecast-loading">
-        Loading 5-day forecast...
-    </div>
+```
+<div class="forecast-loading">
+    Loading 5-day forecast...
+</div>
+```
 
 </div>
 
@@ -1908,6 +2218,24 @@ let currentWeatherData = null;
 let currentForecastData = null;
 let currentTimezone = 0;
 let currentLocation = null;
+
+function showWeatherAdvisory() {
+
+    alert(
+        "⚠️ Weather Advisory: High Heat & Humidity Ahead\n\n" +
+        "Alert Type: Regional Weather Outlook\n\n" +
+        "Effective Period: Monday, August 31 – Thursday, September 3, 2026\n\n" +
+        "Primary Impacts: High heat index values and isolated thunderstorm threats.\n\n" +
+        "Details:\n" +
+        "A building high-pressure system will bring a significant shift to hot and humid conditions across the region this week. High temperatures will steadily climb into the lower 90s by Tuesday and Wednesday. When combined with elevated humidity, heat index values may feel noticeably hotter, increasing the risk of heat-related illnesses for sensitive groups.\n\n" +
+        "Additionally, an unsettled atmospheric pattern later in the week will introduce an active threat for scattered afternoon and evening thunderstorms.\n\n" +
+        "Recommended Actions:\n" +
+        "• Hydrate frequently and minimize strenuous outdoor activities during peak afternoon heating.\n" +
+        "• Check on vulnerable neighbors, elderly individuals, and pets.\n" +
+        "• Keep app notifications enabled for sudden, short-fused severe thunderstorm warnings later this week."
+    );
+
+}
 
 function showPollenDetails() {
 
