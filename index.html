@@ -1705,78 +1705,382 @@ header {
     color: #fecaca;
 }
 
-/* NAVIGATION */
+/* =========================================================
+   LIQUID GLASS NAVIGATION
+   ========================================================= */
 
 .bottom-nav {
     position: fixed;
 
     left: 50%;
-    bottom: 12px;
+    bottom: 14px;
 
     transform: translateX(-50%);
 
     width: calc(100% - 24px);
     max-width: 620px;
 
-    height: 70px;
+    height: 72px;
 
     display: flex;
     justify-content: space-around;
     align-items: center;
 
-    background: rgba(12, 24, 42, 0.90);
+    padding: 6px;
 
-    border: 1px solid rgba(255,255,255,0.10);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.15),
+            rgba(255,255,255,0.055)
+        );
 
-    border-radius: 24px;
+    border:
+        1px solid
+        rgba(255,255,255,0.18);
 
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    border-radius: 999px;
+
+    backdrop-filter:
+        blur(30px)
+        saturate(180%);
+
+    -webkit-backdrop-filter:
+        blur(30px)
+        saturate(180%);
 
     box-shadow:
-        0 15px 40px rgba(0,0,0,0.35);
+        0 20px 55px rgba(0,0,0,0.38),
+        0 4px 18px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.28),
+        inset 0 -1px 0 rgba(255,255,255,0.06);
+
+    overflow: hidden;
 
     z-index: 100;
+
+    isolation: isolate;
+
+    transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.35s ease;
+}
+
+/* Glass reflection */
+
+.bottom-nav::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            115deg,
+            rgba(255,255,255,0.20),
+            transparent 28%,
+            transparent 65%,
+            rgba(255,255,255,0.08)
+        );
+
+    pointer-events: none;
+
+    z-index: -1;
+}
+
+/* Moving liquid reflection */
+
+.bottom-nav::after {
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+    height: 90px;
+
+    left: -210px;
+    top: -10px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(255,255,255,0.16),
+            transparent 70%
+        );
+
+    filter: blur(8px);
+
+    pointer-events: none;
+
+    animation:
+        liquidNavShine 7s ease-in-out infinite;
+
+    z-index: -1;
+}
+
+@keyframes liquidNavShine {
+
+    0%, 45% {
+        left: -210px;
+        opacity: 0;
+    }
+
+    55% {
+        opacity: 1;
+    }
+
+    75%, 100% {
+        left: calc(100% + 40px);
+        opacity: 0;
+    }
+
 }
 
 .nav-item {
+    position: relative;
+
+    flex: 1;
+
+    height: 58px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
     text-decoration: none;
 
-    color: rgba(255,255,255,0.45);
+    color:
+        rgba(255,255,255,0.52);
 
     text-align: center;
 
-    font-size: 11px;
+    font-size: 10px;
+    font-weight: 650;
+
+    letter-spacing: 0.1px;
+
+    border-radius: 999px;
 
     min-width: 55px;
 
+    -webkit-tap-highlight-color: transparent;
+
+    user-select: none;
+
     transition:
-        color 0.2s ease,
-        transform 0.2s ease;
+        color 0.3s ease,
+        transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+
+    z-index: 2;
+}
+
+/* Individual glass bubble behind active tab */
+
+.nav-item::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 3px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.17),
+            rgba(255,255,255,0.055)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,0.13);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.16),
+        0 4px 14px rgba(0,0,0,0.10);
+
+    opacity: 0;
+
+    transform:
+        scale(0.72);
+
+    transition:
+        opacity 0.35s ease,
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+
+    z-index: -1;
+}
+
+/* Active Liquid Glass tab */
+
+.nav-item.active {
+    color:
+        #ffffff;
+
+    text-shadow:
+        0 0 12px rgba(101,199,255,0.35);
+}
+
+.nav-item.active::before {
+    opacity: 1;
+
+    transform:
+        scale(1);
+}
+
+/* Subtle active glow */
+
+.nav-item.active::after {
+    content: "";
+
+    position: absolute;
+
+    width: 32px;
+    height: 5px;
+
+    bottom: 5px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 999px;
+
+    background:
+        rgba(101,199,255,0.65);
+
+    filter: blur(7px);
+
+    opacity: 0.55;
+
+    pointer-events: none;
 }
 
 .nav-icon {
+    position: relative;
+
     display: block;
 
     font-size: 21px;
 
-    margin-bottom: 3px;
+    line-height: 1;
+
+    margin-bottom: 4px;
 
     transition:
-        transform 0.2s ease;
-}
-
-.nav-item.active {
-    color: var(--accent);
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.3s ease;
 }
 
 .nav-item.active .nav-icon {
-    transform: translateY(-1px) scale(1.06);
+    transform:
+        translateY(-1px)
+        scale(1.08);
+
+    filter:
+        drop-shadow(
+            0 2px 8px rgba(101,199,255,0.35)
+        );
 }
 
+/* Touch interaction */
+
 .nav-item:active {
-    transform: scale(0.92);
+    transform:
+        scale(0.88);
 }
+
+.nav-item:active::before {
+    background:
+        rgba(255,255,255,0.20);
+
+    transform:
+        scale(0.92);
+}
+
+.nav-item:active .nav-icon {
+    transform:
+        scale(0.90);
+}
+
+/* Desktop hover */
+
+@media (hover: hover) {
+
+    .nav-item:hover {
+        color:
+            rgba(255,255,255,0.88);
+
+        transform:
+            translateY(-1px);
+    }
+
+    .nav-item:hover::before {
+        opacity: 0.55;
+
+        transform:
+            scale(0.94);
+    }
+
+}
+
+/* iOS / small screen refinement */
+
+@media (max-width: 520px) {
+
+    .bottom-nav {
+        bottom:
+            max(
+                12px,
+                env(safe-area-inset-bottom)
+            );
+
+        width:
+            calc(100% - 18px);
+
+        height: 70px;
+
+        padding: 5px;
+
+        border-radius: 999px;
+
+        box-shadow:
+            0 18px 48px rgba(0,0,0,0.42),
+            inset 0 1px 0 rgba(255,255,255,0.26),
+            inset 0 -1px 0 rgba(255,255,255,0.05);
+    }
+
+    .nav-item {
+        height: 58px;
+
+        font-size: 10px;
+    }
+
+    .nav-icon {
+        font-size: 20px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .bottom-nav::after {
+        animation: none;
+    }
+
+}
+
+/* =========================================================
+   END LIQUID GLASS NAVIGATION
+   ========================================================= */
 
 @media (min-width: 700px) {
 
@@ -2434,7 +2738,8 @@ header {
 
 <a
 href="index.html"
-class="nav-item active">
+class="nav-item active"
+aria-label="Home">
 
 <span class="nav-icon">⌂</span>
 
@@ -2444,7 +2749,8 @@ Home
 
 <a
 href="radar.html"
-class="nav-item">
+class="nav-item"
+aria-label="Radar">
 
 <span class="nav-icon">◉</span>
 
@@ -2454,7 +2760,8 @@ Radar
 
 <a
 href="alerts.html"
-class="nav-item">
+class="nav-item"
+aria-label="Alerts">
 
 <span class="nav-icon">⚠</span>
 
@@ -2464,7 +2771,8 @@ Alerts
 
 <a
 href="updates.html"
-class="nav-item">
+class="nav-item"
+aria-label="Updates">
 
 <span class="nav-icon">✨</span>
 
@@ -2475,6 +2783,30 @@ Updates
 </nav>
 
 <script>
+
+/* LIQUID GLASS TOUCH HAPTICS */
+
+document.querySelectorAll(".nav-item").forEach(item => {
+
+    item.addEventListener(
+        "pointerdown",
+        () => {
+
+            if (
+                navigator.vibrate
+            ) {
+
+                navigator.vibrate(8);
+
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+});
 
 const API_KEY =
     "32d1a667e7a939e838e64f89f0bb1015";
