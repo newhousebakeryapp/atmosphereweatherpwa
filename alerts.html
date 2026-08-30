@@ -1,9 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <link rel="manifest" href="manifest.json">
 
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
 
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -25,901 +27,1139 @@ serviceWorkerParam: {
   });
 </script>
 
-    <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta charset="UTF-8">
 
-    <meta
-        name="theme-color"
-        content="#07111f"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Alerts • Atmosphere Weather</title>
+<meta
+    name="theme-color"
+    content="#07111f"
+>
 
-
-    <!-- Leaflet -->
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    >
+<title>Alerts • Atmosphere Weather</title>
 
 
-    <style>
+<!-- Leaflet -->
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+
+    :root {
+        --background: #07111f;
+        --card: rgba(255,255,255,0.085);
+        --border: rgba(255,255,255,0.12);
+        --text: #ffffff;
+        --muted: rgba(255,255,255,0.62);
+        --blue: #7dd3fc;
+    }
+
+
+    body {
+
+        min-height: 100vh;
+
+        font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            Arial,
+            sans-serif;
+
+        color: var(--text);
+
+        background:
+
+            radial-gradient(
+                circle at 15% 0%,
+                rgba(56,189,248,0.16),
+                transparent 35%
+            ),
+
+            radial-gradient(
+                circle at 90% 20%,
+                rgba(37,99,235,0.15),
+                transparent 35%
+            ),
+
+            var(--background);
+
+        padding-bottom: 100px;
+
+        overflow-x: hidden;
+    }
+
+
+    .app {
+
+        width: 100%;
+        max-width: 760px;
+
+        margin: 0 auto;
+
+        padding: 24px 16px 30px;
+    }
+
+
+    /* HEADER */
+
+    .header {
+
+        text-align: center;
+
+        margin-bottom: 20px;
+    }
+
+
+    .header h1 {
+
+        font-size: 27px;
+
+        font-weight: 750;
+
+        letter-spacing: -0.7px;
+    }
+
+
+    .header p {
+
+        color: var(--muted);
+
+        font-size: 14px;
+
+        margin-top: 5px;
+    }
+
+
+    /* SECTION HEADERS */
+
+    .section-title {
+
+        color: var(--blue);
+
+        font-size: 20px;
+
+        font-weight: 700;
+
+        text-align: center;
+
+        margin: 24px 0 14px;
+    }
+
+
+    .section-subtitle {
+
+        text-align: center;
+
+        color: var(--muted);
+
+        font-size: 12px;
+
+        margin-top: -8px;
+
+        margin-bottom: 14px;
+    }
+
+
+    /* MAP */
+
+    .map-container {
+
+        width: 100%;
+
+        height: 380px;
+
+        border-radius: 22px;
+
+        overflow: hidden;
+
+        border:
+            1px solid
+            rgba(0,242,255,0.18);
+
+        box-shadow:
+
+            0 12px 40px
+            rgba(0,80,180,0.20),
+
+            0 1px 0
+            rgba(0,242,255,0.12)
+            inset;
+    }
+
+
+    #map {
+
+        width: 100%;
+        height: 100%;
+    }
+
+
+    /* GLASS CARD */
+
+    .glass {
+
+        background:
+            rgba(255,255,255,0.075);
+
+        border:
+            1px solid
+            rgba(255,255,255,0.11);
+
+        box-shadow:
+            0 10px 35px
+            rgba(0,0,0,0.18);
+
+        backdrop-filter:
+            blur(16px);
+
+        -webkit-backdrop-filter:
+            blur(16px);
+    }
+
+
+    /* STATUS */
+
+    .status {
+
+        padding: 26px 18px;
+
+        border-radius: 19px;
+
+        text-align: center;
+
+        margin-bottom: 10px;
+    }
+
+
+    .success {
+
+        color: #80ffb0;
+    }
+
+
+    .error {
+
+        color: #ff8080;
+    }
+
+
+    .loading {
+
+        color: rgba(255,255,255,0.55);
+    }
+
+
+    /* ALERT CARDS */
+
+    .alert-card {
+
+        position: relative;
+
+        overflow: hidden;
+
+        border-radius: 19px;
+
+        padding: 15px 17px;
+
+        margin-bottom: 10px;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.18s ease,
+            background 0.18s ease;
+    }
+
+
+    .alert-card:active {
+
+        transform: scale(0.985);
+    }
+
+
+    .alert-row {
+
+        display: flex;
+
+        align-items: flex-start;
+
+        gap: 11px;
+
+        position: relative;
+
+        z-index: 2;
+    }
+
+
+    .alert-icon {
+
+        font-size: 21px;
+
+        flex-shrink: 0;
+    }
+
+
+    .alert-content {
+
+        flex: 1;
+
+        min-width: 0;
+    }
+
+
+    .alert-header {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 10px;
+    }
+
+
+    .alert-name {
+
+        font-weight: 700;
+
+        font-size: 15px;
+
+        color: white;
+    }
+
+
+    .severity {
+
+        font-size: 9px;
+
+        font-weight: 800;
+
+        letter-spacing: 1px;
+
+        opacity: 0.75;
+
+        white-space: nowrap;
+    }
+
+
+    .headline {
+
+        color:
+            rgba(255,255,255,0.84);
+
+        font-size: 13px;
+
+        line-height: 1.45;
+
+        margin-top: 5px;
+    }
+
+
+    .alert-meta {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-top: 9px;
+
+        font-size: 10px;
+
+        color:
+            rgba(255,255,255,0.42);
+    }
+
+
+    .description {
+
+        color:
+            rgba(255,255,255,0.72);
+
+        font-size: 12px;
+
+        line-height: 1.55;
+
+        margin-top: 12px;
+
+        white-space: pre-wrap;
+    }
+
+
+    /* SEVERITY */
+
+    .extreme {
+
+        background:
+            rgba(180,0,0,0.48);
+
+        border:
+            2px solid #ff4444;
+    }
+
+
+    .severe {
+
+        background:
+            rgba(200,50,0,0.42);
+
+        border:
+            1px solid #ff7744;
+    }
+
+
+    .moderate {
+
+        background:
+            rgba(180,100,0,0.42);
+
+        border:
+            1px solid #ffaa00;
+    }
+
+
+    .minor {
+
+        background:
+            rgba(150,130,0,0.32);
+
+        border:
+            1px solid #ddcc00;
+    }
+
+
+    .unknown {
+
+        background:
+            rgba(60,80,120,0.34);
+
+        border:
+            1px solid
+            rgba(100,160,255,0.25);
+    }
+
+
+    /* FIREBASE ALERT COLORS */
+
+    .fb-warning {
+
+        background:
+            rgba(180,0,0,0.48);
+
+        border:
+            2px solid #ff4444;
+    }
+
+
+    .fb-watch {
+
+        background:
+            rgba(200,50,0,0.42);
+
+        border:
+            1px solid #ff7744;
+    }
+
+
+    .fb-advisory {
+
+        background:
+            rgba(180,100,0,0.42);
+
+        border:
+            1px solid #ffaa00;
+    }
+
+
+    .fb-summary {
+
+        background:
+            rgba(0,120,60,0.38);
+
+        border:
+            1px solid #00dd88;
+    }
+
+
+    .fb-wind {
+
+        background:
+            rgba(0,60,200,0.40);
+
+        border:
+            1px solid #4488ff;
+    }
+
+
+    /* EDUCATION */
+
+    .education {
+
+        margin-top: 28px;
+
+        padding: 20px;
+
+        border-radius: 20px;
+    }
+
+
+    .education h3 {
+
+        color: var(--blue);
+
+        font-size: 17px;
+
+        margin-bottom: 10px;
+    }
+
+
+    .education p {
+
+        color:
+            rgba(255,255,255,0.68);
+
+        font-size: 13px;
+
+        line-height: 1.6;
+    }
+
+
+    .education-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 10px;
+
+        margin-top: 15px;
+    }
+
+
+    .education-item {
+
+        padding: 14px;
+
+        border-radius: 15px;
+
+        background:
+            rgba(255,255,255,0.055);
+
+        border:
+            1px solid
+            rgba(255,255,255,0.08);
+    }
+
+
+    .education-item strong {
+
+        display: block;
+
+        margin-bottom: 5px;
+
+        font-size: 13px;
+    }
+
+
+    .education-item span {
+
+        color: var(--muted);
+
+        font-size: 11px;
+
+        line-height: 1.4;
+    }
+
+
+    /* =========================================================
+       LIQUID GLASS BOTTOM NAV
+    ========================================================= */
+
+    .bottom-nav {
+
+        position: fixed;
+
+        left: 50%;
+
+        bottom: 14px;
+
+        transform:
+            translateX(-50%);
+
+        width:
+            calc(100% - 24px);
+
+        max-width: 620px;
+
+        height: 70px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content:
+            space-around;
+
+        padding:
+            6px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(255,255,255,0.16),
+                rgba(255,255,255,0.065)
+            );
+
+        border:
+            1px solid
+            rgba(255,255,255,0.20);
+
+        border-radius: 28px;
+
+        backdrop-filter:
+            blur(30px)
+            saturate(180%);
+
+        -webkit-backdrop-filter:
+            blur(30px)
+            saturate(180%);
+
+        box-shadow:
+
+            0 18px 50px
+            rgba(0,0,0,0.40),
+
+            0 3px 12px
+            rgba(0,0,0,0.20),
+
+            0 1px 0
+            rgba(255,255,255,0.28)
+            inset,
+
+            0 -1px 0
+            rgba(255,255,255,0.08)
+            inset;
+
+        z-index: 1000;
+
+        isolation: isolate;
+
+        overflow: hidden;
+    }
+
+
+    .bottom-nav::before {
+
+        content: "";
+
+        position: absolute;
+
+        top: -45px;
+
+        left: 8%;
+
+        width: 84%;
+
+        height: 55px;
+
+        background:
+            radial-gradient(
+                ellipse,
+                rgba(255,255,255,0.22),
+                transparent 70%
+            );
+
+        filter:
+            blur(14px);
+
+        pointer-events: none;
+
+        z-index: -1;
+    }
+
+
+    .bottom-nav::after {
+
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        border-radius: inherit;
+
+        background:
+            linear-gradient(
+                120deg,
+                rgba(255,255,255,0.10),
+                transparent 35%,
+                rgba(125,211,252,0.05)
+            );
+
+        pointer-events: none;
+
+        z-index: -1;
+    }
+
+
+    .nav-item {
+
+        position: relative;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        justify-content: center;
+
+        text-decoration: none;
+
+        color:
+            rgba(255,255,255,0.48);
+
+        text-align: center;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        letter-spacing: -0.1px;
+
+        min-width: 64px;
+
+        height: 58px;
+
+        border-radius: 21px;
+
+        transition:
+            color 0.25s ease,
+            transform 0.18s cubic-bezier(.2,.8,.2,1),
+            background 0.25s ease,
+            box-shadow 0.25s ease;
+
+        -webkit-tap-highlight-color:
+            transparent;
+
+        user-select: none;
+
+        z-index: 2;
+    }
+
+
+    .nav-item::before {
+
+        content: "";
+
+        position: absolute;
+
+        inset: 3px;
+
+        border-radius: 18px;
+
+        background:
+            rgba(255,255,255,0);
+
+        box-shadow:
+            0 0 0
+            rgba(125,211,252,0);
+
+        transition:
+            background 0.25s ease,
+            box-shadow 0.25s ease;
+
+        z-index: -1;
+    }
+
+
+    .nav-item.active {
+
+        color: #ffffff;
+
+        transform:
+            translateY(-1px);
+    }
+
+
+    .nav-item.active::before {
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(125,211,252,0.24),
+                rgba(255,255,255,0.10)
+            );
+
+        box-shadow:
+
+            0 5px 18px
+            rgba(56,189,248,0.16),
+
+            0 1px 0
+            rgba(255,255,255,0.20)
+            inset;
+    }
+
+
+    .nav-item:active {
+
+        transform:
+            scale(0.91);
+    }
+
+
+    .nav-item.active:active {
+
+        transform:
+            scale(0.91);
+    }
+
+
+    .nav-icon {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        width: 27px;
+
+        height: 27px;
+
+        font-size: 21px;
+
+        line-height: 1;
+
+        margin-bottom: 2px;
+
+        transition:
+            transform 0.22s
+            cubic-bezier(.2,.8,.2,1),
+            filter 0.22s ease;
+    }
+
+
+    .nav-item.active .nav-icon {
+
+        transform:
+            scale(1.08);
+
+        filter:
+            drop-shadow(
+                0 0 7px
+                rgba(125,211,252,0.45)
+            );
+    }
+
+
+    @media (hover: hover) {
+
+        .nav-item:hover {
+
+            color:
+                rgba(255,255,255,0.82);
+
+            transform:
+                translateY(-1px);
         }
 
-
-        :root {
-            --background: #07111f;
-            --card: rgba(255,255,255,0.085);
-            --border: rgba(255,255,255,0.12);
-            --text: #ffffff;
-            --muted: rgba(255,255,255,0.62);
-            --blue: #7dd3fc;
-        }
-
-
-        body {
-
-            min-height: 100vh;
-
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                Arial,
-                sans-serif;
-
-            color: var(--text);
-
-            background:
-
-                radial-gradient(
-                    circle at 15% 0%,
-                    rgba(56,189,248,0.16),
-                    transparent 35%
-                ),
-
-                radial-gradient(
-                    circle at 90% 20%,
-                    rgba(37,99,235,0.15),
-                    transparent 35%
-                ),
-
-                var(--background);
-
-            padding-bottom: 100px;
-
-            overflow-x: hidden;
-        }
-
-
-        .app {
-
-            width: 100%;
-            max-width: 760px;
-
-            margin: 0 auto;
-
-            padding: 24px 16px 30px;
-        }
-
-
-        /* HEADER */
-
-        .header {
-
-            text-align: center;
-
-            margin-bottom: 20px;
-        }
-
-
-        .header h1 {
-
-            font-size: 27px;
-
-            font-weight: 750;
-
-            letter-spacing: -0.7px;
-        }
-
-
-        .header p {
-
-            color: var(--muted);
-
-            font-size: 14px;
-
-            margin-top: 5px;
-        }
-
-
-        /* SECTION HEADERS */
-
-        .section-title {
-
-            color: var(--blue);
-
-            font-size: 20px;
-
-            font-weight: 700;
-
-            text-align: center;
-
-            margin: 24px 0 14px;
-        }
-
-
-        .section-subtitle {
-
-            text-align: center;
-
-            color: var(--muted);
-
-            font-size: 12px;
-
-            margin-top: -8px;
-
-            margin-bottom: 14px;
-        }
-
-
-        /* MAP */
-
-        .map-container {
-
-            width: 100%;
-
-            height: 380px;
-
-            border-radius: 22px;
-
-            overflow: hidden;
-
-            border:
-                1px solid
-                rgba(0,242,255,0.18);
-
-            box-shadow:
-
-                0 12px 40px
-                rgba(0,80,180,0.20),
-
-                0 1px 0
-                rgba(0,242,255,0.12)
-                inset;
-        }
-
-
-        #map {
-
-            width: 100%;
-            height: 100%;
-        }
-
-
-        /* GLASS CARD */
-
-        .glass {
+        .nav-item:hover::before {
 
             background:
                 rgba(255,255,255,0.075);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.11);
-
-            box-shadow:
-                0 10px 35px
-                rgba(0,0,0,0.18);
-
-            backdrop-filter:
-                blur(16px);
-
-            -webkit-backdrop-filter:
-                blur(16px);
         }
 
+    }
 
-        /* STATUS */
 
-        .status {
+    @media (max-width: 480px) {
 
-            padding: 26px 18px;
+        .map-container {
 
-            border-radius: 19px;
-
-            text-align: center;
-
-            margin-bottom: 10px;
+            height: 330px;
         }
-
-
-        .success {
-
-            color: #80ffb0;
-        }
-
-
-        .error {
-
-            color: #ff8080;
-        }
-
-
-        .loading {
-
-            color: rgba(255,255,255,0.55);
-        }
-
-
-        /* ALERT CARDS */
-
-        .alert-card {
-
-            position: relative;
-
-            overflow: hidden;
-
-            border-radius: 19px;
-
-            padding: 15px 17px;
-
-            margin-bottom: 10px;
-
-            cursor: pointer;
-
-            transition:
-                transform 0.18s ease,
-                background 0.18s ease;
-        }
-
-
-        .alert-card:active {
-
-            transform: scale(0.985);
-        }
-
-
-        .alert-row {
-
-            display: flex;
-
-            align-items: flex-start;
-
-            gap: 11px;
-
-            position: relative;
-
-            z-index: 2;
-        }
-
-
-        .alert-icon {
-
-            font-size: 21px;
-
-            flex-shrink: 0;
-        }
-
-
-        .alert-content {
-
-            flex: 1;
-
-            min-width: 0;
-        }
-
-
-        .alert-header {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 10px;
-        }
-
-
-        .alert-name {
-
-            font-weight: 700;
-
-            font-size: 15px;
-
-            color: white;
-        }
-
-
-        .severity {
-
-            font-size: 9px;
-
-            font-weight: 800;
-
-            letter-spacing: 1px;
-
-            opacity: 0.75;
-
-            white-space: nowrap;
-        }
-
-
-        .headline {
-
-            color:
-                rgba(255,255,255,0.84);
-
-            font-size: 13px;
-
-            line-height: 1.45;
-
-            margin-top: 5px;
-        }
-
 
         .alert-meta {
 
-            display: flex;
+            flex-direction: column;
 
-            justify-content: space-between;
-
-            gap: 10px;
-
-            margin-top: 9px;
-
-            font-size: 10px;
-
-            color:
-                rgba(255,255,255,0.42);
+            gap: 4px;
         }
-
-
-        .description {
-
-            color:
-                rgba(255,255,255,0.72);
-
-            font-size: 12px;
-
-            line-height: 1.55;
-
-            margin-top: 12px;
-
-            white-space: pre-wrap;
-        }
-
-
-        /* SEVERITY */
-
-        .extreme {
-
-            background:
-                rgba(180,0,0,0.48);
-
-            border:
-                2px solid #ff4444;
-        }
-
-
-        .severe {
-
-            background:
-                rgba(200,50,0,0.42);
-
-            border:
-                1px solid #ff7744;
-        }
-
-
-        .moderate {
-
-            background:
-                rgba(180,100,0,0.42);
-
-            border:
-                1px solid #ffaa00;
-        }
-
-
-        .minor {
-
-            background:
-                rgba(150,130,0,0.32);
-
-            border:
-                1px solid #ddcc00;
-        }
-
-
-        .unknown {
-
-            background:
-                rgba(60,80,120,0.34);
-
-            border:
-                1px solid
-                rgba(100,160,255,0.25);
-        }
-
-
-        /* FIREBASE ALERT COLORS */
-
-        .fb-warning {
-
-            background:
-                rgba(180,0,0,0.48);
-
-            border:
-                2px solid #ff4444;
-        }
-
-
-        .fb-watch {
-
-            background:
-                rgba(200,50,0,0.42);
-
-            border:
-                1px solid #ff7744;
-        }
-
-
-        .fb-advisory {
-
-            background:
-                rgba(180,100,0,0.42);
-
-            border:
-                1px solid #ffaa00;
-        }
-
-
-        .fb-summary {
-
-            background:
-                rgba(0,120,60,0.38);
-
-            border:
-                1px solid #00dd88;
-        }
-
-
-        .fb-wind {
-
-            background:
-                rgba(0,60,200,0.40);
-
-            border:
-                1px solid #4488ff;
-        }
-
-
-        /* EDUCATION */
-
-        .education {
-
-            margin-top: 28px;
-
-            padding: 20px;
-
-            border-radius: 20px;
-        }
-
-
-        .education h3 {
-
-            color: var(--blue);
-
-            font-size: 17px;
-
-            margin-bottom: 10px;
-        }
-
-
-        .education p {
-
-            color:
-                rgba(255,255,255,0.68);
-
-            font-size: 13px;
-
-            line-height: 1.6;
-        }
-
 
         .education-grid {
 
-            display: grid;
-
-            grid-template-columns:
-                1fr 1fr;
-
-            gap: 10px;
-
-            margin-top: 15px;
+            grid-template-columns: 1fr;
         }
-
-
-        .education-item {
-
-            padding: 14px;
-
-            border-radius: 15px;
-
-            background:
-                rgba(255,255,255,0.055);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.08);
-        }
-
-
-        .education-item strong {
-
-            display: block;
-
-            margin-bottom: 5px;
-
-            font-size: 13px;
-        }
-
-
-        .education-item span {
-
-            color: var(--muted);
-
-            font-size: 11px;
-
-            line-height: 1.4;
-        }
-
-
-        /* BOTTOM NAV */
 
         .bottom-nav {
 
-            position: fixed;
-
-            left: 50%;
-
-            bottom: 12px;
-
-            transform:
-                translateX(-50%);
+            bottom: 10px;
 
             width:
-                calc(100% - 24px);
+                calc(100% - 18px);
 
-            max-width: 620px;
+            height: 68px;
 
-            height: 70px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content:
-                space-around;
-
-            background:
-                rgba(12,24,42,0.92);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.10);
-
-            border-radius: 24px;
-
-            backdrop-filter:
-                blur(20px);
-
-            -webkit-backdrop-filter:
-                blur(20px);
-
-            box-shadow:
-                0 15px 40px
-                rgba(0,0,0,0.35);
-
-            z-index: 1000;
+            border-radius: 26px;
         }
-
 
         .nav-item {
 
-            text-decoration: none;
+            min-width: 58px;
 
-            color:
-                rgba(255,255,255,0.45);
-
-            text-align: center;
-
-            font-size: 11px;
-
-            min-width: 55px;
+            height: 56px;
         }
 
+    }
 
-        .nav-icon {
+</style>
 
-            display: block;
-
-            font-size: 21px;
-
-            margin-bottom: 3px;
-        }
-
-
-        .nav-item.active {
-
-            color: var(--blue);
-        }
-
-
-        @media (max-width: 480px) {
-
-            .map-container {
-
-                height: 330px;
-            }
-
-            .alert-meta {
-
-                flex-direction: column;
-
-                gap: 4px;
-            }
-
-            .education-grid {
-
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-    </style>
 
 </head>
 
-
 <body>
-
 
 <div class="app">
 
 
-    <header class="header">
+<header class="header">
 
-        <h1>
-            Atmosphere Weather
-        </h1>
+    <h1>
+        Atmosphere Weather
+    </h1>
 
-        <p>
-            Live Maryland weather alerts
-        </p>
+    <p>
+        Live Maryland weather alerts
+    </p>
 
-    </header>
+</header>
 
 
-    <!-- NWS SECTION -->
+<!-- NWS SECTION -->
 
-    <h2 class="section-title">
-        Maryland Live NWS Alerts
-    </h2>
+<h2 class="section-title">
+    Maryland Live NWS Alerts
+</h2>
 
-    <p class="section-subtitle">
-        National Weather Service active alerts
+<p class="section-subtitle">
+    National Weather Service active alerts
+</p>
+
+
+<!-- MAP -->
+
+<div class="map-container">
+
+    <div id="map"></div>
+
+</div>
+
+
+<!-- NWS ALERTS -->
+
+<div id="nws-status"
+     class="glass status loading">
+
+    Loading alerts...
+
+</div>
+
+
+<div id="nws-alerts"></div>
+
+
+<!-- ATMOSPHERE ALERTS -->
+
+<h2 class="section-title">
+
+    Atmosphere Weather Alerts
+
+</h2>
+
+
+<p class="section-subtitle">
+
+    Alerts issued by Atmosphere Weather
+
+</p>
+
+
+<div
+    id="firebase-status"
+    class="glass status loading">
+
+    Loading Atmosphere alerts...
+
+</div>
+
+
+<div id="firebase-alerts"></div>
+
+
+<!-- EDUCATION -->
+
+<div class="education glass">
+
+    <h3>
+        🌩️ Severe Weather Safety
+    </h3>
+
+    <p>
+        Know what weather alerts mean and
+        what to do when severe weather
+        threatens your area.
     </p>
 
 
-    <!-- MAP -->
+    <div class="education-grid">
 
-    <div class="map-container">
+        <div class="education-item">
 
-        <div id="map"></div>
+            <strong>
+                🚨 Warning
+            </strong>
 
-    </div>
+            <span>
+                Dangerous weather is occurring
+                or imminent. Take action now.
+            </span>
 
-
-    <!-- NWS ALERTS -->
-
-    <div id="nws-status"
-         class="glass status loading">
-
-        Loading alerts...
-
-    </div>
+        </div>
 
 
-    <div id="nws-alerts"></div>
+        <div class="education-item">
+
+            <strong>
+                ⚠️ Watch
+            </strong>
+
+            <span>
+                Conditions are favorable for
+                dangerous weather.
+            </span>
+
+        </div>
 
 
-    <!-- ATMOSPHERE ALERTS -->
+        <div class="education-item">
 
-    <h2 class="section-title">
+            <strong>
+                🔶 Advisory
+            </strong>
 
-        Atmosphere Weather Alerts
+            <span>
+                Weather may cause inconvenience
+                or hazards.
+            </span>
 
-    </h2>
-
-
-    <p class="section-subtitle">
-
-        Alerts issued by Atmosphere Weather
-
-    </p>
+        </div>
 
 
-    <div
-        id="firebase-status"
-        class="glass status loading">
+        <div class="education-item">
 
-        Loading Atmosphere alerts...
+            <strong>
+                📢 Stay Informed
+            </strong>
 
-    </div>
-
-
-    <div id="firebase-alerts"></div>
-
-
-    <!-- EDUCATION -->
-
-    <div class="education glass">
-
-        <h3>
-            🌩️ Severe Weather Safety
-        </h3>
-
-        <p>
-            Know what weather alerts mean and
-            what to do when severe weather
-            threatens your area.
-        </p>
-
-
-        <div class="education-grid">
-
-            <div class="education-item">
-
-                <strong>
-                    🚨 Warning
-                </strong>
-
-                <span>
-                    Dangerous weather is occurring
-                    or imminent. Take action now.
-                </span>
-
-            </div>
-
-
-            <div class="education-item">
-
-                <strong>
-                    ⚠️ Watch
-                </strong>
-
-                <span>
-                    Conditions are favorable for
-                    dangerous weather.
-                </span>
-
-            </div>
-
-
-            <div class="education-item">
-
-                <strong>
-                    🔶 Advisory
-                </strong>
-
-                <span>
-                    Weather may cause inconvenience
-                    or hazards.
-                </span>
-
-            </div>
-
-
-            <div class="education-item">
-
-                <strong>
-                    📢 Stay Informed
-                </strong>
-
-                <span>
-                    Continue monitoring Atmosphere
-                    Weather for updates.
-                </span>
-
-            </div>
+            <span>
+                Continue monitoring Atmosphere
+                Weather for updates.
+            </span>
 
         </div>
 
     </div>
 
-
 </div>
 
+
+</div>
 
 <!-- NAVIGATION -->
 
 <nav class="bottom-nav">
 
 
-    <a
-        href="index.html"
-        class="nav-item">
+<a
+    href="index.html"
+    class="nav-item">
 
-        <span class="nav-icon">
-            ⌂
-        </span>
+    <span class="nav-icon">
+        ⌂
+    </span>
 
-        Home
+    Home
 
-    </a>
-
-
-    <a
-        href="radar.html"
-        class="nav-item">
-
-        <span class="nav-icon">
-            ◉
-        </span>
-
-        Radar
-
-    </a>
+</a>
 
 
-    <a
-        href="alerts.html"
-        class="nav-item active">
+<a
+    href="radar.html"
+    class="nav-item">
 
-        <span class="nav-icon">
-            ⚠
-        </span>
+    <span class="nav-icon">
+        ◉
+    </span>
 
-        Alerts
+    Radar
 
-    </a>
+</a>
 
 
-    <a
-        href="updates.html"
-        class="nav-item">
+<a
+    href="alerts.html"
+    class="nav-item active">
 
-        <span class="nav-icon">
-            ✨
-        </span>
+    <span class="nav-icon">
+        ⚠
+    </span>
 
-        Updates
+    Alerts
 
-    </a>
+</a>
+
+
+<a
+    href="updates.html"
+    class="nav-item">
+
+    <span class="nav-icon">
+        ✨
+    </span>
+
+    Updates
+
+</a>
 
 
 </nav>
-
 
 <!-- LEAFLET -->
 
 <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 </script>
-
 
 <script>
 
@@ -1900,7 +2140,6 @@ setInterval(
 
 
 </script>
-
 
 </body>
 </html>
