@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 
 <html lang="en">
@@ -90,7 +91,7 @@ body.weather-sunny {
     background:
         radial-gradient(
             circle at 18% 0%,
-            rgba(251, 191, 36, 0.23),
+            rgba(251, 191, 36, 0.30),
             transparent 36%
         ),
         radial-gradient(
@@ -105,12 +106,12 @@ body.weather-rain {
     background:
         radial-gradient(
             circle at 15% 0%,
-            rgba(56, 189, 248, 0.15),
+            rgba(56, 189, 248, 0.18),
             transparent 38%
         ),
         radial-gradient(
             circle at 90% 30%,
-            rgba(37, 99, 235, 0.24),
+            rgba(37, 99, 235, 0.30),
             transparent 40%
         ),
         #06101e;
@@ -120,12 +121,12 @@ body.weather-storm {
     background:
         radial-gradient(
             circle at 20% 0%,
-            rgba(99, 102, 241, 0.22),
+            rgba(99, 102, 241, 0.30),
             transparent 38%
         ),
         radial-gradient(
             circle at 90% 20%,
-            rgba(124, 58, 237, 0.18),
+            rgba(124, 58, 237, 0.24),
             transparent 38%
         ),
         #060b18;
@@ -135,12 +136,12 @@ body.weather-snow {
     background:
         radial-gradient(
             circle at 20% 0%,
-            rgba(186, 230, 253, 0.20),
+            rgba(186, 230, 253, 0.28),
             transparent 38%
         ),
         radial-gradient(
             circle at 90% 20%,
-            rgba(147, 197, 253, 0.16),
+            rgba(147, 197, 253, 0.22),
             transparent 38%
         ),
         #081522;
@@ -150,12 +151,12 @@ body.weather-night {
     background:
         radial-gradient(
             circle at 20% 0%,
-            rgba(59, 130, 246, 0.13),
+            rgba(59, 130, 246, 0.18),
             transparent 38%
         ),
         radial-gradient(
             circle at 85% 15%,
-            rgba(99, 102, 241, 0.16),
+            rgba(99, 102, 241, 0.23),
             transparent 38%
         ),
         #030914;
@@ -178,6 +179,47 @@ body::before {
     z-index: -1;
 }
 
+/* SUBTLE ATMOSPHERIC GLOW */
+
+body::after {
+    content: "";
+
+    position: fixed;
+    width: 280px;
+    height: 280px;
+    left: 50%;
+    top: 25%;
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(101,199,255,0.055),
+            transparent 70%
+        );
+
+    pointer-events: none;
+    z-index: -1;
+
+    animation: atmosphereGlow 8s ease-in-out infinite;
+}
+
+@keyframes atmosphereGlow {
+
+    0%, 100% {
+        opacity: 0.55;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.15);
+    }
+
+}
+
 .app {
     max-width: 650px;
     margin: auto;
@@ -196,17 +238,17 @@ body::before {
         linear-gradient(
             145deg,
             rgba(245, 158, 11, 0.34),
-            rgba(234, 88, 12, 0.18)
+            rgba(217, 119, 6, 0.16)
         );
 
     border:
         1px solid
-        rgba(251, 191, 36, 0.48);
+        rgba(245, 158, 11, 0.42);
 
     box-shadow:
         0 18px 45px rgba(0,0,0,0.22),
-        0 0 24px rgba(245,158,11,0.12),
-        inset 0 1px 0 rgba(255,255,255,0.10);
+        0 0 28px rgba(245,158,11,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.09);
 
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -215,14 +257,15 @@ body::before {
 
     transition:
         transform 0.2s ease,
-        background 0.2s ease;
+        background 0.3s ease,
+        box-shadow 0.3s ease;
 
     position: relative;
     overflow: hidden;
 
     animation:
         advisoryAppear 0.7s ease both,
-        advisoryGlow 3.5s ease-in-out infinite;
+        advisoryPulse 4s ease-in-out 1s infinite;
 }
 
 .weather-advisory::before {
@@ -230,20 +273,23 @@ body::before {
 
     position: absolute;
 
-    width: 190px;
-    height: 190px;
+    top: 0;
+    left: -120%;
 
-    right: -85px;
-    top: -95px;
-
-    border-radius: 50%;
+    width: 80%;
+    height: 100%;
 
     background:
-        rgba(255,255,255,0.09);
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,0.09),
+            transparent
+        );
 
-    filter: blur(14px);
+    transform: skewX(-18deg);
 
-    pointer-events: none;
+    animation: advisorySweep 6s ease-in-out 2s infinite;
 }
 
 .weather-advisory::after {
@@ -251,64 +297,68 @@ body::before {
 
     position: absolute;
 
-    left: -120px;
-    top: 0;
+    width: 180px;
+    height: 180px;
 
-    width: 90px;
-    height: 100%;
+    right: -80px;
+    top: -85px;
+
+    border-radius: 50%;
 
     background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,0.12),
-            transparent
-        );
+        rgba(255,255,255,0.075);
 
-    transform: skewX(-20deg);
-
-    animation:
-        advisoryShine 5s ease-in-out infinite;
+    filter: blur(12px);
 
     pointer-events: none;
 }
 
 @keyframes advisoryAppear {
+
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-12px);
     }
 
     to {
         opacity: 1;
         transform: translateY(0);
     }
+
 }
 
-@keyframes advisoryGlow {
+@keyframes advisoryPulse {
+
     0%, 100% {
         box-shadow:
             0 18px 45px rgba(0,0,0,0.22),
-            0 0 18px rgba(245,158,11,0.08),
-            inset 0 1px 0 rgba(255,255,255,0.10);
+            0 0 28px rgba(245,158,11,0.08),
+            inset 0 1px 0 rgba(255,255,255,0.09);
     }
 
     50% {
         box-shadow:
             0 18px 45px rgba(0,0,0,0.22),
-            0 0 30px rgba(245,158,11,0.20),
-            inset 0 1px 0 rgba(255,255,255,0.13);
+            0 0 38px rgba(245,158,11,0.16),
+            inset 0 1px 0 rgba(255,255,255,0.11);
     }
+
 }
 
-@keyframes advisoryShine {
-    0%, 65% {
-        left: -120px;
+@keyframes advisorySweep {
+
+    0%, 55% {
+        left: -120%;
     }
 
-    85%, 100% {
-        left: 120%;
+    70% {
+        left: 140%;
     }
+
+    100% {
+        left: 140%;
+    }
+
 }
 
 .weather-advisory:active {
@@ -337,18 +387,29 @@ body::before {
     border-radius: 50%;
 
     background:
-        rgba(245, 158, 11, 0.22);
+        rgba(245,158,11,0.20);
 
     border:
         1px solid
-        rgba(251, 191, 36, 0.38);
+        rgba(245,158,11,0.34);
 
     font-size: 18px;
 
     flex-shrink: 0;
 
-    box-shadow:
-        0 0 14px rgba(245,158,11,0.16);
+    animation: advisoryIconPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes advisoryIconPulse {
+
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.06);
+    }
+
 }
 
 .advisory-title {
@@ -366,11 +427,11 @@ body::before {
     border-radius: 99px;
 
     background:
-        rgba(245, 158, 11, 0.25);
+        rgba(245,158,11,0.25);
 
     border:
         1px solid
-        rgba(251, 191, 36, 0.38);
+        rgba(245,158,11,0.40);
 
     color: #fef3c7;
 
@@ -380,6 +441,52 @@ body::before {
     letter-spacing: 1px;
 
     white-space: nowrap;
+}
+
+.advisory-status {
+    color: #fde68a;
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.7px;
+
+    position: relative;
+    z-index: 1;
+
+    margin-bottom: 7px;
+}
+
+.advisory-status-dot {
+    display: inline-block;
+
+    width: 6px;
+    height: 6px;
+
+    margin-right: 5px;
+
+    border-radius: 50%;
+
+    background: #fbbf24;
+
+    box-shadow:
+        0 0 8px rgba(251,191,36,0.9);
+
+    animation:
+        statusPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.45;
+        transform: scale(0.75);
+    }
+
 }
 
 .advisory-description {
@@ -398,10 +505,12 @@ body::before {
     align-items: center;
     justify-content: space-between;
 
+    gap: 10px;
+
     margin-top: 14px;
 
     color:
-        rgba(255,255,255,0.54);
+        rgba(255,255,255,0.52);
 
     font-size: 12px;
 
@@ -417,7 +526,7 @@ body::before {
 /* POLLEN ALERT */
 
 .pollen-alert {
-    margin: 18px 18px 0;
+    margin: 14px 18px 0;
     padding: 21px 20px;
 
     border-radius: 24px;
@@ -448,6 +557,23 @@ body::before {
 
     position: relative;
     overflow: hidden;
+
+    animation:
+        pollenAppear 0.7s ease 0.15s both;
+}
+
+@keyframes pollenAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
 }
 
 .pollen-alert::after {
@@ -497,11 +623,11 @@ body::before {
     border-radius: 50%;
 
     background:
-    rgba(239, 68, 68, 0.20);
+        rgba(239, 68, 68, 0.20);
 
     border:
-    1px solid
-    rgba(239, 68, 68, 0.30);
+        1px solid
+        rgba(239, 68, 68, 0.30);
 
     font-size: 18px;
 
@@ -523,11 +649,11 @@ body::before {
     border-radius: 99px;
 
     background:
-    rgba(239, 68, 68, 0.25);
+        rgba(239, 68, 68, 0.25);
 
     border:
-    1px solid
-    rgba(239, 68, 68, 0.35);
+        1px solid
+        rgba(239, 68, 68, 0.35);
 
     color: #fee2e2;
 
@@ -731,6 +857,13 @@ header {
     z-index: 1;
 }
 
+.location-live {
+    color: rgba(255,255,255,0.62);
+    font-weight: 600;
+}
+
+/* MAIN WEATHER */
+
 .main-weather {
     display: flex;
     align-items: center;
@@ -743,10 +876,10 @@ header {
 }
 
 .temperature {
-    font-size: 76px;
+    font-size: 82px;
     line-height: 0.95;
     font-weight: 300;
-    letter-spacing: -4px;
+    letter-spacing: -5px;
 
     animation: temperatureAppear 0.8s ease both;
 }
@@ -754,12 +887,12 @@ header {
 @keyframes temperatureAppear {
     from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(8px) scale(0.98);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -781,7 +914,23 @@ header {
             0 8px 15px rgba(0,0,0,0.20)
         );
 
-    animation: weatherIconFloat 4s ease-in-out infinite;
+    animation:
+        weatherIconFloat 4s ease-in-out infinite,
+        weatherIconAppear 0.8s ease both;
+}
+
+@keyframes weatherIconAppear {
+
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+
 }
 
 @keyframes weatherIconFloat {
@@ -790,7 +939,7 @@ header {
     }
 
     50% {
-        transform: translateY(-4px);
+        transform: translateY(-5px);
     }
 }
 
@@ -882,9 +1031,20 @@ header {
 
     transition:
         transform 0.2s ease,
-        background 0.2s ease;
+        background 0.2s ease,
+        border-color 0.2s ease;
 
     animation: hourAppear 0.5s ease both;
+}
+
+.hour-card:hover {
+    background:
+        rgba(255,255,255,0.10);
+
+    border-color:
+        rgba(255,255,255,0.12);
+
+    transform: translateY(-2px);
 }
 
 .hour-card:first-child {
@@ -961,6 +1121,22 @@ header {
 
     position: relative;
     z-index: 1;
+
+    animation: sectionAppear 0.6s ease both;
+}
+
+@keyframes sectionAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
 }
 
 .precip-header {
@@ -1055,7 +1231,46 @@ header {
 
     transition:
         transform 0.2s ease,
-        background 0.2s ease;
+        background 0.2s ease,
+        border-color 0.2s ease;
+
+    animation: insightAppear 0.6s ease both;
+}
+
+.insight-card:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.insight-card:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+.insight-card:nth-child(4) {
+    animation-delay: 0.24s;
+}
+
+@keyframes insightAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+.insight-card:hover {
+    background:
+        rgba(255,255,255,0.085);
+
+    border-color:
+        rgba(255,255,255,0.11);
+
+    transform: translateY(-2px);
 }
 
 .insight-card:active {
@@ -1104,6 +1319,8 @@ header {
     transition:
         transform 0.2s ease,
         background 0.2s ease;
+
+    animation: sectionAppear 0.6s ease both;
 }
 
 .detail-card:active {
@@ -1145,6 +1362,8 @@ header {
 
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
+
+    animation: sectionAppear 0.6s ease both;
 }
 
 .sun-title {
@@ -1258,6 +1477,8 @@ header {
     -webkit-backdrop-filter: blur(14px);
 
     overflow: hidden;
+
+    animation: sectionAppear 0.6s ease both;
 }
 
 .forecast-title {
@@ -1300,7 +1521,50 @@ header {
 
     transition:
         transform 0.2s ease,
-        background 0.2s ease;
+        background 0.2s ease,
+        border-color 0.2s ease;
+
+    animation: forecastRowAppear 0.5s ease both;
+}
+
+.forecast-day:nth-child(2) {
+    animation-delay: 0.05s;
+}
+
+.forecast-day:nth-child(3) {
+    animation-delay: 0.10s;
+}
+
+.forecast-day:nth-child(4) {
+    animation-delay: 0.15s;
+}
+
+.forecast-day:nth-child(5) {
+    animation-delay: 0.20s;
+}
+
+@keyframes forecastRowAppear {
+
+    from {
+        opacity: 0;
+        transform: translateX(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+}
+
+.forecast-day:hover {
+    background:
+        rgba(255,255,255,0.085);
+
+    border-color:
+        rgba(255,255,255,0.10);
+
+    transform: translateX(2px);
 }
 
 .forecast-day:active {
@@ -1385,6 +1649,8 @@ header {
     top: 0;
 
     min-width: 18%;
+
+    transition: width 0.8s ease;
 }
 
 .forecast-loading {
@@ -1485,7 +1751,9 @@ header {
 
     min-width: 55px;
 
-    transition: 0.2s;
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
 .nav-icon {
@@ -1494,10 +1762,17 @@ header {
     font-size: 21px;
 
     margin-bottom: 3px;
+
+    transition:
+        transform 0.2s ease;
 }
 
 .nav-item.active {
     color: var(--accent);
+}
+
+.nav-item.active .nav-icon {
+    transform: translateY(-1px) scale(1.06);
 }
 
 .nav-item:active {
@@ -1530,15 +1805,16 @@ header {
         margin-right: 0;
     }
 
+    .weather-advisory {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
     .pollen-alert {
         margin-left: 0;
         margin-right: 0;
     }
 
-    .weather-advisory {
-        margin-left: 0;
-        margin-right: 0;
-    }
 }
 
 @media (max-width: 520px) {
@@ -1555,6 +1831,12 @@ header {
     .advisory-level {
         font-size: 9px;
         padding: 4px 8px;
+    }
+
+    .advisory-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
     }
 
     .pollen-alert {
@@ -1577,12 +1859,11 @@ header {
         padding: 22px;
     }
 
-    .details-grid {
-        margin-left: 14px;
-        margin-right: 14px;
+    .temperature {
+        font-size: 76px;
     }
 
-    .sun-card {
+    .details-grid {
         margin-left: 14px;
         margin-right: 14px;
     }
@@ -1647,6 +1928,8 @@ header {
 
 <div class="app">
 
+<!-- WEATHER ADVISORY -->
+
 <section class="weather-advisory" onclick="showWeatherAdvisory()">
 
 <div class="advisory-header">
@@ -1656,7 +1939,7 @@ header {
 </div>
 
 <h2 class="advisory-title">
-    Weather Advisory: High Heat & Humidity Ahead
+    High Heat & Humidity Ahead
 </h2>
 
 <span class="advisory-level">
@@ -1665,14 +1948,19 @@ header {
 
 </div>
 
+<div class="advisory-status">
+    <span class="advisory-status-dot"></span>
+    ACTIVE REGIONAL OUTLOOK
+</div>
+
 <p class="advisory-description">
-    Hotter and more humid conditions are expected across the region this week, with increasing heat index values and a growing chance for afternoon and evening thunderstorms.
+    Hot and increasingly humid conditions are expected this week, with heat index values rising and isolated afternoon thunderstorms possible later in the week.
 </p>
 
 <div class="advisory-footer">
 
 <span>
-    Maryland • Aug 31 – Sep 3
+    Monday, Aug 31 – Thursday, Sep 3
 </span>
 
 <span class="advisory-tap">
@@ -1682,6 +1970,8 @@ header {
 </div>
 
 </section>
+
+<!-- POLLEN ALERT -->
 
 <section class="pollen-alert" onclick="showPollenDetails()">
 
@@ -1729,11 +2019,12 @@ header {
 </div>
 
 <button
- class="refresh-button"
- id="refresh-button"
- onclick="loadWeather()"
- aria-label="Refresh weather">
-↻ </button>
+    class="refresh-button"
+    id="refresh-button"
+    onclick="loadWeather()"
+    aria-label="Refresh weather">
+    ↻
+</button>
 
 </div>
 
@@ -1754,225 +2045,214 @@ header {
 <main id="weather-content" style="display:none;">
 
 <section class="weather-card">
-
+    
 <div class="location">
 
-```
-<span class="location-dot"></span>
+    <span class="location-dot"></span>
 
-<span id="location">
-    Loading location...
-</span>
-```
+    <span id="location">
+        Loading location...
+    </span>
 
 </div>
 
 <div class="location-info">
-    📍 Current location • Updated <span id="updated-time">just now</span>
+    📍 <span class="location-live">Using your current location</span>
+    • Updated <span id="updated-time">just now</span>
 </div>
 
 <div class="main-weather">
 
-```
-<div>
+    <div>
 
-    <div class="temperature">
+        <div class="temperature">
 
-        <span id="temperature">
+            <span id="temperature">
+                --
+            </span>
+
+            <sup>°F</sup>
+
+        </div>
+
+        <div
+            class="condition"
+            id="condition">
             --
-        </span>
+        </div>
 
-        <sup>°F</sup>
+        <div class="feels">
 
-    </div>
+            Feels like
+            <span id="feels">
+                --°
+            </span>
 
-    <div
-        class="condition"
-        id="condition">
-        --
-    </div>
-
-    <div class="feels">
-
-        Feels like
-        <span id="feels">
-            --°
-        </span>
+        </div>
 
     </div>
 
-</div>
-
-<img
-    id="weather-icon"
-    class="weather-icon"
-    src=""
-    alt="Weather condition">
-```
+    <img
+        id="weather-icon"
+        class="weather-icon"
+        src=""
+        alt="Weather condition">
 
 </div>
 
 <section class="right-now">
 
-```
-<div class="section-label">
-    RIGHT NOW
-</div>
+    <div class="section-label">
+        RIGHT NOW
+    </div>
 
-<div
-    class="right-now-title"
-    id="right-now-title">
-    Conditions are comfortable
-</div>
+    <div
+        class="right-now-title"
+        id="right-now-title">
+        Conditions are comfortable
+    </div>
 
-<div
-    class="right-now-description"
-    id="right-now-description">
-    Loading current conditions...
-</div>
-```
+    <div
+        class="right-now-description"
+        id="right-now-description">
+        Loading current conditions...
+    </div>
 
 </section>
 
 <section class="hourly-section">
 
-```
-<div class="section-label">
-    HOURLY FORECAST
-</div>
-
-<div
-    id="hourly-scroll"
-    class="hourly-scroll">
-
-    <div class="forecast-loading">
-        Loading hourly forecast...
+    <div class="section-label">
+        HOURLY FORECAST
     </div>
 
-</div>
+    <div
+        id="hourly-scroll"
+        class="hourly-scroll">
 
-<div class="hourly-note">
-    Hourly forecast temperatures are the average temperature for each hour. Not the current temperature.
-</div>
-```
+        <div class="forecast-loading">
+            Loading hourly forecast...
+        </div>
+
+    </div>
+
+    <div class="hourly-note">
+        Hourly forecast temperatures are the average temperature for each hour. Not the current temperature.
+    </div>
 
 </section>
 
 <section class="precipitation-card">
 
-```
-<div class="precip-header">
+    <div class="precip-header">
 
-    <div class="precip-title">
-        🌧️ Next Few Hours
+        <div class="precip-title">
+            🌧️ Next Few Hours
+        </div>
+
+        <div
+            class="precip-status"
+            id="precip-status">
+            Checking...
+        </div>
+
     </div>
 
     <div
-        class="precip-status"
-        id="precip-status">
-        Checking...
+        class="precip-description"
+        id="precip-description">
+        Looking for precipitation near you.
     </div>
 
-</div>
+    <div
+        id="precip-timeline"
+        class="precip-timeline">
 
-<div
-    class="precip-description"
-    id="precip-description">
-    Looking for precipitation near you.
-</div>
-
-<div
-    id="precip-timeline"
-    class="precip-timeline">
-
-</div>
-```
+    </div>
 
 </section>
 
 <section class="insights-section">
 
-```
-<div class="section-label">
-    ✨ ATMOSPHERE INSIGHTS
-</div>
+    <div class="section-label">
+        ✨ ATMOSPHERE INSIGHTS
+    </div>
 
-<div class="insights-grid">
+    <div class="insights-grid">
 
-    <div class="insight-card">
+        <div class="insight-card">
 
-        <div class="insight-icon">
-            🌧️
+            <div class="insight-icon">
+                🌧️
+            </div>
+
+            <div class="insight-title">
+                Rain Window
+            </div>
+
+            <div
+                class="insight-text"
+                id="insight-rain">
+                Analyzing precipitation timing...
+            </div>
+
         </div>
 
-        <div class="insight-title">
-            Rain Window
+        <div class="insight-card">
+
+            <div class="insight-icon">
+                🌡️
+            </div>
+
+            <div class="insight-title">
+                Temperature Trend
+            </div>
+
+            <div
+                class="insight-text"
+                id="insight-temperature">
+                Analyzing temperature trend...
+            </div>
+
         </div>
 
-        <div
-            class="insight-text"
-            id="insight-rain">
-            Analyzing precipitation timing...
+        <div class="insight-card">
+
+            <div class="insight-icon">
+                🌬️
+            </div>
+
+            <div class="insight-title">
+                Wind
+            </div>
+
+            <div
+                class="insight-text"
+                id="insight-wind">
+                Analyzing wind conditions...
+            </div>
+
+        </div>
+
+        <div class="insight-card">
+
+            <div class="insight-icon">
+                ☀️
+            </div>
+
+            <div class="insight-title">
+                Best Outdoor Time
+            </div>
+
+            <div
+                class="insight-text"
+                id="insight-outdoor">
+                Finding the best conditions...
+            </div>
+
         </div>
 
     </div>
-
-    <div class="insight-card">
-
-        <div class="insight-icon">
-            🌡️
-        </div>
-
-        <div class="insight-title">
-            Temperature Trend
-        </div>
-
-        <div
-            class="insight-text"
-            id="insight-temperature">
-            Analyzing temperature trend...
-        </div>
-
-    </div>
-
-    <div class="insight-card">
-
-        <div class="insight-icon">
-            🌬️
-        </div>
-
-        <div class="insight-title">
-            Wind
-        </div>
-
-        <div
-            class="insight-text"
-            id="insight-wind">
-            Analyzing wind conditions...
-        </div>
-
-    </div>
-
-    <div class="insight-card">
-
-        <div class="insight-icon">
-            ☀️
-        </div>
-
-        <div class="insight-title">
-            Best Outdoor Time
-        </div>
-
-        <div
-            class="insight-text"
-            id="insight-outdoor">
-            Finding the best conditions...
-        </div>
-
-    </div>
-
-</div>
-```
 
 </section>
 
@@ -1982,69 +2262,61 @@ header {
 
 <div class="detail-card">
 
-```
-<div class="detail-top">
-    <span class="detail-icon">💧</span>
-    Humidity
-</div>
+    <div class="detail-top">
+        <span class="detail-icon">💧</span>
+        Humidity
+    </div>
 
-<div
-    class="detail-value"
-    id="humidity">
-    --%
-</div>
-```
+    <div
+        class="detail-value"
+        id="humidity">
+        --%
+    </div>
 
 </div>
 
 <div class="detail-card">
 
-```
-<div class="detail-top">
-    <span class="detail-icon">💨</span>
-    Wind
-</div>
+    <div class="detail-top">
+        <span class="detail-icon">💨</span>
+        Wind
+    </div>
 
-<div
-    class="detail-value"
-    id="wind">
-    -- mph
-</div>
-```
+    <div
+        class="detail-value"
+        id="wind">
+        -- mph
+    </div>
 
 </div>
 
 <div class="detail-card">
 
-```
-<div class="detail-top">
-    <span class="detail-icon">👁️</span>
-    Visibility
-</div>
+    <div class="detail-top">
+        <span class="detail-icon">👁️</span>
+        Visibility
+    </div>
 
-<div
-    class="detail-value"
-    id="visibility">
-    -- mi
-</div>
-```
+    <div
+        class="detail-value"
+        id="visibility">
+        -- mi
+    </div>
 
 </div>
 
 <div class="detail-card">
 
-```
-<div class="detail-top">
-    <span class="detail-icon">🌡️</span>
-    Pressure
-</div>
+    <div class="detail-top">
+        <span class="detail-icon">🌡️</span>
+        Pressure
+    </div>
 
-<div
-    class="detail-value"
-    id="pressure">
-    -- hPa
-</div>
-```
+    <div
+        class="detail-value"
+        id="pressure">
+        -- hPa
+    </div>
 
 </div>
 
@@ -2058,91 +2330,87 @@ header {
 
 <div class="sun-times">
 
-```
-<div class="sun-item">
+    <div class="sun-item">
 
-    <div class="sun-icon">
-        🌅
-    </div>
-
-    <div>
-
-        <div class="sun-label">
-            Sunrise
+        <div class="sun-icon">
+            🌅
         </div>
 
-        <div
-            class="sun-value"
-            id="sunrise">
-            --
-        </div>
+        <div>
 
-    </div>
+            <div class="sun-label">
+                Sunrise
+            </div>
 
-</div>
+            <div
+                class="sun-value"
+                id="sunrise">
+                --
+            </div>
 
-<div class="sun-item">
-
-    <div class="sun-icon">
-        🌇
-    </div>
-
-    <div>
-
-        <div class="sun-label">
-            Sunset
-        </div>
-
-        <div
-            class="sun-value"
-            id="sunset">
-            --
         </div>
 
     </div>
 
-</div>
-```
+    <div class="sun-item">
+
+        <div class="sun-icon">
+            🌇
+        </div>
+
+        <div>
+
+            <div class="sun-label">
+                Sunset
+            </div>
+
+            <div
+                class="sun-value"
+                id="sunset">
+                --
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
 <div class="daylight-progress">
 
-```
-<div class="daylight-track">
+    <div class="daylight-track">
 
-    <div
-        class="daylight-dot"
-        id="daylight-dot">
+        <div
+            class="daylight-dot"
+            id="daylight-dot">
+        </div>
+
     </div>
 
-</div>
+    <div class="daylight-labels">
 
-<div class="daylight-labels">
+        <span id="daylight-start">
+            Sunrise
+        </span>
 
-    <span id="daylight-start">
-        Sunrise
-    </span>
+        <span id="daylight-end">
+            Sunset
+        </span>
 
-    <span id="daylight-end">
-        Sunset
-    </span>
+    </div>
 
-</div>
-
-<div
-    class="daylight-duration"
-    id="daylight-duration">
-    Calculating daylight...
-</div>
-```
+    <div
+        class="daylight-duration"
+        id="daylight-duration">
+        Calculating daylight...
+    </div>
 
 </div>
 
 </section>
 
 <section class="forecast-card">
-
+    
 <div class="forecast-title">
     5-DAY OUTLOOK
 </div>
@@ -2151,11 +2419,9 @@ header {
     id="forecast-list"
     class="forecast-list">
 
-```
-<div class="forecast-loading">
-    Loading 5-day forecast...
-</div>
-```
+    <div class="forecast-loading">
+        Loading 5-day forecast...
+    </div>
 
 </div>
 
@@ -2606,7 +2872,15 @@ function generateRightNow(data) {
     let text =
         "The weather looks fairly pleasant right now.";
 
-    if (temp >= 85) {
+    if (temp >= 90) {
+
+        title =
+            "Hot conditions";
+
+        text =
+            `It is ${temp}° outside with ${humidity}% humidity and winds around ${wind} mph. Take breaks, stay hydrated, and limit prolonged outdoor activity.`;
+
+    } else if (temp >= 85) {
 
         title =
             "Warm afternoon";
@@ -2914,11 +3188,16 @@ function renderInsights(forecast, current) {
 
     if (rainHour) {
 
+        const rainPercent =
+            Math.round(
+                (rainHour.pop || 0) * 100
+            );
+
         rainElement.textContent =
-            `Rain is most likely around ${formatHour(
+            `Rain chances increase around ${formatHour(
                 rainHour.dt,
                 current.timezone
-            )}.`;
+            )}, reaching about ${rainPercent}%.`;
 
     } else {
 
@@ -2947,20 +3226,34 @@ function renderInsights(forecast, current) {
             "insight-temperature"
         );
 
+    const highestTemp =
+        Math.max(
+            ...nextHours.map(
+                item => item.main.temp
+            )
+        );
+
+    const lowestTemp =
+        Math.min(
+            ...nextHours.map(
+                item => item.main.temp
+            )
+        );
+
     if (difference <= -3) {
 
         tempElement.textContent =
-            `Temperatures should fall about ${Math.abs(difference)}° over the next several hours.`;
+            `Temperatures should fall about ${Math.abs(difference)}° over the next several hours, cooling toward ${Math.round(lowestTemp)}°.`;
 
     } else if (difference >= 3) {
 
         tempElement.textContent =
-            `Temperatures should rise about ${difference}° over the next several hours.`;
+            `Temperatures should rise about ${difference}° over the next several hours, reaching around ${Math.round(highestTemp)}°.`;
 
     } else {
 
         tempElement.textContent =
-            "Temperatures should remain fairly steady over the next several hours.";
+            `Temperatures should remain fairly steady, generally staying between ${Math.round(lowestTemp)}° and ${Math.round(highestTemp)}°.`;
 
     }
 
@@ -2972,20 +3265,33 @@ function renderInsights(forecast, current) {
     const windSpeed =
         Math.round(current.wind.speed);
 
-    if (windSpeed >= 20) {
+    const strongestWind =
+        Math.round(
+            Math.max(
+                ...nextHours.map(
+                    item =>
+                        item.wind &&
+                        item.wind.speed
+                            ? item.wind.speed
+                            : windSpeed
+                )
+            )
+        );
+
+    if (strongestWind >= 20) {
 
         windElement.textContent =
-            `Winds are breezy around ${windSpeed} mph and may make it feel cooler outside.`;
+            `Breezy conditions are possible, with winds reaching around ${strongestWind} mph.`;
 
-    } else if (windSpeed >= 10) {
+    } else if (strongestWind >= 10) {
 
         windElement.textContent =
-            `Winds are moderate around ${windSpeed} mph with a noticeable breeze.`;
+            `A noticeable breeze is expected, with winds around ${strongestWind} mph at times.`;
 
     } else {
 
         windElement.textContent =
-            `Winds remain light around ${windSpeed} mph.`;
+            `Winds should remain light, generally staying below ${strongestWind + 2} mph.`;
 
     }
 
@@ -3024,7 +3330,9 @@ function renderInsights(forecast, current) {
             }
 
             if (temp > 90) {
-                score -= 25;
+                score -= 30;
+            } else if (temp > 85) {
+                score -= 12;
             }
 
             if (temp < 45) {
@@ -3049,11 +3357,21 @@ function renderInsights(forecast, current) {
 
     if (bestHour) {
 
+        const bestRain =
+            Math.round(
+                (bestHour.pop || 0) * 100
+            );
+
+        const bestTemp =
+            Math.round(
+                bestHour.main.temp
+            );
+
         outdoorElement.textContent =
             `Around ${formatHour(
                 bestHour.dt,
                 current.timezone
-            )} looks like one of the better windows.`;
+            )} looks like one of the better windows, near ${bestTemp}° with a ${bestRain}% rain chance.`;
 
     }
 
@@ -3100,7 +3418,7 @@ function renderForecast(forecast, timezone) {
 
     forecastList.innerHTML =
         forecast.map(
-            item => {
+            (item, index) => {
 
                 const icon =
                     item.weather &&
@@ -3151,6 +3469,14 @@ function renderForecast(forecast, timezone) {
                         )
                     );
 
+                const dayLabel =
+                    index === 0
+                        ? "Today"
+                        : getForecastWeekday(
+                            item.dt,
+                            timezone
+                        );
+
                 return `
 
                     <div class="forecast-day">
@@ -3158,10 +3484,7 @@ function renderForecast(forecast, timezone) {
                         <div>
 
                             <div class="forecast-day-name">
-                                ${getForecastWeekday(
-                                    item.dt,
-                                    timezone
-                                )}
+                                ${dayLabel}
                             </div>
 
                             <div class="forecast-date">
@@ -3630,3 +3953,4 @@ loadWeather();
 
 </body>
 </html>
+```
