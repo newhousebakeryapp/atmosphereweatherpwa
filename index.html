@@ -1381,39 +1381,178 @@ header {
     margin-top: 4px;
 }
 
-/* WEATHER INSIGHTS */
+/* =========================================================
+   ENHANCED ATMOSPHERE INSIGHTS
+   ========================================================= */
 
 .insights-section {
-    margin-top: 18px;
+    margin-top: 20px;
     position: relative;
     z-index: 1;
+}
+
+.insights-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.insights-heading-left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.insights-spark {
+    width: 22px;
+    height: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 7px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(101,199,255,0.18),
+            rgba(99,102,241,0.12)
+        );
+
+    border:
+        1px solid
+        rgba(101,199,255,0.16);
+
+    font-size: 12px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.10);
+}
+
+.insights-subtitle {
+    color: rgba(255,255,255,0.35);
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+}
+
+.insights-summary {
+    margin-top: 9px;
+
+    padding:
+        12px 13px;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(101,199,255,0.075),
+            rgba(255,255,255,0.035)
+        );
+
+    border:
+        1px solid
+        rgba(101,199,255,0.09);
+
+    color:
+        rgba(255,255,255,0.63);
+
+    font-size: 11px;
+    line-height: 1.5;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.insights-summary strong {
+    color:
+        rgba(255,255,255,0.90);
+
+    font-weight: 750;
 }
 
 .insights-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 9px;
-    margin-top: 10px;
+    margin-top: 9px;
 }
 
 .insight-card {
+    min-height: 154px;
+
     padding: 14px;
 
-    border-radius: 18px;
+    border-radius: 20px;
 
     background:
-        rgba(255,255,255,0.055);
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.075),
+            rgba(255,255,255,0.040)
+        );
 
     border:
         1px solid
-        rgba(255,255,255,0.07);
+        rgba(255,255,255,0.08);
 
     transition:
         transform 0.2s ease,
         background 0.2s ease,
-        border-color 0.2s ease;
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 
     animation: insightAppear 0.6s ease both;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.insight-card::before {
+    content: "";
+
+    position: absolute;
+
+    width: 90px;
+    height: 90px;
+
+    right: -45px;
+    top: -45px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(101,199,255,0.06);
+
+    filter: blur(8px);
+
+    pointer-events: none;
+}
+
+.insight-card::after {
+    content: "";
+
+    position: absolute;
+
+    left: 14px;
+    right: 14px;
+    bottom: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,0.12),
+            transparent
+        );
+
+    opacity: 0.5;
 }
 
 .insight-card:nth-child(2) {
@@ -1444,33 +1583,145 @@ header {
 
 .insight-card:hover {
     background:
-        rgba(255,255,255,0.085);
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.105),
+            rgba(255,255,255,0.055)
+        );
 
     border-color:
-        rgba(255,255,255,0.11);
+        rgba(255,255,255,0.13);
 
     transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,0.16);
 }
 
 .insight-card:active {
     transform: scale(0.98);
 }
 
+.insight-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+}
+
+.insight-icon-wrap {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background:
+        rgba(255,255,255,0.065);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.075);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
 .insight-icon {
-    font-size: 18px;
+    font-size: 16px;
+}
+
+.insight-confidence {
+    padding:
+        4px 7px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.06);
+
+    color:
+        rgba(255,255,255,0.40);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.7px;
+
+    white-space: nowrap;
+}
+
+.insight-confidence.good {
+    color: #9fe2ff;
+
+    background:
+        rgba(101,199,255,0.075);
+
+    border-color:
+        rgba(101,199,255,0.12);
+}
+
+.insight-confidence.high {
+    color: #bbf7d0;
+
+    background:
+        rgba(34,197,94,0.065);
+
+    border-color:
+        rgba(34,197,94,0.11);
 }
 
 .insight-title {
     font-size: 12px;
-    font-weight: 750;
-    margin-top: 8px;
+    font-weight: 800;
+    margin-top: 10px;
+
+    letter-spacing: -0.1px;
 }
 
 .insight-text {
-    color: rgba(255,255,255,0.57);
+    color:
+        rgba(255,255,255,0.60);
+
     font-size: 11px;
-    line-height: 1.45;
-    margin-top: 4px;
+    line-height: 1.5;
+
+    margin-top: 5px;
+}
+
+.insight-meta {
+    position: absolute;
+
+    left: 14px;
+    right: 14px;
+    bottom: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 7px;
+
+    color:
+        rgba(255,255,255,0.30);
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.35px;
+}
+
+.insight-meta span:last-child {
+    color:
+        rgba(255,255,255,0.42);
 }
 
 /* WEATHER DETAILS */
@@ -1946,8 +2197,6 @@ header {
         box-shadow 0.35s ease;
 }
 
-/* Glass reflection */
-
 .bottom-nav::before {
     content: "";
 
@@ -1970,8 +2219,6 @@ header {
 
     z-index: -1;
 }
-
-/* Moving liquid reflection */
 
 .bottom-nav::after {
     content: "";
@@ -2060,8 +2307,6 @@ header {
     z-index: 2;
 }
 
-/* Individual glass bubble behind active tab */
-
 .nav-item::before {
     content: "";
 
@@ -2098,8 +2343,6 @@ header {
     z-index: -1;
 }
 
-/* Active Liquid Glass tab */
-
 .nav-item.active {
     color:
         #ffffff;
@@ -2114,8 +2357,6 @@ header {
     transform:
         scale(1);
 }
-
-/* Subtle active glow */
 
 .nav-item.active::after {
     content: "";
@@ -2171,8 +2412,6 @@ header {
         );
 }
 
-/* Touch interaction */
-
 .nav-item:active {
     transform:
         scale(0.88);
@@ -2190,8 +2429,6 @@ header {
     transform:
         scale(0.90);
 }
-
-/* Desktop hover */
 
 @media (hover: hover) {
 
@@ -2211,8 +2448,6 @@ header {
     }
 
 }
-
-/* iOS / small screen refinement */
 
 @media (max-width: 520px) {
 
@@ -2257,10 +2492,6 @@ header {
     }
 
 }
-
-/* =========================================================
-   END LIQUID GLASS NAVIGATION
-   ========================================================= */
 
 @media (min-width: 700px) {
 
@@ -2359,6 +2590,16 @@ header {
         gap: 8px;
     }
 
+    .insight-card {
+        min-height: 158px;
+        padding: 13px;
+    }
+
+    .insight-meta {
+        left: 13px;
+        right: 13px;
+    }
+
     .forecast-card {
         margin-left: 14px;
         margin-right: 14px;
@@ -2417,25 +2658,21 @@ header {
 
 <div class="weather-status-pill">
 
-
 <span class="weather-status-dot"></span>
 
 <span
-    class="weather-status-location"
-    id="weather-status-location">
-    Loading location...
-</span>
+ class="weather-status-location"
+ id="weather-status-location">
+Loading location... </span>
 
 <span class="weather-status-separator">
     ·
 </span>
 
 <span
-    class="weather-status-temperature"
-    id="weather-status-temperature">
-    --°F
-</span>
-
+ class="weather-status-temperature"
+ id="weather-status-temperature">
+--°F </span>
 
 </div>
 
@@ -2532,10 +2769,10 @@ header {
 </div>
 
 <button
- class="refresh-button"
- id="refresh-button"
- onclick="loadWeather()"
- aria-label="Refresh weather">
+class="refresh-button"
+id="refresh-button"
+onclick="loadWeather()"
+aria-label="Refresh weather">
 ↻ </button>
 
 </div>
@@ -2560,13 +2797,11 @@ header {
 
 <div class="location">
 
-
 <span class="location-dot"></span>
 
 <span id="location">
     Loading location...
 </span>
-
 
 </div>
 
@@ -2577,47 +2812,46 @@ header {
 
 <div class="main-weather">
 
-
 <div>
 
-    <div class="temperature">
 
-        <span id="temperature">
-            --
-        </span>
+<div class="temperature">
 
-        <sup>°F</sup>
-
-    </div>
-
-    <div
-        class="condition"
-        id="condition">
+    <span id="temperature">
         --
-    </div>
+    </span>
 
-    <div class="feels">
+    <sup>°F</sup>
 
-        Feels like
-        <span id="feels">
-            --°
-        </span>
+</div>
 
-    </div>
+<div
+    class="condition"
+    id="condition">
+    --
+</div>
+
+<div class="feels">
+
+    Feels like
+    <span id="feels">
+        --°
+    </span>
+
+</div>
+
 
 </div>
 
 <img
-    id="weather-icon"
-    class="weather-icon"
-    src=""
-    alt="Weather condition">
-
+ id="weather-icon"
+ class="weather-icon"
+ src=""
+ alt="Weather condition">
 
 </div>
 
 <section class="right-now">
-
 
 <div class="section-label">
     RIGHT NOW
@@ -2635,11 +2869,9 @@ header {
     Loading current conditions...
 </div>
 
-
 </section>
 
 <section class="hourly-section">
-
 
 <div class="section-label">
     HOURLY FORECAST
@@ -2649,9 +2881,11 @@ header {
     id="hourly-scroll"
     class="hourly-scroll">
 
-    <div class="forecast-loading">
-        Loading hourly forecast...
-    </div>
+
+<div class="forecast-loading">
+    Loading hourly forecast...
+</div>
+
 
 </div>
 
@@ -2659,23 +2893,23 @@ header {
     Hourly forecast temperatures are the average temperature for each hour. Not the current temperature.
 </div>
 
-
 </section>
 
 <section class="precipitation-card">
 
-
 <div class="precip-header">
 
-    <div class="precip-title">
-        🌧️ Next Few Hours
-    </div>
 
-    <div
-        class="precip-status"
-        id="precip-status">
-        Checking...
-    </div>
+<div class="precip-title">
+    🌧️ Next Few Hours
+</div>
+
+<div
+    class="precip-status"
+    id="precip-status">
+    Checking...
+</div>
+
 
 </div>
 
@@ -2691,92 +2925,184 @@ header {
 
 </div>
 
-
 </section>
 
 <section class="insights-section">
 
+<div class="insights-heading">
 
-<div class="section-label">
-    ✨ ATMOSPHERE INSIGHTS
+
+<div class="insights-heading-left">
+
+    <div class="insights-spark">
+        ✨
+    </div>
+
+    <div class="section-label">
+        ATMOSPHERE INSIGHTS
+    </div>
+
+</div>
+
+<div class="insights-subtitle">
+    Live analysis
+</div>
+
+
+</div>
+
+<div
+    class="insights-summary"
+    id="insights-summary">
+    <strong>Analyzing the atmosphere...</strong>
+    Comparing current conditions with the upcoming hourly forecast.
 </div>
 
 <div class="insights-grid">
 
-    <div class="insight-card">
 
-        <div class="insight-icon">
-            🌧️
-        </div>
+<div class="insight-card">
 
-        <div class="insight-title">
-            Rain Window
+    <div class="insight-top">
+
+        <div class="insight-icon-wrap">
+            <div class="insight-icon">
+                🌧️
+            </div>
         </div>
 
         <div
-            class="insight-text"
-            id="insight-rain">
-            Analyzing precipitation timing...
+            class="insight-confidence"
+            id="rain-confidence">
+            ANALYZING
         </div>
 
     </div>
 
-    <div class="insight-card">
-
-        <div class="insight-icon">
-            🌡️
-        </div>
-
-        <div class="insight-title">
-            Temperature Trend
-        </div>
-
-        <div
-            class="insight-text"
-            id="insight-temperature">
-            Analyzing temperature trend...
-        </div>
-
+    <div class="insight-title">
+        Rain Window
     </div>
 
-    <div class="insight-card">
-
-        <div class="insight-icon">
-            🌬️
-        </div>
-
-        <div class="insight-title">
-            Wind
-        </div>
-
-        <div
-            class="insight-text"
-            id="insight-wind">
-            Analyzing wind conditions...
-        </div>
-
+    <div
+        class="insight-text"
+        id="insight-rain">
+        Analyzing precipitation timing...
     </div>
 
-    <div class="insight-card">
-
-        <div class="insight-icon">
-            ☀️
-        </div>
-
-        <div class="insight-title">
-            Best Outdoor Time
-        </div>
-
-        <div
-            class="insight-text"
-            id="insight-outdoor">
-            Finding the best conditions...
-        </div>
-
+    <div class="insight-meta">
+        <span>PRECIPITATION</span>
+        <span id="rain-meta">Forecast</span>
     </div>
 
 </div>
 
+<div class="insight-card">
+
+    <div class="insight-top">
+
+        <div class="insight-icon-wrap">
+            <div class="insight-icon">
+                🌡️
+            </div>
+        </div>
+
+        <div
+            class="insight-confidence"
+            id="temperature-confidence">
+            ANALYZING
+        </div>
+
+    </div>
+
+    <div class="insight-title">
+        Temperature Trend
+    </div>
+
+    <div
+        class="insight-text"
+        id="insight-temperature">
+        Analyzing temperature trend...
+    </div>
+
+    <div class="insight-meta">
+        <span>TREND</span>
+        <span id="temperature-meta">Next 8 hours</span>
+    </div>
+
+</div>
+
+<div class="insight-card">
+
+    <div class="insight-top">
+
+        <div class="insight-icon-wrap">
+            <div class="insight-icon">
+                🌬️
+            </div>
+        </div>
+
+        <div
+            class="insight-confidence"
+            id="wind-confidence">
+            ANALYZING
+        </div>
+
+    </div>
+
+    <div class="insight-title">
+        Wind Pattern
+    </div>
+
+    <div
+        class="insight-text"
+        id="insight-wind">
+        Analyzing wind conditions...
+    </div>
+
+    <div class="insight-meta">
+        <span>AIRFLOW</span>
+        <span id="wind-meta">Next 8 hours</span>
+    </div>
+
+</div>
+
+<div class="insight-card">
+
+    <div class="insight-top">
+
+        <div class="insight-icon-wrap">
+            <div class="insight-icon">
+                ☀️
+            </div>
+        </div>
+
+        <div
+            class="insight-confidence"
+            id="outdoor-confidence">
+            ANALYZING
+        </div>
+
+    </div>
+
+    <div class="insight-title">
+        Best Outdoor Time
+    </div>
+
+    <div
+        class="insight-text"
+        id="insight-outdoor">
+        Finding the best conditions...
+    </div>
+
+    <div class="insight-meta">
+        <span>COMFORT INDEX</span>
+        <span id="outdoor-meta">Combined analysis</span>
+    </div>
+
+</div>
+
+
+</div>
 
 </section>
 
@@ -2785,7 +3111,6 @@ header {
 <section class="details-grid">
 
 <div class="detail-card">
-
 
 <div class="detail-top">
     <span class="detail-icon">💧</span>
@@ -2798,11 +3123,9 @@ header {
     --%
 </div>
 
-
 </div>
 
 <div class="detail-card">
-
 
 <div class="detail-top">
     <span class="detail-icon">💨</span>
@@ -2815,11 +3138,9 @@ header {
     -- mph
 </div>
 
-
 </div>
 
 <div class="detail-card">
-
 
 <div class="detail-top">
     <span class="detail-icon">👁️</span>
@@ -2832,11 +3153,9 @@ header {
     -- mi
 </div>
 
-
 </div>
 
 <div class="detail-card">
-
 
 <div class="detail-top">
     <span class="detail-icon">🌡️</span>
@@ -2848,7 +3167,6 @@ header {
     id="pressure">
     -- hPa
 </div>
-
 
 </div>
 
@@ -2862,75 +3180,79 @@ header {
 
 <div class="sun-times">
 
-
 <div class="sun-item">
 
-    <div class="sun-icon">
-        🌅
+```
+<div class="sun-icon">
+    🌅
+</div>
+
+<div>
+
+    <div class="sun-label">
+        Sunrise
     </div>
 
-    <div>
-
-        <div class="sun-label">
-            Sunrise
-        </div>
-
-        <div
-            class="sun-value"
-            id="sunrise">
-            --
-        </div>
-
+    <div
+        class="sun-value"
+        id="sunrise">
+        --
     </div>
+
+</div>
+
 
 </div>
 
 <div class="sun-item">
 
-    <div class="sun-icon">
-        🌇
+<div class="sun-icon">
+    🌇
+</div>
+
+<div>
+
+    <div class="sun-label">
+        Sunset
     </div>
 
-    <div>
-
-        <div class="sun-label">
-            Sunset
-        </div>
-
-        <div
-            class="sun-value"
-            id="sunset">
-            --
-        </div>
-
+    <div
+        class="sun-value"
+        id="sunset">
+        --
     </div>
 
 </div>
 
+
+</div>
 
 </div>
 
 <div class="daylight-progress">
 
-
 <div class="daylight-track">
 
-    <div
-        class="daylight-dot"
-        id="daylight-dot">
-    </div>
+
+<div
+    class="daylight-dot"
+    id="daylight-dot">
+</div>
+
 
 </div>
 
 <div class="daylight-labels">
 
-    <span id="daylight-start">
-        Sunrise
-    </span>
 
-    <span id="daylight-end">
-        Sunset
-    </span>
+<span id="daylight-start">
+    Sunrise
+</span>
+
+<span id="daylight-end">
+    Sunset
+</span>
+
 
 </div>
 
@@ -2939,7 +3261,6 @@ header {
     id="daylight-duration">
     Calculating daylight...
 </div>
-
 
 </div>
 
@@ -2958,7 +3279,6 @@ header {
 <div class="forecast-loading">
     Loading 5-day forecast...
 </div>
-
 
 </div>
 
@@ -3728,11 +4048,17 @@ function renderPrecipitation(forecast, timezone) {
 
 }
 
+/* =========================================================
+   INTELLIGENT ATMOSPHERE INSIGHTS ENGINE
+   Uses ONLY live current + forecast API data.
+   ========================================================= */
+
 function renderInsights(forecast, current) {
 
     if (
         !forecast ||
-        forecast.length === 0
+        forecast.length === 0 ||
+        !current
     ) {
         return;
     }
@@ -3740,171 +4066,699 @@ function renderInsights(forecast, current) {
     const nextHours =
         forecast.slice(0, 8);
 
-    const rainHour =
-        nextHours.find(
-            item =>
-                (item.pop || 0) >= 0.40
+    if (nextHours.length === 0) {
+        return;
+    }
+
+    const timezone =
+        current.timezone || 0;
+
+    const currentTemp =
+        Number(current.main.temp);
+
+    const currentHumidity =
+        Number(current.main.humidity);
+
+    const currentWind =
+        Number(
+            current.wind &&
+            current.wind.speed
+                ? current.wind.speed
+                : 0
         );
+
+    const currentPressure =
+        Number(
+            current.main.pressure || 0
+        );
+
+    const forecastTemps =
+        nextHours.map(
+            item =>
+                Number(item.main.temp)
+        );
+
+    const forecastHumidity =
+        nextHours.map(
+            item =>
+                Number(
+                    item.main.humidity ||
+                    currentHumidity
+                )
+        );
+
+    const forecastWind =
+        nextHours.map(
+            item =>
+                Number(
+                    item.wind &&
+                    item.wind.speed
+                        ? item.wind.speed
+                        : currentWind
+                )
+        );
+
+    const forecastRain =
+        nextHours.map(
+            item =>
+                Number(item.pop || 0)
+        );
+
+    const highestTemp =
+        Math.max(
+            currentTemp,
+            ...forecastTemps
+        );
+
+    const lowestTemp =
+        Math.min(
+            currentTemp,
+            ...forecastTemps
+        );
+
+    const strongestWind =
+        Math.max(
+            currentWind,
+            ...forecastWind
+        );
+
+    const highestRainChance =
+        Math.max(
+            ...forecastRain
+        );
+
+    /*
+     * Small helper functions keep the insight language
+     * consistent and prevent exaggerated claims.
+     */
+
+    function setConfidence(id, level, label) {
+
+        const element =
+            document.getElementById(id);
+
+        if (!element) {
+            return;
+        }
+
+        element.className =
+            "insight-confidence " +
+            level;
+
+        element.textContent =
+            label;
+
+    }
+
+    function setMeta(id, text) {
+
+        const element =
+            document.getElementById(id);
+
+        if (element) {
+            element.textContent =
+                text;
+        }
+
+    }
+
+    function getHourTemperature(item) {
+
+        return Math.round(
+            Number(item.main.temp)
+        );
+
+    }
+
+    function getRainPercent(item) {
+
+        return Math.round(
+            Number(item.pop || 0) * 100
+        );
+
+    }
+
+    /*
+     * RAIN WINDOW
+     *
+     * Looks at the actual probability trend rather than
+     * simply finding the first hour above one threshold.
+     */
 
     const rainElement =
         document.getElementById(
             "insight-rain"
         );
 
-    if (rainHour) {
+    const rainConfidence =
+        document.getElementById(
+            "rain-confidence"
+        );
 
-        const rainPercent =
-            Math.round(
-                (rainHour.pop || 0) * 100
-            );
+    let strongestRainIndex =
+        0;
+
+    forecastRain.forEach(
+        (value, index) => {
+
+            if (
+                value >
+                forecastRain[strongestRainIndex]
+            ) {
+
+                strongestRainIndex =
+                    index;
+
+            }
+
+        }
+    );
+
+    const strongestRainHour =
+        nextHours[
+            strongestRainIndex
+        ];
+
+    const strongestRain =
+        getRainPercent(
+            strongestRainHour
+        );
+
+    const meaningfulRainHours =
+        nextHours.filter(
+            item =>
+                Number(item.pop || 0) >= 0.30
+        );
+
+    if (strongestRain >= 70) {
 
         rainElement.textContent =
-            `Rain chances increase around ${formatHour(
-                rainHour.dt,
-                current.timezone
-            )}, reaching about ${rainPercent}%.`;
+            `The forecast shows a strong precipitation signal around ${formatHour(
+                strongestRainHour.dt,
+                timezone
+            )}, with rain chances near ${strongestRain}%. Several nearby forecast periods support the signal.`;
+
+        setConfidence(
+            "rain-confidence",
+            "high",
+            "STRONG SIGNAL"
+        );
+
+        setMeta(
+            "rain-meta",
+            `${meaningfulRainHours.length} active window${meaningfulRainHours.length === 1 ? "" : "s"}`
+        );
+
+    } else if (strongestRain >= 40) {
+
+        rainElement.textContent =
+            `Rain chances build around ${formatHour(
+                strongestRainHour.dt,
+                timezone
+            )}, peaking near ${strongestRain}%. The timing is worth watching as the forecast updates.`;
+
+        setConfidence(
+            "rain-confidence",
+            "good",
+            "WATCH"
+        );
+
+        setMeta(
+            "rain-meta",
+            "Moderate signal"
+        );
+
+    } else if (strongestRain >= 20) {
+
+        rainElement.textContent =
+            `There is a lower-end precipitation signal later in the period, with the highest chance near ${strongestRain}% around ${formatHour(
+                strongestRainHour.dt,
+                timezone
+            )}.`;
+
+        setConfidence(
+            "rain-confidence",
+            "good",
+            "LOW SIGNAL"
+        );
+
+        setMeta(
+            "rain-meta",
+            "Scattered possibility"
+        );
 
     } else {
 
         rainElement.textContent =
-            "No major rain window is showing during the next several hours.";
+            `The next several forecast periods remain predominantly dry, with precipitation chances staying below ${Math.max(
+                1,
+                strongestRain
+            )}%.`;
+
+        setConfidence(
+            "rain-confidence",
+            "high",
+            "DRY SIGNAL"
+        );
+
+        setMeta(
+            "rain-meta",
+            "Next several hours"
+        );
 
     }
 
-    const currentTemp =
-        current.main.temp;
+    /*
+     * TEMPERATURE TREND
+     *
+     * Uses the beginning, middle and end of the forecast
+     * to identify whether the atmosphere is warming,
+     * cooling or holding steady.
+     */
 
-    const laterTemp =
-        nextHours.length > 0
-            ? nextHours[
-                nextHours.length - 1
-            ].main.temp
-            : currentTemp;
-
-    const difference =
-        Math.round(
-            laterTemp - currentTemp
-        );
-
-    const tempElement =
+    const temperatureElement =
         document.getElementById(
             "insight-temperature"
         );
 
-    const highestTemp =
-        Math.max(
-            ...nextHours.map(
-                item => item.main.temp
-            )
+    const firstForecastTemp =
+        forecastTemps[0];
+
+    const midpointIndex =
+        Math.floor(
+            forecastTemps.length / 2
         );
 
-    const lowestTemp =
-        Math.min(
-            ...nextHours.map(
-                item => item.main.temp
-            )
+    const midpointTemp =
+        forecastTemps[midpointIndex];
+
+    const finalForecastTemp =
+        forecastTemps[
+            forecastTemps.length - 1
+        ];
+
+    const totalTempChange =
+        finalForecastTemp -
+        currentTemp;
+
+    const firstTrend =
+        midpointTemp -
+        currentTemp;
+
+    const secondTrend =
+        finalForecastTemp -
+        midpointTemp;
+
+    const absoluteChange =
+        Math.abs(totalTempChange);
+
+    if (
+        totalTempChange >= 5
+    ) {
+
+        temperatureElement.textContent =
+            `A warming trend is developing. Temperatures move from about ${Math.round(
+                currentTemp
+            )}° now toward ${Math.round(
+                finalForecastTemp
+            )}° later, a rise of roughly ${Math.round(
+                totalTempChange
+            )}°.`;
+
+        setConfidence(
+            "temperature-confidence",
+            "high",
+            "CLEAR TREND"
         );
 
-    if (difference <= -3) {
+        setMeta(
+            "temperature-meta",
+            `+${Math.round(totalTempChange)}° change`
+        );
 
-        tempElement.textContent =
-            `Temperatures should fall about ${Math.abs(difference)}° over the next several hours, cooling toward ${Math.round(lowestTemp)}°.`;
+    } else if (
+        totalTempChange <= -5
+    ) {
 
-    } else if (difference >= 3) {
+        temperatureElement.textContent =
+            `A cooling trend is taking shape. Temperatures should fall from around ${Math.round(
+                currentTemp
+            )}° toward ${Math.round(
+                finalForecastTemp
+            )}° later in the period.`;
 
-        tempElement.textContent =
-            `Temperatures should rise about ${difference}° over the next several hours, reaching around ${Math.round(highestTemp)}°.`;
+        setConfidence(
+            "temperature-confidence",
+            "high",
+            "CLEAR TREND"
+        );
+
+        setMeta(
+            "temperature-meta",
+            `${Math.round(totalTempChange)}° change`
+        );
+
+    } else if (
+        absoluteChange >= 2
+    ) {
+
+        temperatureElement.textContent =
+            `Temperatures show a modest ${
+                totalTempChange > 0
+                    ? "warming"
+                    : "cooling"
+            } trend, moving roughly ${
+                Math.abs(
+                    Math.round(
+                        totalTempChange
+                    )
+                )
+            }° over the next several forecast periods.`;
+
+        setConfidence(
+            "temperature-confidence",
+            "good",
+            "MODERATE TREND"
+        );
+
+        setMeta(
+            "temperature-meta",
+            `${Math.round(lowestTemp)}°–${Math.round(highestTemp)}° range`
+        );
 
     } else {
 
-        tempElement.textContent =
-            `Temperatures should remain fairly steady, generally staying between ${Math.round(lowestTemp)}° and ${Math.round(highestTemp)}°.`;
+        temperatureElement.textContent =
+            `Temperatures are relatively stable, staying within a narrow range of about ${Math.round(
+                lowestTemp
+            )}° to ${Math.round(
+                highestTemp
+            )}° through the upcoming hours.`;
+
+        setConfidence(
+            "temperature-confidence",
+            "high",
+            "STABLE"
+        );
+
+        setMeta(
+            "temperature-meta",
+            "Low variability"
+        );
 
     }
+
+    /*
+     * WIND PATTERN
+     *
+     * Compares current wind to the strongest forecast wind
+     * and also checks whether winds are increasing or fading.
+     */
 
     const windElement =
         document.getElementById(
             "insight-wind"
         );
 
-    const windSpeed =
-        Math.round(current.wind.speed);
-
-    const strongestWind =
-        Math.round(
-            Math.max(
-                ...nextHours.map(
-                    item =>
-                        item.wind &&
-                        item.wind.speed
-                            ? item.wind.speed
-                            : windSpeed
-                )
-            )
+    const strongestWindIndex =
+        forecastWind.indexOf(
+            strongestWind
         );
 
-    if (strongestWind >= 20) {
+    const strongestWindHour =
+        nextHours[
+            Math.max(
+                0,
+                strongestWindIndex
+            )
+        ];
+
+    const windChange =
+        strongestWind -
+        currentWind;
+
+    if (strongestWind >= 25) {
 
         windElement.textContent =
-            `Breezy conditions are possible, with winds reaching around ${strongestWind} mph.`;
+            `Winds may become noticeably stronger, with speeds approaching ${Math.round(
+                strongestWind
+            )} mph around ${formatHour(
+                strongestWindHour.dt,
+                timezone
+            )}. Exposed areas may feel significantly breezier.`;
 
-    } else if (strongestWind >= 10) {
+        setConfidence(
+            "wind-confidence",
+            "high",
+            "BREEZY"
+        );
+
+        setMeta(
+            "wind-meta",
+            `Peak ~${Math.round(strongestWind)} mph`
+        );
+
+    } else if (
+        windChange >= 5
+    ) {
 
         windElement.textContent =
-            `A noticeable breeze is expected, with winds around ${strongestWind} mph at times.`;
+            `The breeze may strengthen from around ${Math.round(
+                currentWind
+            )} mph now toward roughly ${Math.round(
+                strongestWind
+            )} mph later.`;
+
+        setConfidence(
+            "wind-confidence",
+            "good",
+            "INCREASING"
+        );
+
+        setMeta(
+            "wind-meta",
+            `+${Math.round(windChange)} mph`
+        );
+
+    } else if (
+        currentWind >= 15
+    ) {
+
+        windElement.textContent =
+            `A noticeable breeze is already present near ${Math.round(
+                currentWind
+            )} mph. Forecast winds remain elevated enough to affect how warm or cool it feels outdoors.`;
+
+        setConfidence(
+            "wind-confidence",
+            "good",
+            "NOTICEABLE"
+        );
+
+        setMeta(
+            "wind-meta",
+            `Current ~${Math.round(currentWind)} mph`
+        );
+
+    } else if (
+        strongestWind <= 7
+    ) {
+
+        windElement.textContent =
+            `The atmosphere stays relatively calm, with forecast winds generally remaining near or below ${Math.round(
+                strongestWind
+            )} mph.`;
+
+        setConfidence(
+            "wind-confidence",
+            "high",
+            "CALM"
+        );
+
+        setMeta(
+            "wind-meta",
+            "Light airflow"
+        );
 
     } else {
 
         windElement.textContent =
-            `Winds should remain light, generally staying below ${strongestWind + 2} mph.`;
+            `Winds remain mostly manageable, generally ranging from around ${Math.round(
+                currentWind
+            )} to ${Math.round(
+                strongestWind
+            )} mph through the upcoming hours.`;
+
+        setConfidence(
+            "wind-confidence",
+            "good",
+            "MANAGEABLE"
+        );
+
+        setMeta(
+            "wind-meta",
+            `${Math.round(currentWind)}–${Math.round(strongestWind)} mph`
+        );
 
     }
+
+    /*
+     * BEST OUTDOOR TIME
+     *
+     * Builds a simple comfort score from:
+     * - rain probability
+     * - temperature
+     * - wind
+     * - humidity
+     *
+     * This is an interpretation layer, not a fabricated
+     * weather value. Every input comes from the API.
+     */
 
     const outdoorElement =
         document.getElementById(
             "insight-outdoor"
         );
 
-    let bestIndex = 0;
-    let bestScore = -Infinity;
+    let bestIndex =
+        0;
+
+    let bestScore =
+        -Infinity;
 
     nextHours.forEach(
         (item, index) => {
 
-            const rain =
-                item.pop || 0;
+            const temp =
+                Number(item.main.temp);
+
+            const humidity =
+                Number(
+                    item.main.humidity ||
+                    currentHumidity
+                );
 
             const wind =
-                item.wind &&
-                item.wind.speed
-                    ? item.wind.speed
-                    : current.wind.speed;
+                Number(
+                    item.wind &&
+                    item.wind.speed
+                        ? item.wind.speed
+                        : currentWind
+                );
 
-            const temp =
-                item.main.temp;
+            const rain =
+                Number(item.pop || 0);
 
             let score =
                 100;
 
-            score -= rain * 80;
+            /*
+             * Rain is the strongest penalty.
+             */
 
-            if (wind > 18) {
-                score -= 25;
-            } else if (wind > 12) {
-                score -= 10;
-            }
+            score -=
+                rain * 95;
 
-            if (temp > 90) {
-                score -= 30;
-            } else if (temp > 85) {
+            /*
+             * Temperature comfort.
+             */
+
+            if (temp >= 65 && temp <= 78) {
+
+                score += 8;
+
+            } else if (
+                temp >= 55 &&
+                temp <= 84
+            ) {
+
+                score += 3;
+
+            } else if (
+                temp > 84 &&
+                temp <= 90
+            ) {
+
                 score -= 12;
+
+            } else if (temp > 90) {
+
+                score -= 30;
+
+            } else if (temp < 45) {
+
+                score -= 22;
+
+            } else if (temp < 55) {
+
+                score -= 8;
+
             }
 
-            if (temp < 45) {
-                score -= 20;
+            /*
+             * Humidity penalty becomes more important
+             * when temperatures are elevated.
+             */
+
+            if (
+                humidity >= 80 &&
+                temp >= 75
+            ) {
+
+                score -= 22;
+
+            } else if (
+                humidity >= 70 &&
+                temp >= 75
+            ) {
+
+                score -= 10;
+
             }
 
-            if (score > bestScore) {
+            /*
+             * Wind penalty.
+             */
+
+            if (wind >= 25) {
+
+                score -= 25;
+
+            } else if (wind >= 18) {
+
+                score -= 15;
+
+            } else if (wind >= 12) {
+
+                score -= 5;
+
+            }
+
+            /*
+             * Give a small bonus to a forecast hour
+             * that is close to the current temperature,
+             * preventing an extreme swing from being
+             * selected simply because it has low rain.
+             */
+
+            const tempDifference =
+                Math.abs(
+                    temp -
+                    currentTemp
+                );
+
+            if (
+                tempDifference <= 5
+            ) {
+
+                score += 3;
+
+            }
+
+            if (
+                score >
+                bestScore
+            ) {
 
                 bestScore =
                     score;
@@ -3922,23 +4776,171 @@ function renderInsights(forecast, current) {
 
     if (bestHour) {
 
-        const bestRain =
-            Math.round(
-                (bestHour.pop || 0) * 100
-            );
-
         const bestTemp =
             Math.round(
                 bestHour.main.temp
             );
 
+        const bestRain =
+            getRainPercent(
+                bestHour
+            );
+
+        const bestWind =
+            Math.round(
+                Number(
+                    bestHour.wind &&
+                    bestHour.wind.speed
+                        ? bestHour.wind.speed
+                        : currentWind
+                )
+            );
+
+        const bestHumidity =
+            Math.round(
+                Number(
+                    bestHour.main.humidity ||
+                    currentHumidity
+                )
+            );
+
+        let comfortDescription =
+            "one of the better windows";
+
+        if (
+            bestRain <= 10 &&
+            bestTemp >= 60 &&
+            bestTemp <= 82 &&
+            bestWind <= 15
+        ) {
+
+            comfortDescription =
+                "a particularly favorable window";
+
+        } else if (
+            bestRain >= 40
+        ) {
+
+            comfortDescription =
+                "the best available window, although rain remains possible";
+
+        } else if (
+            bestTemp >= 85 ||
+            bestHumidity >= 80
+        ) {
+
+            comfortDescription =
+                "one of the more manageable windows";
+
+        }
+
         outdoorElement.textContent =
-            `Around ${formatHour(
+            `${formatHour(
                 bestHour.dt,
-                current.timezone
-            )} looks like one of the better windows, near ${bestTemp}° with a ${bestRain}% rain chance.`;
+                timezone
+            )} looks like ${comfortDescription}: around ${bestTemp}°, ${bestRain}% rain chance, ${bestWind} mph winds, and ${bestHumidity}% humidity.`;
+
+        setConfidence(
+            "outdoor-confidence",
+            bestScore >= 78
+                ? "high"
+                : "good",
+            bestScore >= 78
+                ? "FAVORABLE"
+                : "BEST AVAILABLE"
+        );
+
+        setMeta(
+            "outdoor-meta",
+            `Score ${Math.round(
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        bestScore
+                    )
+                )
+            )}/100`
+        );
 
     }
+
+    /*
+     * OVERALL ATMOSPHERE SUMMARY
+     *
+     * Combines the major signals into one short,
+     * human-readable conclusion.
+     */
+
+    const summary =
+        document.getElementById(
+            "insights-summary"
+        );
+
+    const summaryParts = [];
+
+    if (
+        highestRainChance >= 0.60
+    ) {
+
+        summaryParts.push(
+            "precipitation is the main near-term variable"
+        );
+
+    } else if (
+        highestRainChance >= 0.30
+    ) {
+
+        summaryParts.push(
+            "there is a developing precipitation signal"
+        );
+
+    } else {
+
+        summaryParts.push(
+            "the near-term pattern is predominantly dry"
+        );
+
+    }
+
+    if (
+        totalTempChange >= 4
+    ) {
+
+        summaryParts.push(
+            "temperatures trend warmer"
+        );
+
+    } else if (
+        totalTempChange <= -4
+    ) {
+
+        summaryParts.push(
+            "temperatures trend cooler"
+        );
+
+    } else {
+
+        summaryParts.push(
+            "temperatures remain fairly steady"
+        );
+
+    }
+
+    if (
+        strongestWind >= 20
+    ) {
+
+        summaryParts.push(
+            "with a noticeable wind component"
+        );
+
+    }
+
+    summary.innerHTML =
+        `<strong>Atmosphere read:</strong> ${capitalize(
+            summaryParts.join(", ")
+        )}.`;
 
 }
 
