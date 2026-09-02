@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -279,6 +280,56 @@ serviceWorkerParam: {
             padding: 0;
 
             border: 0;
+        }
+
+
+        /* MAP LOCATION LABEL */
+
+        .map-label {
+
+            position: absolute;
+
+            top: 14px;
+
+            left: 14px;
+
+            z-index: 10;
+
+            padding:
+                8px 12px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(7,17,31,0.72);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.14);
+
+            color:
+                rgba(255,255,255,0.92);
+
+            font-size: 12px;
+
+            font-weight: 650;
+
+            backdrop-filter:
+                blur(14px)
+                saturate(160%);
+
+            -webkit-backdrop-filter:
+                blur(14px)
+                saturate(160%);
+
+            box-shadow:
+                0 5px 20px
+                rgba(0,0,0,0.20);
+
+            pointer-events: none;
+
+            transition:
+                opacity 0.25s ease;
         }
 
 
@@ -806,16 +857,18 @@ serviceWorkerParam: {
     <div class="map-wrapper">
 
 
-        <div class="map-label">
+        <div
+            class="map-label"
+            id="map-location-label">
 
-            📍 Maryland & surrounding region
+            📍 Finding your location...
 
         </div>
 
 
         <iframe
             id="windy-map"
-            src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=°F&metricWind=mph&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=38.5&lon=-77.0&message=true"
+            src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=°F&metricWind=mph&zoom=8&overlay=wind&product=ecmwf&level=surface&lat=38.5&lon=-77.0&message=true"
             title="Atmosphere Weather Radar"
             loading="lazy"
             allowfullscreen>
@@ -892,9 +945,34 @@ serviceWorkerParam: {
 
 
 /* =========================================================
-   WINDY LAYERS
+   USER LOCATION + WINDY RADAR
 ========================================================= */
 
+
+/*
+    Default/fallback location.
+
+    If the user denies location access,
+    the radar will fall back to these
+    Maryland coordinates.
+*/
+
+let userLat = 38.5;
+
+let userLon = -77.0;
+
+
+/*
+    Keep track of the currently
+    selected Windy layer.
+*/
+
+let currentLayer = "wind";
+
+
+/*
+    Get the layer buttons.
+*/
 
 const buttons =
     document.querySelectorAll(
@@ -902,10 +980,203 @@ const buttons =
     );
 
 
+/*
+    Get the Windy iframe.
+*/
+
 const map =
     document.getElementById(
         "windy-map"
     );
+
+
+/*
+    Get the location label.
+*/
+
+const locationLabel =
+    document.getElementById(
+        "map-location-label"
+    );
+
+
+/* =========================================================
+   BUILD WINDY MAP URL
+========================================================= */
+
+function updateWindyMap() {
+
+    const src =
+
+        "https://embed.windy.com/embed.html" +
+
+        "?type=map" +
+
+        "&location=coordinates" +
+
+        "&metricRain=in" +
+
+        "&metricTemp=°F" +
+
+        "&metricWind=mph" +
+
+        /*
+            Zoom 8 gives a much more useful
+            local view than the original zoom 5.
+        */
+
+        "&zoom=8" +
+
+        "&overlay=" +
+        encodeURIComponent(
+            currentLayer
+        ) +
+
+        "&product=ecmwf" +
+
+        "&level=surface" +
+
+        "&lat=" +
+        encodeURIComponent(
+            userLat
+        ) +
+
+        "&lon=" +
+        encodeURIComponent(
+            userLon
+        ) +
+
+        "&message=true";
+
+
+    /*
+        Reload Windy using the
+        current coordinates.
+    */
+
+    map.src = src;
+
+}
+
+
+/* =========================================================
+   GET USER'S CURRENT LOCATION
+========================================================= */
+
+function getUserLocation() {
+
+
+    /*
+        Check whether this browser
+        supports geolocation.
+    */
+
+    if (!navigator.geolocation) {
+
+        locationLabel.textContent =
+            "📍 Location unavailable";
+
+        /*
+            Use fallback coordinates.
+        */
+
+        updateWindyMap();
+
+        return;
+
+    }
+
+
+    /*
+        Ask the browser for the
+        user's current position.
+    */
+
+    navigator.geolocation.getCurrentPosition(
+
+        /*
+            SUCCESS
+        */
+
+        function(position) {
+
+
+            /*
+                Save the user's actual
+                latitude and longitude.
+            */
+
+            userLat =
+                position.coords.latitude;
+
+            userLon =
+                position.coords.longitude;
+
+
+            /*
+                Update the label.
+            */
+
+            locationLabel.textContent =
+                "📍 Your current location";
+
+
+            /*
+                Reload Windy centered
+                on the user's location.
+            */
+
+            updateWindyMap();
+
+        },
+
+
+        /*
+            ERROR / PERMISSION DENIED
+        */
+
+        function(error) {
+
+            console.warn(
+                "Unable to get user location:",
+                error
+            );
+
+
+            /*
+                Keep the existing Maryland
+                fallback location.
+            */
+
+            locationLabel.textContent =
+                "📍 Maryland & surrounding region";
+
+
+            updateWindyMap();
+
+        },
+
+
+        /*
+            LOCATION SETTINGS
+        */
+
+        {
+            enableHighAccuracy: true,
+
+            timeout: 10000,
+
+            maximumAge: 300000
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   WINDY LAYER BUTTONS
+========================================================= */
 
 
 buttons.forEach(
@@ -953,13 +1224,21 @@ buttons.forEach(
                 );
 
 
-                const layer =
+                /*
+                    Save the selected layer.
+                */
+
+                currentLayer =
                     button.dataset.layer;
 
 
                 const color =
                     button.dataset.color;
 
+
+                /*
+                    Apply the button color.
+                */
 
                 button.style.background =
                     color;
@@ -970,47 +1249,11 @@ buttons.forEach(
 
 
                 /*
-                    Rebuild the Windy URL.
+                    Rebuild the map using
+                    the user's saved location.
                 */
 
-                const src =
-
-                    "https://embed.windy.com/embed.html" +
-
-                    "?type=map" +
-
-                    "&location=coordinates" +
-
-                    "&metricRain=in" +
-
-                    "&metricTemp=°F" +
-
-                    "&metricWind=mph" +
-
-                    "&zoom=5" +
-
-                    "&overlay=" +
-                    encodeURIComponent(
-                        layer
-                    ) +
-
-                    "&product=ecmwf" +
-
-                    "&level=surface" +
-
-                    "&lat=38.5" +
-
-                    "&lon=-77.0" +
-
-                    "&message=true";
-
-
-                /*
-                    Changing the src reloads
-                    the map with the new layer.
-                */
-
-                map.src = src;
+                updateWindyMap();
 
             }
 
@@ -1021,9 +1264,10 @@ buttons.forEach(
 );
 
 
-/*
-    Set the initial active button color.
-*/
+/* =========================================================
+   INITIAL ACTIVE BUTTON COLOR
+========================================================= */
+
 
 const initial =
     document.querySelector(
@@ -1042,9 +1286,23 @@ if (initial) {
 }
 
 
+/* =========================================================
+   START LOCATION DETECTION
+========================================================= */
+
+
+/*
+    Ask for the user's location
+    when the Radar page loads.
+*/
+
+getUserLocation();
+
+
 </script>
 
 
 </body>
 
 </html>
+```
