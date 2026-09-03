@@ -4,11 +4,9 @@
 
 <head>
 
-
 <link rel="manifest" href="manifest.json">
 
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-
 
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -34,24 +32,24 @@
 <meta charset="UTF-8">
 
 <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
 >
 
 <meta
-    name="theme-color"
-    content="#07111f"
+name="theme-color"
+content="#07111f"
+
 >
 
 <title>Radar • Atmosphere Weather</title>
-
 
 <!-- WINDY MAP FORECAST API -->
 
 <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
 
 <script src="https://api.windy.com/assets/map-forecast/libBoot.js"></script>
-
 
 <style>
 
@@ -1030,7 +1028,6 @@
 
 </style>
 
-
 </head>
 
 <body>
@@ -1041,103 +1038,102 @@
 
 <header class="header">
 
-    <h1>
-        Atmosphere Radar
-    </h1>
+```
+<h1>
+    Atmosphere Radar
+</h1>
 
-    <p>
-        Interactive weather conditions
-    </p>
+<p>
+    Interactive weather conditions
+</p>
+```
 
 </header>
-
 
 <!-- LAYER BUTTONS -->
 
 <div class="layer-picker">
 
+```
+<button
+    class="layer-button active"
+    data-layer="wind"
+    data-color="#38bdf8">
 
-    <button
-        class="layer-button active"
-        data-layer="wind"
-        data-color="#38bdf8">
+    💨 Wind
 
-        💨 Wind
-
-    </button>
-
-
-    <button
-        class="layer-button"
-        data-layer="rain"
-        data-color="#818cf8">
-
-        🌧️ Rain
-
-    </button>
+</button>
 
 
-    <button
-        class="layer-button"
-        data-layer="temp"
-        data-color="#f97316">
+<button
+    class="layer-button"
+    data-layer="rain"
+    data-color="#818cf8">
 
-        🌡️ Temp
+    🌧️ Rain
 
-    </button>
-
-
-    <button
-        class="layer-button"
-        data-layer="clouds"
-        data-color="#94a3b8">
-
-        ☁️ Clouds
-
-    </button>
+</button>
 
 
-    <button
-        class="layer-button"
-        data-layer="pressure"
-        data-color="#34d399">
+<button
+    class="layer-button"
+    data-layer="temp"
+    data-color="#f97316">
 
-        🔵 Pressure
+    🌡️ Temp
 
-    </button>
+</button>
 
+
+<button
+    class="layer-button"
+    data-layer="clouds"
+    data-color="#94a3b8">
+
+    ☁️ Clouds
+
+</button>
+
+
+<button
+    class="layer-button"
+    data-layer="pressure"
+    data-color="#34d399">
+
+    🔵 Pressure
+
+</button>
+```
 
 </div>
-
 
 <!-- MAP -->
 
 <div class="map-wrapper">
 
+```
+<div
+    class="map-label"
+    id="map-location-label">
 
-    <div
-        class="map-label"
-        id="map-location-label">
-
-        📍 Finding your location...
-
-    </div>
-
-
-    <div
-        class="location-loading"
-        id="location-loading">
-
-        📍 Finding your current location...
-
-    </div>
-
-
-    <div id="windy"></div>
-
+    📍 Finding your location...
 
 </div>
 
+
+<div
+    class="location-loading"
+    id="location-loading">
+
+    📍 Using your Atmosphere location...
+
+</div>
+
+
+<div id="windy"></div>
+```
+
+</div>
 
 </div>
 
@@ -1145,58 +1141,61 @@
 
 <nav class="bottom-nav">
 
-
 <a
-    href="index.html"
-    class="nav-item">
+ href="index.html"
+ class="nav-item">
 
-    <span class="nav-icon">
-        ⌂
-    </span>
+```
+<span class="nav-icon">
+    ⌂
+</span>
 
-    Home
+Home
+```
 
 </a>
 
-
 <a
-    href="radar.html"
-    class="nav-item active">
+ href="radar.html"
+ class="nav-item active">
 
-    <span class="nav-icon">
-        ◉
-    </span>
+```
+<span class="nav-icon">
+    ◉
+</span>
 
-    Radar
+Radar
+```
 
 </a>
 
-
 <a
-    href="alerts.html"
-    class="nav-item">
+ href="alerts.html"
+ class="nav-item">
 
-    <span class="nav-icon">
-        ⚠
-    </span>
+```
+<span class="nav-icon">
+    ⚠
+</span>
 
-    Alerts
+Alerts
+```
 
 </a>
 
-
 <a
-    href="updates.html"
-    class="nav-item">
+ href="updates.html"
+ class="nav-item">
 
-    <span class="nav-icon">
-        ✨
-    </span>
+```
+<span class="nav-icon">
+    ✨
+</span>
 
-    Updates
+Updates
+```
 
 </a>
-
 
 </nav>
 
@@ -1205,7 +1204,7 @@
 
 /* =========================================================
    ATMOSPHERE RADAR
-   WINDY + REAL GEOGRAPHIC USER LOCATION
+   WINDY + SHARED ATMOSPHERE USER LOCATION
 ========================================================= */
 
 
@@ -1216,6 +1215,10 @@
 
 /*
     Put your Windy Map Forecast API key here.
+
+    IMPORTANT:
+    This is left as your existing key so the rest of
+    the radar page remains unchanged.
 */
 
 const WINDY_API_KEY =
@@ -1276,11 +1279,11 @@ let userLocationMarker =
 
 
 /* =========================================================
-   LOCATION REQUEST STATE
+   SHARED LOCATION STORAGE
 ========================================================= */
 
-let locationRequestFinished =
-    false;
+const LOCATION_STORAGE_KEY =
+    "atmosphereUserLocation";
 
 
 /* =========================================================
@@ -1305,6 +1308,114 @@ function hideLocationLoading() {
 
         locationLoading.classList.add(
             "hidden"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   READ LOCATION SAVED BY HOMEPAGE
+========================================================= */
+
+function getSavedAtmosphereLocation() {
+
+    try {
+
+        const saved =
+            localStorage.getItem(
+                LOCATION_STORAGE_KEY
+            );
+
+
+        if (!saved) {
+
+            return null;
+
+        }
+
+
+        const location =
+            JSON.parse(saved);
+
+
+        if (
+            !location ||
+            typeof location.lat !== "number" ||
+            typeof location.lon !== "number"
+        ) {
+
+            return null;
+
+        }
+
+
+        /*
+            Make sure the coordinates are
+            legitimate latitude/longitude values.
+        */
+
+        if (
+            location.lat < -90 ||
+            location.lat > 90 ||
+            location.lon < -180 ||
+            location.lon > 180
+        ) {
+
+            return null;
+
+        }
+
+
+        return location;
+
+    } catch (error) {
+
+        console.warn(
+            "Unable to read saved Atmosphere location:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE LOCATION
+========================================================= */
+
+function saveAtmosphereLocation(lat, lon) {
+
+    try {
+
+        localStorage.setItem(
+
+            LOCATION_STORAGE_KEY,
+
+            JSON.stringify({
+
+                lat:
+                    lat,
+
+                lon:
+                    lon,
+
+                timestamp:
+                    Date.now()
+
+            })
+
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "Unable to save Atmosphere location:",
+            error
         );
 
     }
@@ -1345,11 +1456,6 @@ function createLocationPane() {
     }
 
 
-    /*
-        Put the pane above Windy's
-        weather visualization.
-    */
-
     pane.style.zIndex =
         "10000";
 
@@ -1381,11 +1487,7 @@ function updateUserMarker() {
 
     /*
         If a marker already exists,
-        simply move it.
-
-        This is important because it
-        means the marker stays attached
-        to geographic coordinates.
+        move the same geographic marker.
     */
 
     if (userLocationMarker) {
@@ -1399,15 +1501,10 @@ function updateUserMarker() {
 
         );
 
-
         return;
 
     }
 
-
-    /*
-        Create the blue dot icon.
-    */
 
     const locationIcon =
         L.divIcon({
@@ -1436,8 +1533,11 @@ function updateUserMarker() {
 
 
     /*
-        Create a geographic Leaflet
-        marker using latitude/longitude.
+        This is a REAL geographic Leaflet
+        marker.
+
+        It is attached to latitude/longitude,
+        not to a fixed position on the screen.
     */
 
     userLocationMarker =
@@ -1467,19 +1567,10 @@ function updateUserMarker() {
         );
 
 
-    /*
-        Add the marker to Windy's
-        existing Leaflet map.
-    */
-
     userLocationMarker.addTo(
         map
     );
 
-
-    /*
-        Explicitly position it.
-    */
 
     userLocationMarker.setLatLng(
 
@@ -1539,24 +1630,38 @@ function centerMapOnUser() {
 
 
 /* =========================================================
-   FALLBACK LOCATION
+   USE SAVED HOMEPAGE LOCATION
 ========================================================= */
 
-function useFallbackLocation() {
+function useSavedLocation() {
 
-    /*
-        Maryland-area fallback.
-    */
+    const savedLocation =
+        getSavedAtmosphereLocation();
+
+
+    if (!savedLocation) {
+
+        return false;
+
+    }
+
 
     userLat =
-        38.5;
+        savedLocation.lat;
 
     userLon =
-        -77.0;
+        savedLocation.lon;
+
+
+    console.log(
+        "Atmosphere reused homepage location:",
+        userLat,
+        userLon
+    );
 
 
     updateLocationLabel(
-        "📍 Maryland & surrounding region"
+        "📍 Your current location"
     );
 
 
@@ -1565,17 +1670,43 @@ function useFallbackLocation() {
 
     centerMapOnUser();
 
+
+    return true;
+
 }
 
 
 /* =========================================================
-   GET USER LOCATION
+   GET LOCATION ONLY IF HOMEPAGE LOCATION IS UNAVAILABLE
 ========================================================= */
 
-function getUserLocation() {
+function getUserLocationIfNeeded() {
 
     /*
-        Browser doesn't support geolocation.
+        FIRST:
+
+        Try the exact coordinates that
+        the homepage already obtained.
+
+        This prevents a second GPS
+        permission/location request.
+    */
+
+    if (
+        useSavedLocation()
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+        There is no saved homepage location.
+
+        This can happen if someone opens
+        radar.html directly before visiting
+        the homepage.
     */
 
     if (!navigator.geolocation) {
@@ -1585,114 +1716,34 @@ function getUserLocation() {
         );
 
 
-        locationRequestFinished =
-            true;
+        updateLocationLabel(
+            "📍 Maryland & surrounding region"
+        );
 
 
-        useFallbackLocation();
+        hideLocationLoading();
+
+
+        centerMapOnUser();
 
         return;
 
     }
 
 
-    console.log(
-        "Atmosphere is requesting browser location..."
+    updateLocationLabel(
+        "📍 Finding your location..."
     );
 
 
-    /*
-        SAFETY TIMER
+    console.log(
+        "No saved Atmosphere location found. Requesting location once..."
+    );
 
-        Safari can sometimes leave a
-        geolocation request waiting.
-
-        This timer makes absolutely sure
-        the UI cannot stay stuck forever.
-    */
-
-    const safetyTimer =
-        setTimeout(
-
-            function() {
-
-                if (
-                    locationRequestFinished
-                ) {
-
-                    return;
-
-                }
-
-
-                console.warn(
-                    "Location request is taking too long. Using fallback."
-                );
-
-
-                locationRequestFinished =
-                    true;
-
-
-                updateLocationLabel(
-                    "📍 Using approximate location"
-                );
-
-
-                hideLocationLoading();
-
-
-                /*
-                    Keep the fallback geographic
-                    marker visible.
-                */
-
-                centerMapOnUser();
-
-            },
-
-            5000
-
-        );
-
-
-    /*
-        Ask the browser for the real location.
-    */
 
     navigator.geolocation.getCurrentPosition(
 
         function(position) {
-
-            /*
-                Stop the safety timer.
-            */
-
-            clearTimeout(
-                safetyTimer
-            );
-
-
-            /*
-                Prevent duplicate callbacks.
-            */
-
-            if (
-                locationRequestFinished
-            ) {
-
-                return;
-
-            }
-
-
-            locationRequestFinished =
-                true;
-
-
-            /*
-                REAL GPS COORDINATES
-            */
 
             userLat =
                 position.coords.latitude;
@@ -1701,16 +1752,23 @@ function getUserLocation() {
                 position.coords.longitude;
 
 
-            console.log(
-                "REAL Atmosphere GPS location:",
+            /*
+                Save it so every other
+                Atmosphere page can reuse it.
+            */
+
+            saveAtmosphereLocation(
                 userLat,
                 userLon
             );
 
 
-            /*
-                Update the UI.
-            */
+            console.log(
+                "Atmosphere GPS location:",
+                userLat,
+                userLon
+            );
+
 
             updateLocationLabel(
                 "📍 Your current location"
@@ -1720,12 +1778,6 @@ function getUserLocation() {
             hideLocationLoading();
 
 
-            /*
-                Move the actual Windy map
-                to the actual geographic
-                coordinates.
-            */
-
             centerMapOnUser();
 
         },
@@ -1733,40 +1785,21 @@ function getUserLocation() {
 
         function(error) {
 
-            /*
-                Stop the safety timer.
-            */
-
-            clearTimeout(
-                safetyTimer
-            );
-
-
-            if (
-                locationRequestFinished
-            ) {
-
-                return;
-
-            }
-
-
-            locationRequestFinished =
-                true;
-
-
             console.warn(
                 "Unable to get user location:",
                 error
             );
 
 
-            /*
-                GPS failed, so use the
-                fallback location.
-            */
+            updateLocationLabel(
+                "📍 Maryland & surrounding region"
+            );
 
-            useFallbackLocation();
+
+            hideLocationLoading();
+
+
+            centerMapOnUser();
 
         },
 
@@ -1856,16 +1889,8 @@ windyInit(
         } = windyAPI;
 
 
-        /*
-            Create the location pane.
-        */
-
         createLocationPane();
 
-
-        /*
-            Set initial weather layer.
-        */
 
         store.set(
             "overlay",
@@ -1874,8 +1899,27 @@ windyInit(
 
 
         /*
-            Start at fallback coordinates.
+            Try the location that the homepage
+            already stored.
+
+            If it exists, this does NOT call
+            navigator.geolocation again.
         */
+
+        const savedLocation =
+            getSavedAtmosphereLocation();
+
+
+        if (savedLocation) {
+
+            userLat =
+                savedLocation.lat;
+
+            userLon =
+                savedLocation.lon;
+
+        }
+
 
         map.setView(
 
@@ -1890,33 +1934,32 @@ windyInit(
 
 
         /*
-            IMPORTANT:
-
-            Put the blue dot on the map
-            immediately.
-
-            It is geographically anchored
-            at 38.5, -77 until the real
-            location is returned.
+            Put the geographic blue dot
+            at the saved location.
         */
 
         updateUserMarker();
 
 
         /*
-            Give the browser a moment to
-            begin its location request.
+            Now finish the location process.
+
+            In the normal flow, this simply
+            reuses localStorage.
+
+            It only asks for GPS if there
+            is no saved location.
         */
 
         setTimeout(
 
             function() {
 
-                getUserLocation();
+                getUserLocationIfNeeded();
 
             },
 
-            250
+            100
 
         );
 
@@ -1979,11 +2022,6 @@ buttons.forEach(
                     `0 0 14px ${color}55`;
 
 
-                /*
-                    Change Windy's actual
-                    weather visualization.
-                */
-
                 if (windyAPI) {
 
                     windyAPI.store.set(
@@ -1993,8 +2031,9 @@ buttons.forEach(
 
 
                     /*
-                        Keep the geographic
-                        blue marker on top.
+                        Make sure the blue dot
+                        remains above the radar
+                        visualization.
                     */
 
                     setTimeout(
