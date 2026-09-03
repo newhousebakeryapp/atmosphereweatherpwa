@@ -1,12 +1,14 @@
-```html
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-    
-    <link rel="manifest" href="manifest.json">
-    
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+
+<link rel="manifest" href="manifest.json">
+
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
 
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -29,1074 +31,1211 @@
   });
 </script>
 
+<meta charset="UTF-8">
 
-    <meta charset="UTF-8">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="theme-color"
+    content="#07111f"
+>
 
-    <meta
-        name="theme-color"
-        content="#07111f"
-    >
-
-    <title>Radar • Atmosphere Weather</title>
-
-
-    <!--
-        WINDY MAP FORECAST API
-
-        Windy requires Leaflet before libBoot.js.
-    -->
-
-    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
-
-    <script src="https://api.windy.com/assets/map-forecast/libBoot.js"></script>
+<title>Radar • Atmosphere Weather</title>
 
 
-    <style>
+<!-- WINDY MAP FORECAST API -->
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+
+<script src="https://api.windy.com/assets/map-forecast/libBoot.js"></script>
+
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+
+    :root {
+
+        --background: #07111f;
+
+        --card:
+            rgba(255,255,255,0.075);
+
+        --border:
+            rgba(255,255,255,0.11);
+
+        --blue: #7dd3fc;
+
+        --muted:
+            rgba(255,255,255,0.62);
+
+    }
+
+
+    body {
+
+        min-height: 100vh;
+
+        font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            Arial,
+            sans-serif;
+
+        color: white;
+
+        background:
+
+            radial-gradient(
+                circle at 15% 0%,
+                rgba(56,189,248,0.16),
+                transparent 35%
+            ),
+
+            radial-gradient(
+                circle at 90% 20%,
+                rgba(37,99,235,0.15),
+                transparent 35%
+            ),
+
+            var(--background);
+
+        padding-bottom: 100px;
+
+        overflow-x: hidden;
+    }
+
+
+    .app {
+
+        width: 100%;
+
+        max-width: 1000px;
+
+        margin: 0 auto;
+
+        padding:
+            24px 14px 30px;
+    }
+
+
+    /* HEADER */
+
+    .header {
+
+        text-align: center;
+
+        margin-bottom: 20px;
+    }
+
+
+    .header h1 {
+
+        font-size: 27px;
+
+        font-weight: 750;
+
+        letter-spacing: -0.7px;
+    }
+
+
+    .header p {
+
+        color: var(--muted);
+
+        font-size: 14px;
+
+        margin-top: 5px;
+    }
+
+
+    /* LAYER PICKER */
+
+    .layer-picker {
+
+        display: flex;
+
+        gap: 8px;
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        margin-bottom: 14px;
+    }
+
+
+    .layer-button {
+
+        padding:
+            9px 15px;
+
+        border-radius: 13px;
+
+        border:
+            1px solid
+            rgba(0,242,255,0.15);
+
+        cursor: pointer;
+
+        font-weight: 650;
+
+        font-size: 13px;
+
+        color:
+            rgba(255,255,255,0.70);
+
+        background:
+            rgba(0,242,255,0.06);
+
+        transition:
+            transform 0.15s ease,
+            background 0.2s ease,
+            box-shadow 0.2s ease;
+
+        box-shadow:
+            0 4px 16px
+            rgba(0,120,255,0.10);
+    }
+
+
+    .layer-button:hover {
+
+        transform:
+            translateY(-1px);
+
+        background:
+            rgba(0,242,255,0.11);
+    }
+
+
+    .layer-button:active {
+
+        transform:
+            scale(0.96);
+    }
+
+
+    .layer-button.active {
+
+        border-color:
+            transparent;
+
+        color:
+            #07111f;
+    }
+
+
+    /* =========================================================
+       MAP
+       ========================================================= */
+
+    .map-wrapper {
+
+        position: relative;
+
+        width: 100%;
+
+        height: 78vh;
+
+        min-height: 500px;
+
+        max-height: 850px;
+
+        border-radius: 24px;
+
+        overflow: hidden;
+
+        border:
+            1px solid
+            rgba(0,242,255,0.18);
+
+        box-shadow:
+
+            0 8px 40px
+            rgba(0,120,255,0.20),
+
+            0 1.5px 0
+            rgba(0,242,255,0.20)
+            inset;
+
+        background: #0b1626;
+    }
+
+
+    #windy {
+
+        position: absolute;
+
+        left: 0;
+
+        top: 0;
+
+        width: 100%;
+
+        height: 100%;
+    }
+
+
+    #windy > * {
+
+        max-width: 100%;
+    }
+
+
+    /* =========================================================
+       REAL GEOGRAPHIC BLUE LOCATION DOT
+       ========================================================= */
+
+    /*
+        This is NOT a screen-positioned dot.
+
+        It is a Leaflet marker attached to the
+        user's latitude and longitude.
+    */
+
+    .atmosphere-location-dot {
+
+        width: 20px;
+
+        height: 20px;
+
+        border-radius: 50%;
+
+        background:
+            #1683ff;
+
+        border:
+            3px solid white;
+
+        box-shadow:
+
+            0 0 0 3px
+            rgba(22,131,255,0.30),
+
+            0 2px 10px
+            rgba(0,0,0,0.45);
+
+        position: relative;
+    }
+
+
+    /*
+        Subtle location pulse.
+    */
+
+    .atmosphere-location-dot::after {
+
+        content: "";
+
+        position: absolute;
+
+        left: 50%;
+
+        top: 50%;
+
+        width: 34px;
+
+        height: 34px;
+
+        transform:
+            translate(-50%, -50%);
+
+        border-radius: 50%;
+
+        border:
+            2px solid
+            rgba(22,131,255,0.42);
+
+        animation:
+            locationPulse 2s ease-out infinite;
+
+        pointer-events: none;
+    }
+
+
+    @keyframes locationPulse {
+
+        0% {
+
+            transform:
+                translate(-50%, -50%)
+                scale(0.55);
+
+            opacity: 0.8;
         }
 
+        70% {
 
-        :root {
+            transform:
+                translate(-50%, -50%)
+                scale(1.15);
 
-            --background: #07111f;
-
-            --card:
-                rgba(255,255,255,0.075);
-
-            --border:
-                rgba(255,255,255,0.11);
-
-            --blue: #7dd3fc;
-
-            --muted:
-                rgba(255,255,255,0.62);
-
+            opacity: 0;
         }
 
+        100% {
 
-        body {
+            transform:
+                translate(-50%, -50%)
+                scale(1.15);
 
-            min-height: 100vh;
-
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                Arial,
-                sans-serif;
-
-            color: white;
-
-            background:
-
-                radial-gradient(
-                    circle at 15% 0%,
-                    rgba(56,189,248,0.16),
-                    transparent 35%
-                ),
-
-                radial-gradient(
-                    circle at 90% 20%,
-                    rgba(37,99,235,0.15),
-                    transparent 35%
-                ),
-
-                var(--background);
-
-            padding-bottom: 100px;
-
-            overflow-x: hidden;
+            opacity: 0;
         }
 
+    }
+
+
+    /*
+        Make absolutely sure the custom
+        location pane sits above Windy's
+        weather visualization.
+    */
+
+    .atmosphere-location-pane {
+
+        z-index: 10000 !important;
+
+    }
+
+
+    /* MAP LOCATION LABEL */
+
+    .map-label {
+
+        position: absolute;
+
+        top: 14px;
+
+        left: 14px;
+
+        z-index: 1000;
+
+        padding:
+            8px 12px;
+
+        border-radius: 12px;
+
+        background:
+            rgba(7,17,31,0.72);
+
+        border:
+            1px solid
+            rgba(255,255,255,0.14);
+
+        color:
+            rgba(255,255,255,0.92);
+
+        font-size: 12px;
+
+        font-weight: 650;
+
+        backdrop-filter:
+            blur(14px)
+            saturate(160%);
+
+        -webkit-backdrop-filter:
+            blur(14px)
+            saturate(160%);
+
+        box-shadow:
+            0 5px 20px
+            rgba(0,0,0,0.20);
+
+        pointer-events: none;
+
+        transition:
+            opacity 0.25s ease;
+    }
+
+
+    /* LOCATION LOADING */
+
+    .location-loading {
+
+        position: absolute;
+
+        left: 50%;
+
+        top: 50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        z-index: 2000;
+
+        padding:
+            12px 16px;
+
+        border-radius: 14px;
+
+        background:
+            rgba(7,17,31,0.78);
+
+        border:
+            1px solid
+            rgba(255,255,255,0.13);
+
+        backdrop-filter:
+            blur(16px);
+
+        -webkit-backdrop-filter:
+            blur(16px);
+
+        color:
+            rgba(255,255,255,0.9);
+
+        font-size: 13px;
+
+        font-weight: 650;
+
+        box-shadow:
+            0 10px 30px
+            rgba(0,0,0,0.28);
+
+        transition:
+            opacity 0.25s ease;
+    }
+
+
+    .location-loading.hidden {
+
+        opacity: 0;
+
+        pointer-events: none;
+    }
+
+
+    /* =========================================================
+       LIQUID GLASS NAVIGATION
+       ========================================================= */
+
+    .bottom-nav {
+
+        position: fixed;
+
+        left: 50%;
+
+        bottom: 14px;
+
+        transform:
+            translateX(-50%);
+
+        width:
+            calc(100% - 24px);
+
+        max-width: 620px;
+
+        height: 72px;
+
+        display: flex;
+
+        justify-content:
+            space-around;
+
+        align-items: center;
+
+        padding: 6px;
+
+        background:
+
+            linear-gradient(
+                135deg,
+                rgba(255,255,255,0.15),
+                rgba(255,255,255,0.055)
+            );
+
+        border:
+            1px solid
+            rgba(255,255,255,0.18);
+
+        border-radius: 999px;
+
+        backdrop-filter:
+            blur(30px)
+            saturate(180%);
+
+        -webkit-backdrop-filter:
+            blur(30px)
+            saturate(180%);
+
+        box-shadow:
+
+            0 20px 55px
+            rgba(0,0,0,0.38),
+
+            0 4px 18px
+            rgba(0,0,0,0.20),
+
+            inset 0 1px 0
+            rgba(255,255,255,0.28),
+
+            inset 0 -1px 0
+            rgba(255,255,255,0.06);
+
+        overflow: hidden;
+
+        z-index: 10000;
+
+        isolation: isolate;
+
+        transition:
+            transform 0.35s
+            cubic-bezier(0.22, 1, 0.36, 1),
+
+            box-shadow 0.35s ease;
+    }
+
+
+    .bottom-nav::before {
+
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        border-radius: inherit;
+
+        background:
+
+            linear-gradient(
+                115deg,
+                rgba(255,255,255,0.20),
+                transparent 28%,
+                transparent 65%,
+                rgba(255,255,255,0.08)
+            );
+
+        pointer-events: none;
+
+        z-index: -1;
+    }
+
+
+    .bottom-nav::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 190px;
+
+        height: 90px;
+
+        left: -210px;
+
+        top: -10px;
+
+        border-radius: 50%;
+
+        background:
+
+            radial-gradient(
+                ellipse,
+                rgba(255,255,255,0.16),
+                transparent 70%
+            );
+
+        filter:
+            blur(8px);
+
+        pointer-events: none;
+
+        animation:
+            liquidNavShine 7s
+            ease-in-out infinite;
+
+        z-index: -1;
+    }
+
+
+    @keyframes liquidNavShine {
+
+        0%, 45% {
+
+            left: -210px;
+
+            opacity: 0;
+        }
+
+        55% {
+
+            opacity: 1;
+        }
+
+        75%, 100% {
+
+            left:
+                calc(100% + 40px);
+
+            opacity: 0;
+        }
+
+    }
+
+
+    .nav-item {
+
+        position: relative;
+
+        flex: 1;
+
+        height: 58px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        justify-content: center;
+
+        text-decoration: none;
+
+        color:
+            rgba(255,255,255,0.52);
+
+        text-align: center;
+
+        font-size: 10px;
+
+        font-weight: 650;
+
+        letter-spacing: 0.1px;
+
+        border-radius: 999px;
+
+        min-width: 55px;
+
+        -webkit-tap-highlight-color:
+            transparent;
+
+        user-select: none;
+
+        transition:
+            color 0.3s ease,
+            transform 0.25s
+            cubic-bezier(0.22, 1, 0.36, 1);
+
+        z-index: 2;
+    }
+
+
+    .nav-item::before {
+
+        content: "";
+
+        position: absolute;
+
+        inset: 3px;
+
+        border-radius: 999px;
+
+        background:
+
+            linear-gradient(
+                145deg,
+                rgba(255,255,255,0.17),
+                rgba(255,255,255,0.055)
+            );
+
+        border:
+            1px solid
+            rgba(255,255,255,0.13);
+
+        box-shadow:
+
+            inset 0 1px 0
+            rgba(255,255,255,0.16),
+
+            0 4px 14px
+            rgba(0,0,0,0.10);
+
+        opacity: 0;
+
+        transform:
+            scale(0.72);
+
+        transition:
+            opacity 0.35s ease,
+            transform 0.4s
+            cubic-bezier(0.22, 1, 0.36, 1);
+
+        z-index: -1;
+    }
+
+
+    .nav-item.active {
+
+        color: #ffffff;
+
+        text-shadow:
+            0 0 12px
+            rgba(101,199,255,0.35);
+    }
+
+
+    .nav-item.active::before {
+
+        opacity: 1;
+
+        transform:
+            scale(1);
+    }
+
+
+    .nav-item.active::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 32px;
+
+        height: 5px;
+
+        bottom: 5px;
+
+        left: 50%;
+
+        transform:
+            translateX(-50%);
+
+        border-radius: 999px;
+
+        background:
+            rgba(101,199,255,0.65);
+
+        filter:
+            blur(7px);
+
+        opacity: 0.55;
+
+        pointer-events: none;
+    }
+
+
+    .nav-icon {
+
+        position: relative;
+
+        display: block;
+
+        font-size: 21px;
+
+        line-height: 1;
+
+        margin-bottom: 4px;
+
+        transition:
+            transform 0.35s
+            cubic-bezier(0.22, 1, 0.36, 1),
+
+            filter 0.3s ease;
+    }
+
+
+    .nav-item.active .nav-icon {
+
+        transform:
+            translateY(-1px)
+            scale(1.08);
+
+        filter:
+            drop-shadow(
+                0 2px 8px
+                rgba(101,199,255,0.35)
+            );
+    }
+
+
+    .nav-item:active {
+
+        transform:
+            scale(0.88);
+    }
+
+
+    .nav-item:active::before {
+
+        background:
+            rgba(255,255,255,0.20);
+
+        transform:
+            scale(0.92);
+    }
+
+
+    .nav-item:active .nav-icon {
+
+        transform:
+            scale(0.90);
+    }
+
+
+    @media (hover: hover) {
+
+        .nav-item:hover {
+
+            color:
+                rgba(255,255,255,0.88);
+
+            transform:
+                translateY(-1px);
+        }
+
+        .nav-item:hover::before {
+
+            opacity: 0.55;
+
+            transform:
+                scale(0.94);
+        }
+
+    }
+
+
+    @media (max-width: 520px) {
+
+        .bottom-nav {
+
+            bottom:
+                max(
+                    12px,
+                    env(safe-area-inset-bottom)
+                );
+
+            width:
+                calc(100% - 18px);
+
+            height: 70px;
+
+            padding: 5px;
+
+            border-radius: 999px;
+
+            box-shadow:
+
+                0 18px 48px
+                rgba(0,0,0,0.42),
+
+                inset 0 1px 0
+                rgba(255,255,255,0.26),
+
+                inset 0 -1px 0
+                rgba(255,255,255,0.05);
+        }
+
+        .nav-item {
+
+            height: 58px;
+
+            font-size: 10px;
+        }
+
+        .nav-icon {
+
+            font-size: 20px;
+        }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .bottom-nav::after {
+
+            animation: none;
+        }
+
+        .atmosphere-location-dot::after {
+
+            animation: none;
+        }
+
+    }
+
+
+    /* MOBILE */
+
+    @media (max-width: 600px) {
 
         .app {
 
-            width: 100%;
+            padding-top: 20px;
 
-            max-width: 1000px;
+            padding-left: 10px;
 
-            margin: 0 auto;
-
-            padding:
-                24px 14px 30px;
-        }
-
-
-        /* HEADER */
-
-        .header {
-
-            text-align: center;
-
-            margin-bottom: 20px;
+            padding-right: 10px;
         }
 
 
         .header h1 {
 
-            font-size: 27px;
-
-            font-weight: 750;
-
-            letter-spacing: -0.7px;
+            font-size: 24px;
         }
 
-
-        .header p {
-
-            color: var(--muted);
-
-            font-size: 14px;
-
-            margin-top: 5px;
-        }
-
-
-        /* LAYER PICKER */
 
         .layer-picker {
 
-            display: flex;
+            justify-content:
+                flex-start;
 
-            gap: 8px;
+            overflow-x: auto;
 
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
 
-            justify-content: center;
+            padding-bottom: 5px;
 
-            margin-bottom: 14px;
+            scrollbar-width: none;
+        }
+
+
+        .layer-picker::-webkit-scrollbar {
+
+            display: none;
         }
 
 
         .layer-button {
 
-            padding:
-                9px 15px;
-
-            border-radius: 13px;
-
-            border:
-                1px solid
-                rgba(0,242,255,0.15);
-
-            cursor: pointer;
-
-            font-weight: 650;
-
-            font-size: 13px;
-
-            color:
-                rgba(255,255,255,0.70);
-
-            background:
-                rgba(0,242,255,0.06);
-
-            transition:
-                transform 0.15s ease,
-                background 0.2s ease,
-                box-shadow 0.2s ease;
-
-            box-shadow:
-                0 4px 16px
-                rgba(0,120,255,0.10);
+            flex-shrink: 0;
         }
 
-
-        .layer-button:hover {
-
-            transform:
-                translateY(-1px);
-
-            background:
-                rgba(0,242,255,0.11);
-        }
-
-
-        .layer-button:active {
-
-            transform:
-                scale(0.96);
-        }
-
-
-        .layer-button.active {
-
-            border-color:
-                transparent;
-
-            color:
-                #07111f;
-        }
-
-
-        /* =========================================================
-           MAP
-           ========================================================= */
 
         .map-wrapper {
 
-            position: relative;
+            height: 72vh;
 
-            width: 100%;
+            min-height: 450px;
 
-            height: 78vh;
-
-            min-height: 500px;
-
-            max-height: 850px;
-
-            border-radius: 24px;
-
-            overflow: hidden;
-
-            border:
-                1px solid
-                rgba(0,242,255,0.18);
-
-            box-shadow:
-
-                0 8px 40px
-                rgba(0,120,255,0.20),
-
-                0 1.5px 0
-                rgba(0,242,255,0.20)
-                inset;
-
-            background: #0b1626;
+            border-radius: 20px;
         }
 
-
-        /*
-            Windy API map container.
-
-            IMPORTANT:
-            This is a REAL map, not an iframe.
-
-            Therefore Leaflet markers are actually
-            attached to geographic coordinates.
-        */
-
-        #windy {
-
-            position: absolute;
-
-            left: 0;
-
-            top: 0;
-
-            width: 100%;
-
-            height: 100%;
-        }
-
-
-        /*
-            Keep the Windy map inside the rounded
-            Atmosphere container.
-        */
-
-        #windy > * {
-
-            max-width: 100%;
-        }
-
-
-        /* MAP LOCATION LABEL */
-
-        .map-label {
-
-            position: absolute;
-
-            top: 14px;
-
-            left: 14px;
-
-            z-index: 1000;
-
-            padding:
-                8px 12px;
-
-            border-radius: 12px;
-
-            background:
-                rgba(7,17,31,0.72);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.14);
-
-            color:
-                rgba(255,255,255,0.92);
-
-            font-size: 12px;
-
-            font-weight: 650;
-
-            backdrop-filter:
-                blur(14px)
-                saturate(160%);
-
-            -webkit-backdrop-filter:
-                blur(14px)
-                saturate(160%);
-
-            box-shadow:
-                0 5px 20px
-                rgba(0,0,0,0.20);
-
-            pointer-events: none;
-
-            transition:
-                opacity 0.25s ease;
-        }
-
-
-        /*
-            Location loading indicator.
-        */
-
-        .location-loading {
-
-            position: absolute;
-
-            left: 50%;
-
-            top: 50%;
-
-            transform:
-                translate(-50%, -50%);
-
-            z-index: 2000;
-
-            padding:
-                12px 16px;
-
-            border-radius: 14px;
-
-            background:
-                rgba(7,17,31,0.78);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.13);
-
-            backdrop-filter:
-                blur(16px);
-
-            -webkit-backdrop-filter:
-                blur(16px);
-
-            color:
-                rgba(255,255,255,0.9);
-
-            font-size: 13px;
-
-            font-weight: 650;
-
-            box-shadow:
-                0 10px 30px
-                rgba(0,0,0,0.28);
-
-            transition:
-                opacity 0.25s ease;
-        }
-
-
-        .location-loading.hidden {
-
-            opacity: 0;
-
-            pointer-events: none;
-        }
-
-
-/* =========================================================
-   LIQUID GLASS NAVIGATION
-   ========================================================= */
-
-.bottom-nav {
-    position: fixed;
-
-    left: 50%;
-    bottom: 14px;
-
-    transform: translateX(-50%);
-
-    width: calc(100% - 24px);
-    max-width: 620px;
-
-    height: 72px;
-
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-
-    padding: 6px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255,255,255,0.15),
-            rgba(255,255,255,0.055)
-        );
-
-    border:
-        1px solid
-        rgba(255,255,255,0.18);
-
-    border-radius: 999px;
-
-    backdrop-filter:
-        blur(30px)
-        saturate(180%);
-
-    -webkit-backdrop-filter:
-        blur(30px)
-        saturate(180%);
-
-    box-shadow:
-        0 20px 55px rgba(0,0,0,0.38),
-        0 4px 18px rgba(0,0,0,0.20),
-        inset 0 1px 0 rgba(255,255,255,0.28),
-        inset 0 -1px 0 rgba(255,255,255,0.06);
-
-    overflow: hidden;
-
-    z-index: 10000;
-
-    isolation: isolate;
-
-    transition:
-        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-        box-shadow 0.35s ease;
-}
-
-
-/* Glass reflection */
-
-.bottom-nav::before {
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-    border-radius: inherit;
-
-    background:
-        linear-gradient(
-            115deg,
-            rgba(255,255,255,0.20),
-            transparent 28%,
-            transparent 65%,
-            rgba(255,255,255,0.08)
-        );
-
-    pointer-events: none;
-
-    z-index: -1;
-}
-
-
-/* Moving liquid reflection */
-
-.bottom-nav::after {
-    content: "";
-
-    position: absolute;
-
-    width: 190px;
-    height: 90px;
-
-    left: -210px;
-    top: -10px;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            ellipse,
-            rgba(255,255,255,0.16),
-            transparent 70%
-        );
-
-    filter: blur(8px);
-
-    pointer-events: none;
-
-    animation:
-        liquidNavShine 7s ease-in-out infinite;
-
-    z-index: -1;
-}
-
-
-@keyframes liquidNavShine {
-
-    0%, 45% {
-        left: -210px;
-        opacity: 0;
     }
 
-    55% {
-        opacity: 1;
-    }
+</style>
 
-    75%, 100% {
-        left: calc(100% + 40px);
-        opacity: 0;
-    }
-
-}
-
-
-.nav-item {
-    position: relative;
-
-    flex: 1;
-
-    height: 58px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    text-decoration: none;
-
-    color:
-        rgba(255,255,255,0.52);
-
-    text-align: center;
-
-    font-size: 10px;
-    font-weight: 650;
-
-    letter-spacing: 0.1px;
-
-    border-radius: 999px;
-
-    min-width: 55px;
-
-    -webkit-tap-highlight-color: transparent;
-
-    user-select: none;
-
-    transition:
-        color 0.3s ease,
-        transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-
-    z-index: 2;
-}
-
-
-/* Individual glass bubble behind active tab */
-
-.nav-item::before {
-    content: "";
-
-    position: absolute;
-
-    inset: 3px;
-
-    border-radius: 999px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,0.17),
-            rgba(255,255,255,0.055)
-        );
-
-    border:
-        1px solid
-        rgba(255,255,255,0.13);
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.16),
-        0 4px 14px rgba(0,0,0,0.10);
-
-    opacity: 0;
-
-    transform:
-        scale(0.72);
-
-    transition:
-        opacity 0.35s ease,
-        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-
-    z-index: -1;
-}
-
-
-/* Active Liquid Glass tab */
-
-.nav-item.active {
-    color:
-        #ffffff;
-
-    text-shadow:
-        0 0 12px rgba(101,199,255,0.35);
-}
-
-
-.nav-item.active::before {
-    opacity: 1;
-
-    transform:
-        scale(1);
-}
-
-
-/* Subtle active glow */
-
-.nav-item.active::after {
-    content: "";
-
-    position: absolute;
-
-    width: 32px;
-    height: 5px;
-
-    bottom: 5px;
-
-    left: 50%;
-
-    transform:
-        translateX(-50%);
-
-    border-radius: 999px;
-
-    background:
-        rgba(101,199,255,0.65);
-
-    filter: blur(7px);
-
-    opacity: 0.55;
-
-    pointer-events: none;
-}
-
-
-.nav-icon {
-    position: relative;
-
-    display: block;
-
-    font-size: 21px;
-
-    line-height: 1;
-
-    margin-bottom: 4px;
-
-    transition:
-        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-        filter 0.3s ease;
-}
-
-
-.nav-item.active .nav-icon {
-    transform:
-        translateY(-1px)
-        scale(1.08);
-
-    filter:
-        drop-shadow(
-            0 2px 8px rgba(101,199,255,0.35)
-        );
-}
-
-
-/* Touch interaction */
-
-.nav-item:active {
-    transform:
-        scale(0.88);
-}
-
-
-.nav-item:active::before {
-    background:
-        rgba(255,255,255,0.20);
-
-    transform:
-        scale(0.92);
-}
-
-
-.nav-item:active .nav-icon {
-    transform:
-        scale(0.90);
-}
-
-
-/* Desktop hover */
-
-@media (hover: hover) {
-
-    .nav-item:hover {
-        color:
-            rgba(255,255,255,0.88);
-
-        transform:
-            translateY(-1px);
-    }
-
-    .nav-item:hover::before {
-        opacity: 0.55;
-
-        transform:
-            scale(0.94);
-    }
-
-}
-
-
-/* iOS / small screen refinement */
-
-@media (max-width: 520px) {
-
-    .bottom-nav {
-        bottom:
-            max(
-                12px,
-                env(safe-area-inset-bottom)
-            );
-
-        width:
-            calc(100% - 18px);
-
-        height: 70px;
-
-        padding: 5px;
-
-        border-radius: 999px;
-
-        box-shadow:
-            0 18px 48px rgba(0,0,0,0.42),
-            inset 0 1px 0 rgba(255,255,255,0.26),
-            inset 0 -1px 0 rgba(255,255,255,0.05);
-    }
-
-    .nav-item {
-        height: 58px;
-
-        font-size: 10px;
-    }
-
-    .nav-icon {
-        font-size: 20px;
-    }
-
-}
-
-
-@media (prefers-reduced-motion: reduce) {
-
-    .bottom-nav::after {
-        animation: none;
-    }
-
-}
-
-
-/* =========================================================
-   END LIQUID GLASS NAVIGATION
-   ========================================================= */
-
-
-        /* MOBILE */
-
-        @media (max-width: 600px) {
-
-            .app {
-
-                padding-top: 20px;
-
-                padding-left: 10px;
-
-                padding-right: 10px;
-            }
-
-
-            .header h1 {
-
-                font-size: 24px;
-            }
-
-
-            .layer-picker {
-
-                justify-content: flex-start;
-
-                overflow-x: auto;
-
-                flex-wrap: nowrap;
-
-                padding-bottom: 5px;
-
-                scrollbar-width: none;
-            }
-
-
-            .layer-picker::-webkit-scrollbar {
-
-                display: none;
-            }
-
-
-            .layer-button {
-
-                flex-shrink: 0;
-            }
-
-
-            .map-wrapper {
-
-                height: 72vh;
-
-                min-height: 450px;
-
-                border-radius: 20px;
-            }
-
-        }
-
-    </style>
 
 </head>
 
-
 <body>
-
 
 <div class="app">
 
+<!-- HEADER -->
 
-    <!-- HEADER -->
+<header class="header">
 
-    <header class="header">
+    <h1>
+        Atmosphere Radar
+    </h1>
 
-        <h1>
-            Atmosphere Radar
-        </h1>
+    <p>
+        Interactive weather conditions
+    </p>
 
-        <p>
-            Interactive weather conditions
-        </p>
-
-    </header>
-
-
-    <!-- LAYER BUTTONS -->
-
-    <div class="layer-picker">
+</header>
 
 
-        <button
-            class="layer-button active"
-            data-layer="wind"
-            data-color="#38bdf8">
+<!-- LAYER BUTTONS -->
 
-            💨 Wind
-
-        </button>
+<div class="layer-picker">
 
 
-        <button
-            class="layer-button"
-            data-layer="rain"
-            data-color="#818cf8">
+    <button
+        class="layer-button active"
+        data-layer="wind"
+        data-color="#38bdf8">
 
-            🌧️ Rain
+        💨 Wind
 
-        </button>
-
-
-        <button
-            class="layer-button"
-            data-layer="temp"
-            data-color="#f97316">
-
-            🌡️ Temp
-
-        </button>
+    </button>
 
 
-        <button
-            class="layer-button"
-            data-layer="clouds"
-            data-color="#94a3b8">
+    <button
+        class="layer-button"
+        data-layer="rain"
+        data-color="#818cf8">
 
-            ☁️ Clouds
+        🌧️ Rain
 
-        </button>
-
-
-        <button
-            class="layer-button"
-            data-layer="pressure"
-            data-color="#34d399">
-
-            🔵 Pressure
-
-        </button>
+    </button>
 
 
-    </div>
+    <button
+        class="layer-button"
+        data-layer="temp"
+        data-color="#f97316">
+
+        🌡️ Temp
+
+    </button>
 
 
-    <!-- MAP -->
+    <button
+        class="layer-button"
+        data-layer="clouds"
+        data-color="#94a3b8">
 
-    <div class="map-wrapper">
+        ☁️ Clouds
 
-
-        <div
-            class="map-label"
-            id="map-location-label">
-
-            📍 Finding your location...
-
-        </div>
+    </button>
 
 
-        <div
-            class="location-loading"
-            id="location-loading">
+    <button
+        class="layer-button"
+        data-layer="pressure"
+        data-color="#34d399">
 
-            📍 Finding your current location...
+        🔵 Pressure
 
-        </div>
-
-
-        <!--
-            REAL WINDY MAP
-
-            This replaces the iframe.
-
-            Leaflet/Windy controls the map,
-            so geographic markers can be
-            attached directly to coordinates.
-        -->
-
-        <div id="windy"></div>
-
-
-    </div>
+    </button>
 
 
 </div>
 
+
+<!-- MAP -->
+
+<div class="map-wrapper">
+
+
+    <div
+        class="map-label"
+        id="map-location-label">
+
+        📍 Finding your location...
+
+    </div>
+
+
+    <div
+        class="location-loading"
+        id="location-loading">
+
+        📍 Finding your current location...
+
+    </div>
+
+
+    <div id="windy"></div>
+
+
+</div>
+
+
+</div>
 
 <!-- NAVIGATION -->
 
 <nav class="bottom-nav">
 
 
-    <a
-        href="index.html"
-        class="nav-item">
+<a
+    href="index.html"
+    class="nav-item">
 
-        <span class="nav-icon">
-            ⌂
-        </span>
+    <span class="nav-icon">
+        ⌂
+    </span>
 
-        Home
+    Home
 
-    </a>
-
-
-    <a
-        href="radar.html"
-        class="nav-item active">
-
-        <span class="nav-icon">
-            ◉
-        </span>
-
-        Radar
-
-    </a>
+</a>
 
 
-    <a
-        href="alerts.html"
-        class="nav-item">
+<a
+    href="radar.html"
+    class="nav-item active">
 
-        <span class="nav-icon">
-            ⚠
-        </span>
+    <span class="nav-icon">
+        ◉
+    </span>
 
-        Alerts
+    Radar
 
-    </a>
+</a>
 
 
-    <a
-        href="updates.html"
-        class="nav-item">
+<a
+    href="alerts.html"
+    class="nav-item">
 
-        <span class="nav-icon">
-            ✨
-        </span>
+    <span class="nav-icon">
+        ⚠
+    </span>
 
-        Updates
+    Alerts
 
-    </a>
+</a>
+
+
+<a
+    href="updates.html"
+    class="nav-item">
+
+    <span class="nav-icon">
+        ✨
+    </span>
+
+    Updates
+
+</a>
 
 
 </nav>
-
 
 <script>
 
 
 /* =========================================================
    ATMOSPHERE RADAR
-   WINDY + USER LOCATION
+   WINDY + REAL GEOGRAPHIC USER LOCATION
+========================================================= */
+
+
+/* =========================================================
+   WINDY API KEY
 ========================================================= */
 
 
 /*
-    ========================================================
-    WINDY API KEY
-    ========================================================
+    IMPORTANT:
 
-    REPLACE THIS WITH YOUR OWN WINDY API KEY.
+    Put your NEW Windy Map Forecast API key between
+    the quotation marks below.
 
-    Windy's JavaScript Map Forecast API requires
-    an API key.
+    Example:
+
+    const WINDY_API_KEY =
+        "WOz89BK1t4WWAed5Xb28eMdK5yJm9NXe";
 */
 
 const WINDY_API_KEY =
-    WOz89BK1t4WWAed5Xb28eMdK5yJm9NXe;
+    "WOz89BK1t4WWAed5Xb28eMdK5yJm9NXe";
 
 
 /* =========================================================
    DEFAULT / FALLBACK LOCATION
 ========================================================= */
 
+let userLat =
+    38.5;
 
-/*
-    Maryland fallback.
-
-    If the user denies location access,
-    the radar will still work.
-*/
-
-let userLat = 38.5;
-
-let userLon = -77.0;
+let userLon =
+    -77.0;
 
 
 /* =========================================================
@@ -1133,18 +1272,19 @@ const locationLoading =
    WINDY API STATE
 ========================================================= */
 
-let windyAPI = null;
+let windyAPI =
+    null;
 
-let userLocationMarker = null;
+
+let userLocationMarker =
+    null;
 
 
 /* =========================================================
    UPDATE LOCATION LABEL
 ========================================================= */
 
-function updateLocationLabel(
-    text
-) {
+function updateLocationLabel(text) {
 
     locationLabel.textContent =
         text;
@@ -1153,16 +1293,59 @@ function updateLocationLabel(
 
 
 /* =========================================================
-   CREATE / UPDATE USER MARKER
+   CREATE LOCATION PANE
+========================================================= */
+
+
+/*
+    Windy uses Leaflet internally.
+
+    We create a dedicated Leaflet pane
+    above the weather layers.
+
+    This guarantees the blue marker
+    remains visible.
+*/
+
+function createLocationPane() {
+
+    if (!windyAPI) {
+
+        return;
+
+    }
+
+
+    const map =
+        windyAPI.map;
+
+
+    if (
+        !map.getPane(
+            "atmosphereLocationPane"
+        )
+    ) {
+
+        const pane =
+            map.createPane(
+                "atmosphereLocationPane"
+            );
+
+
+        pane.style.zIndex =
+            "10000";
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE / UPDATE REAL GEOGRAPHIC BLUE DOT
 ========================================================= */
 
 function updateUserMarker() {
 
-
-    /*
-        Make sure Windy has finished
-        initializing first.
-    */
 
     if (!windyAPI) {
 
@@ -1176,8 +1359,15 @@ function updateUserMarker() {
 
 
     /*
-        Remove the old marker if
-        one already exists.
+        Make sure our special
+        marker pane exists.
+    */
+
+    createLocationPane();
+
+
+    /*
+        Remove previous marker.
     */
 
     if (userLocationMarker) {
@@ -1186,105 +1376,122 @@ function updateUserMarker() {
             userLocationMarker
         );
 
-        userLocationMarker = null;
+        userLocationMarker =
+            null;
 
     }
 
 
     /*
-        Windy exposes a predefined
-        blue "my location" icon.
+        Create a custom Leaflet icon.
 
-        This is an actual Leaflet
-        marker attached to geographic
-        coordinates.
+        IMPORTANT:
+
+        This is not positioned with
+        "position: fixed".
+
+        Leaflet converts the latitude
+        and longitude into the correct
+        screen position automatically.
     */
 
-    if (
-        typeof map.myMarkers !== "undefined" &&
-        map.myMarkers &&
-        map.myMarkers.myLocationIcon
-    ) {
+    const locationIcon =
+        L.divIcon({
 
-        userLocationMarker =
-            L.marker(
+            className:
+                "atmosphere-location-marker",
 
-                [
-                    userLat,
-                    userLon
-                ],
+            html:
+                `
+                <div
+                    class="atmosphere-location-dot"
+                    aria-label="Your current location">
+                </div>
+                `,
 
-                {
-                    icon:
-                        map.myMarkers
-                            .myLocationIcon,
+            iconSize:
+                [20, 20],
 
-                    zIndexOffset: 1000
-                }
+            iconAnchor:
+                [10, 10],
 
-            ).addTo(map);
-
-    }
+            popupAnchor:
+                [0, -10]
+        });
 
 
     /*
-        Fallback in case the current
-        Windy build doesn't expose
-        the predefined icon.
+        Create a REAL geographic
+        Leaflet marker.
 
-        This still creates a REAL
-        geographic Leaflet marker.
+        The marker's position is:
+
+        [userLat, userLon]
     */
 
-    else {
+    userLocationMarker =
+        L.marker(
 
-        const fallbackIcon =
-            L.divIcon({
+            [
+                userLat,
+                userLon
+            ],
 
-                className:
-                    "atmosphere-location-marker",
+            {
 
-                html:
-                    `
-                    <div style="
-                        width:16px;
-                        height:16px;
-                        border-radius:50%;
-                        background:#1683ff;
-                        border:3px solid white;
-                        box-shadow:
-                            0 0 0 2px rgba(22,131,255,0.30),
-                            0 2px 10px rgba(0,0,0,0.35);
-                    "></div>
-                    `,
+                icon:
+                    locationIcon,
 
-                iconSize:
-                    [16,16],
+                pane:
+                    "atmosphereLocationPane",
 
-                iconAnchor:
-                    [8,8]
-            });
+                zIndexOffset:
+                    10000,
+
+                interactive:
+                    false
+
+            }
+
+        );
 
 
-        userLocationMarker =
-            L.marker(
+    /*
+        Add the marker directly
+        to Windy's existing map.
+    */
 
-                [
-                    userLat,
-                    userLon
-                ],
+    userLocationMarker.addTo(
+        map
+    );
 
-                {
-                    icon:
-                        fallbackIcon,
 
-                    zIndexOffset:
-                        1000
-                }
+    /*
+        Force Leaflet to recalculate
+        the marker position.
+    */
 
-            ).addTo(map);
+    userLocationMarker.setLatLng(
+        [
+            userLat,
+            userLon
+        ]
+    );
 
-    }
+
+    /*
+        Debug information.
+
+        This will appear in the browser
+        console and confirms the marker
+        was placed at actual coordinates.
+    */
+
+    console.log(
+        "Atmosphere location marker placed at:",
+        userLat,
+        userLon
+    );
 
 }
 
@@ -1308,11 +1515,8 @@ function centerMapOnUser() {
 
 
     /*
-        Move the actual map center
+        Move the actual Windy map
         to the user's coordinates.
-
-        This is geographic map movement,
-        not a screen-positioned element.
     */
 
     map.setView(
@@ -1332,8 +1536,8 @@ function centerMapOnUser() {
 
 
     /*
-        Put the blue dot at the exact
-        same geographic coordinates.
+        Place the blue dot at
+        those same coordinates.
     */
 
     updateUserMarker();
@@ -1347,10 +1551,6 @@ function centerMapOnUser() {
 
 function getUserLocation() {
 
-
-    /*
-        Check browser support.
-    */
 
     if (!navigator.geolocation) {
 
@@ -1371,18 +1571,14 @@ function getUserLocation() {
     }
 
 
-    /*
-        Ask the browser for the
-        user's current GPS position.
-    */
-
     navigator.geolocation.getCurrentPosition(
 
         function(position) {
 
 
             /*
-                Save actual coordinates.
+                Get the browser's
+                actual coordinates.
             */
 
             userLat =
@@ -1392,9 +1588,12 @@ function getUserLocation() {
                 position.coords.longitude;
 
 
-            /*
-                Update UI.
-            */
+            console.log(
+                "Atmosphere GPS location:",
+                userLat,
+                userLon
+            );
+
 
             updateLocationLabel(
                 "📍 Your current location"
@@ -1407,8 +1606,9 @@ function getUserLocation() {
 
 
             /*
-                Move the actual Windy
-                map to the user's location.
+                Center Windy's map and
+                place the real geographic
+                marker.
             */
 
             centerMapOnUser();
@@ -1425,10 +1625,6 @@ function getUserLocation() {
             );
 
 
-            /*
-                Keep the Maryland fallback.
-            */
-
             updateLocationLabel(
                 "📍 Maryland & surrounding region"
             );
@@ -1439,17 +1635,27 @@ function getUserLocation() {
             );
 
 
+            /*
+                Still show the blue marker
+                at the fallback coordinates.
+            */
+
             centerMapOnUser();
 
         },
 
 
         {
-            enableHighAccuracy: true,
 
-            timeout: 10000,
+            enableHighAccuracy:
+                true,
 
-            maximumAge: 300000
+            timeout:
+                10000,
+
+            maximumAge:
+                300000
+
         }
 
     );
@@ -1463,20 +1669,17 @@ function getUserLocation() {
 
 const windyOptions = {
 
+
     /*
-        REQUIRED WINDY API KEY
+        Windy Map Forecast API key.
     */
 
     key:
-        WOz89BK1t4WWAed5Xb28eMdK5yJm9NXe,
+        WINDY_API_KEY,
 
 
     /*
-        Initial fallback position.
-
-        This gets replaced by the
-        user's GPS position as soon
-        as location is available.
+        Fallback starting location.
     */
 
     lat:
@@ -1490,7 +1693,7 @@ const windyOptions = {
 
 
     /*
-        Initial weather overlay.
+        Initial weather layer.
     */
 
     overlay:
@@ -1505,41 +1708,21 @@ const windyOptions = {
         "ecmwf",
 
 
-    /*
-        Surface level.
-    */
-
     level:
         "surface",
 
-
-    /*
-        Fahrenheit.
-    */
 
     metricTemp:
         "°F",
 
 
-    /*
-        MPH wind speed.
-    */
-
     metricWind:
         "mph",
 
 
-    /*
-        Rain in inches.
-    */
-
     metricRain:
         "in",
 
-
-    /*
-        12-hour time format.
-    */
 
     hourFormat:
         "12h"
@@ -1551,12 +1734,6 @@ const windyOptions = {
    INITIALIZE WINDY
 ========================================================= */
 
-
-/*
-    Windy calls this function once
-    the map is completely ready.
-*/
-
 windyInit(
 
     windyOptions,
@@ -1564,17 +1741,14 @@ windyInit(
     function(api) {
 
 
-        /*
-            Save Windy API.
-        */
+        console.log(
+            "Windy map initialized."
+        );
+
 
         windyAPI =
             api;
 
-
-        /*
-            Get useful Windy objects.
-        */
 
         const {
             map,
@@ -1583,8 +1757,15 @@ windyInit(
 
 
         /*
-            Make sure the selected
-            overlay is correct.
+            Create our marker pane
+            before creating the marker.
+        */
+
+        createLocationPane();
+
+
+        /*
+            Set initial weather overlay.
         */
 
         store.set(
@@ -1594,8 +1775,7 @@ windyInit(
 
 
         /*
-            Start centered on the
-            fallback/current coordinates.
+            Start at fallback coordinates.
         */
 
         map.setView(
@@ -1611,16 +1791,19 @@ windyInit(
 
 
         /*
-            Create the geographic
-            user-location marker.
+            Immediately show the blue
+            geographic marker.
+
+            This means there is a marker
+            even before GPS finishes.
         */
 
         updateUserMarker();
 
 
         /*
-            Now request the actual
-            browser location.
+            Then ask the browser for
+            the actual user location.
         */
 
         getUserLocation();
@@ -1646,11 +1829,6 @@ buttons.forEach(
             () => {
 
 
-                /*
-                    Remove active state
-                    from all buttons.
-                */
-
                 buttons.forEach(
 
                     other => {
@@ -1670,18 +1848,10 @@ buttons.forEach(
                 );
 
 
-                /*
-                    Activate clicked button.
-                */
-
                 button.classList.add(
                     "active"
                 );
 
-
-                /*
-                    Remember selected layer.
-                */
 
                 currentLayer =
                     button.dataset.layer;
@@ -1690,10 +1860,6 @@ buttons.forEach(
                 const color =
                     button.dataset.color;
 
-
-                /*
-                    Apply selected color.
-                */
 
                 button.style.background =
                     color;
@@ -1704,15 +1870,11 @@ buttons.forEach(
 
 
                 /*
-                    Change the actual Windy
+                    Change Windy's actual
                     weather visualization.
 
-                    IMPORTANT:
-
-                    We are NOT rebuilding an iframe.
-
-                    We are changing Windy's
-                    actual map state.
+                    The blue geographic
+                    marker remains on the map.
                 */
 
                 if (windyAPI) {
@@ -1720,6 +1882,26 @@ buttons.forEach(
                     windyAPI.store.set(
                         "overlay",
                         currentLayer
+                    );
+
+
+                    /*
+                        Re-add the marker after
+                        changing the weather layer
+                        just to guarantee that it
+                        remains above the visualization.
+                    */
+
+                    setTimeout(
+
+                        function() {
+
+                            updateUserMarker();
+
+                        },
+
+                        150
+
                     );
 
                 }
@@ -1755,30 +1937,58 @@ if (initial) {
 
 
 /* =========================================================
-   OPTIONAL: KEEP MARKER GEOGRAPHICALLY ATTACHED
+   WINDOW RESIZE
 ========================================================= */
 
 
 /*
-    The marker is a Leaflet geographic
-    marker.
-
-    It is NOT positioned with CSS.
-
-    Therefore:
-
-    - Drag map → marker moves with map
-    - Zoom map → marker stays at location
-    - Pan map → marker stays at location
-    - Change weather layer → marker stays
-    - Change map position → marker stays
+    When the browser changes size,
+    tell Leaflet to recalculate the
+    geographic marker's screen position.
 */
+
+window.addEventListener(
+
+    "resize",
+
+    function() {
+
+        if (
+            windyAPI &&
+            windyAPI.map
+        ) {
+
+            windyAPI.map.invalidateSize();
+
+            if (
+                userLocationMarker
+            ) {
+
+                userLocationMarker.setLatLng(
+
+                    [
+                        userLat,
+                        userLon
+                    ]
+
+                );
+
+            }
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   END
+========================================================= */
 
 
 </script>
 
-
 </body>
 
 </html>
-
