@@ -394,6 +394,7 @@ serviceWorkerParam: {
         box-shadow 0.35s ease;
 }
 
+
 /* Glass reflection */
 
 .bottom-nav::before {
@@ -418,6 +419,7 @@ serviceWorkerParam: {
 
     z-index: -1;
 }
+
 
 /* Moving liquid reflection */
 
@@ -451,6 +453,7 @@ serviceWorkerParam: {
     z-index: -1;
 }
 
+
 @keyframes liquidNavShine {
 
     0%, 45% {
@@ -468,6 +471,7 @@ serviceWorkerParam: {
     }
 
 }
+
 
 .nav-item {
     position: relative;
@@ -508,6 +512,7 @@ serviceWorkerParam: {
     z-index: 2;
 }
 
+
 /* Individual glass bubble behind active tab */
 
 .nav-item::before {
@@ -546,6 +551,7 @@ serviceWorkerParam: {
     z-index: -1;
 }
 
+
 /* Active Liquid Glass tab */
 
 .nav-item.active {
@@ -556,12 +562,14 @@ serviceWorkerParam: {
         0 0 12px rgba(101,199,255,0.35);
 }
 
+
 .nav-item.active::before {
     opacity: 1;
 
     transform:
         scale(1);
 }
+
 
 /* Subtle active glow */
 
@@ -592,6 +600,7 @@ serviceWorkerParam: {
     pointer-events: none;
 }
 
+
 .nav-icon {
     position: relative;
 
@@ -608,6 +617,7 @@ serviceWorkerParam: {
         filter 0.3s ease;
 }
 
+
 .nav-item.active .nav-icon {
     transform:
         translateY(-1px)
@@ -619,12 +629,14 @@ serviceWorkerParam: {
         );
 }
 
+
 /* Touch interaction */
 
 .nav-item:active {
     transform:
         scale(0.88);
 }
+
 
 .nav-item:active::before {
     background:
@@ -634,10 +646,12 @@ serviceWorkerParam: {
         scale(0.92);
 }
 
+
 .nav-item:active .nav-icon {
     transform:
         scale(0.90);
 }
+
 
 /* Desktop hover */
 
@@ -659,6 +673,7 @@ serviceWorkerParam: {
     }
 
 }
+
 
 /* iOS / small screen refinement */
 
@@ -698,6 +713,7 @@ serviceWorkerParam: {
 
 }
 
+
 @media (prefers-reduced-motion: reduce) {
 
     .bottom-nav::after {
@@ -705,6 +721,7 @@ serviceWorkerParam: {
     }
 
 }
+
 
 /* =========================================================
    END LIQUID GLASS NAVIGATION
@@ -868,7 +885,7 @@ serviceWorkerParam: {
 
         <iframe
             id="windy-map"
-            src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=°F&metricWind=mph&zoom=8&overlay=wind&product=ecmwf&level=surface&lat=38.5&lon=-77.0&message=true"
+            src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=°F&metricWind=mph&zoom=8&overlay=wind&product=ecmwf&level=surface&lat=38.5&lon=-77.0&marker=38.5,-77.0&message=true"
             title="Atmosphere Weather Radar"
             loading="lazy"
             allowfullscreen>
@@ -952,9 +969,8 @@ serviceWorkerParam: {
 /*
     Default/fallback location.
 
-    If the user denies location access,
-    the radar will fall back to these
-    Maryland coordinates.
+    This is only used if the user
+    doesn't allow location access.
 */
 
 let userLat = 38.5;
@@ -963,8 +979,7 @@ let userLon = -77.0;
 
 
 /*
-    Keep track of the currently
-    selected Windy layer.
+    Currently selected Windy layer.
 */
 
 let currentLayer = "wind";
@@ -1001,10 +1016,28 @@ const locationLabel =
 
 
 /* =========================================================
-   BUILD WINDY MAP URL
+   BUILD WINDY MAP
 ========================================================= */
 
 function updateWindyMap() {
+
+
+    /*
+        The important part here is:
+
+        &marker=latitude,longitude
+
+        This tells Windy to put the marker
+        INSIDE the map at the geographic
+        coordinates.
+
+        It is NOT an HTML dot positioned
+        over the iframe.
+
+        Therefore, when the map moves,
+        the marker moves with the map.
+    */
+
 
     const src =
 
@@ -1019,11 +1052,6 @@ function updateWindyMap() {
         "&metricTemp=°F" +
 
         "&metricWind=mph" +
-
-        /*
-            Zoom 8 gives a much more useful
-            local view than the original zoom 5.
-        */
 
         "&zoom=8" +
 
@@ -1046,12 +1074,18 @@ function updateWindyMap() {
             userLon
         ) +
 
+        "&marker=" +
+        encodeURIComponent(
+            userLat + "," + userLon
+        ) +
+
         "&message=true";
 
 
     /*
-        Reload Windy using the
-        current coordinates.
+        Reload the map with the
+        user's geographic location
+        and geographic marker.
     */
 
     map.src = src;
@@ -1067,18 +1101,15 @@ function getUserLocation() {
 
 
     /*
-        Check whether this browser
-        supports geolocation.
+        Make sure the browser supports
+        location services.
     */
 
     if (!navigator.geolocation) {
 
         locationLabel.textContent =
-            "📍 Location unavailable";
+            "📍 Maryland & surrounding region";
 
-        /*
-            Use fallback coordinates.
-        */
 
         updateWindyMap();
 
@@ -1089,7 +1120,7 @@ function getUserLocation() {
 
     /*
         Ask the browser for the
-        user's current position.
+        user's actual location.
     */
 
     navigator.geolocation.getCurrentPosition(
@@ -1102,8 +1133,7 @@ function getUserLocation() {
 
 
             /*
-                Save the user's actual
-                latitude and longitude.
+                Get the actual GPS coordinates.
             */
 
             userLat =
@@ -1114,7 +1144,7 @@ function getUserLocation() {
 
 
             /*
-                Update the label.
+                Change the label.
             */
 
             locationLabel.textContent =
@@ -1122,8 +1152,11 @@ function getUserLocation() {
 
 
             /*
-                Reload Windy centered
-                on the user's location.
+                Rebuild Windy.
+
+                This puts the blue marker
+                at the user's actual
+                geographic position.
             */
 
             updateWindyMap();
@@ -1132,7 +1165,7 @@ function getUserLocation() {
 
 
         /*
-            ERROR / PERMISSION DENIED
+            LOCATION ERROR
         */
 
         function(error) {
@@ -1144,8 +1177,9 @@ function getUserLocation() {
 
 
             /*
-                Keep the existing Maryland
-                fallback location.
+                If location permission is
+                denied, use the Maryland
+                fallback coordinates.
             */
 
             locationLabel.textContent =
@@ -1225,7 +1259,7 @@ buttons.forEach(
 
 
                 /*
-                    Save the selected layer.
+                    Remember selected layer.
                 */
 
                 currentLayer =
@@ -1237,7 +1271,8 @@ buttons.forEach(
 
 
                 /*
-                    Apply the button color.
+                    Apply selected
+                    layer color.
                 */
 
                 button.style.background =
@@ -1249,8 +1284,12 @@ buttons.forEach(
 
 
                 /*
-                    Rebuild the map using
-                    the user's saved location.
+                    Reload the map.
+
+                    Because userLat/userLon
+                    are saved, the blue marker
+                    stays at the same real-world
+                    location.
                 */
 
                 updateWindyMap();
@@ -1265,7 +1304,7 @@ buttons.forEach(
 
 
 /* =========================================================
-   INITIAL ACTIVE BUTTON COLOR
+   INITIAL BUTTON COLOR
 ========================================================= */
 
 
@@ -1292,8 +1331,8 @@ if (initial) {
 
 
 /*
-    Ask for the user's location
-    when the Radar page loads.
+    Get the user's location as soon
+    as the Radar page loads.
 */
 
 getUserLocation();
