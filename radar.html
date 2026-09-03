@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 
 <html lang="en">
@@ -297,12 +298,21 @@
        REAL GEOGRAPHIC BLUE LOCATION DOT
        ========================================================= */
 
-    /*
-        This is NOT a screen-positioned dot.
+    .atmosphere-location-marker {
 
-        It is a Leaflet marker attached to the
-        user's latitude and longitude.
-    */
+        background:
+            transparent !important;
+
+        border:
+            none !important;
+
+        width:
+            20px !important;
+
+        height:
+            20px !important;
+    }
+
 
     .atmosphere-location-dot {
 
@@ -327,12 +337,10 @@
             rgba(0,0,0,0.45);
 
         position: relative;
+
+        pointer-events: none;
     }
 
-
-    /*
-        Subtle location pulse.
-    */
 
     .atmosphere-location-dot::after {
 
@@ -396,16 +404,12 @@
     }
 
 
-    /*
-        Make absolutely sure the custom
-        location pane sits above Windy's
-        weather visualization.
-    */
-
     .atmosphere-location-pane {
 
         z-index: 10000 !important;
 
+        pointer-events:
+            none !important;
     }
 
 
@@ -1212,15 +1216,7 @@
 
 
 /*
-    IMPORTANT:
-
-    Put your NEW Windy Map Forecast API key between
-    the quotation marks below.
-
-    Example:
-
-    const WINDY_API_KEY =
-        "WOz89BK1t4WWAed5Xb28eMdK5yJm9NXe";
+    Put your Windy Map Forecast API key here.
 */
 
 const WINDY_API_KEY =
@@ -1281,6 +1277,14 @@ let userLocationMarker =
 
 
 /* =========================================================
+   LOCATION REQUEST STATE
+========================================================= */
+
+let locationRequestFinished =
+    false;
+
+
+/* =========================================================
    UPDATE LOCATION LABEL
 ========================================================= */
 
@@ -1293,19 +1297,25 @@ function updateLocationLabel(text) {
 
 
 /* =========================================================
-   CREATE LOCATION PANE
+   HIDE LOCATION LOADING
 ========================================================= */
 
+function hideLocationLoading() {
 
-/*
-    Windy uses Leaflet internally.
+    if (locationLoading) {
 
-    We create a dedicated Leaflet pane
-    above the weather layers.
+        locationLoading.classList.add(
+            "hidden"
+        );
 
-    This guarantees the blue marker
-    remains visible.
-*/
+    }
+
+}
+
+
+/* =========================================================
+   CREATE LOCATION PANE
+========================================================= */
 
 function createLocationPane() {
 
@@ -1320,32 +1330,41 @@ function createLocationPane() {
         windyAPI.map;
 
 
-    if (
-        !map.getPane(
+    let pane =
+        map.getPane(
             "atmosphereLocationPane"
-        )
-    ) {
+        );
 
-        const pane =
+
+    if (!pane) {
+
+        pane =
             map.createPane(
                 "atmosphereLocationPane"
             );
 
-
-        pane.style.zIndex =
-            "10000";
-
     }
+
+
+    /*
+        Put the pane above Windy's
+        weather visualization.
+    */
+
+    pane.style.zIndex =
+        "10000";
+
+    pane.style.pointerEvents =
+        "none";
 
 }
 
 
 /* =========================================================
-   CREATE / UPDATE REAL GEOGRAPHIC BLUE DOT
+   CREATE REAL GEOGRAPHIC BLUE DOT
 ========================================================= */
 
 function updateUserMarker() {
-
 
     if (!windyAPI) {
 
@@ -1358,41 +1377,37 @@ function updateUserMarker() {
         windyAPI.map;
 
 
-    /*
-        Make sure our special
-        marker pane exists.
-    */
-
     createLocationPane();
 
 
     /*
-        Remove previous marker.
+        If a marker already exists,
+        simply move it.
+
+        This is important because it
+        means the marker stays attached
+        to geographic coordinates.
     */
 
     if (userLocationMarker) {
 
-        map.removeLayer(
-            userLocationMarker
+        userLocationMarker.setLatLng(
+
+            [
+                userLat,
+                userLon
+            ]
+
         );
 
-        userLocationMarker =
-            null;
+
+        return;
 
     }
 
 
     /*
-        Create a custom Leaflet icon.
-
-        IMPORTANT:
-
-        This is not positioned with
-        "position: fixed".
-
-        Leaflet converts the latitude
-        and longitude into the correct
-        screen position automatically.
+        Create the blue dot icon.
     */
 
     const locationIcon =
@@ -1417,16 +1432,13 @@ function updateUserMarker() {
 
             popupAnchor:
                 [0, -10]
+
         });
 
 
     /*
-        Create a REAL geographic
-        Leaflet marker.
-
-        The marker's position is:
-
-        [userLat, userLon]
+        Create a geographic Leaflet
+        marker using latitude/longitude.
     */
 
     userLocationMarker =
@@ -1457,8 +1469,8 @@ function updateUserMarker() {
 
 
     /*
-        Add the marker directly
-        to Windy's existing map.
+        Add the marker to Windy's
+        existing Leaflet map.
     */
 
     userLocationMarker.addTo(
@@ -1467,28 +1479,21 @@ function updateUserMarker() {
 
 
     /*
-        Force Leaflet to recalculate
-        the marker position.
+        Explicitly position it.
     */
 
     userLocationMarker.setLatLng(
+
         [
             userLat,
             userLon
         ]
+
     );
 
 
-    /*
-        Debug information.
-
-        This will appear in the browser
-        console and confirms the marker
-        was placed at actual coordinates.
-    */
-
     console.log(
-        "Atmosphere location marker placed at:",
+        "Atmosphere blue dot placed at:",
         userLat,
         userLon
     );
@@ -1502,7 +1507,6 @@ function updateUserMarker() {
 
 function centerMapOnUser() {
 
-
     if (!windyAPI) {
 
         return;
@@ -1513,11 +1517,6 @@ function centerMapOnUser() {
     const map =
         windyAPI.map;
 
-
-    /*
-        Move the actual Windy map
-        to the user's coordinates.
-    */
 
     map.setView(
 
@@ -1535,12 +1534,37 @@ function centerMapOnUser() {
     );
 
 
+    updateUserMarker();
+
+}
+
+
+/* =========================================================
+   FALLBACK LOCATION
+========================================================= */
+
+function useFallbackLocation() {
+
     /*
-        Place the blue dot at
-        those same coordinates.
+        Maryland-area fallback.
     */
 
-    updateUserMarker();
+    userLat =
+        38.5;
+
+    userLon =
+        -77.0;
+
+
+    updateLocationLabel(
+        "📍 Maryland & surrounding region"
+    );
+
+
+    hideLocationLoading();
+
+
+    centerMapOnUser();
 
 }
 
@@ -1551,34 +1575,124 @@ function centerMapOnUser() {
 
 function getUserLocation() {
 
+    /*
+        Browser doesn't support geolocation.
+    */
 
     if (!navigator.geolocation) {
 
-        updateLocationLabel(
-            "📍 Maryland & surrounding region"
+        console.warn(
+            "Geolocation is not supported."
         );
 
 
-        locationLoading.classList.add(
-            "hidden"
-        );
+        locationRequestFinished =
+            true;
 
 
-        centerMapOnUser();
+        useFallbackLocation();
 
         return;
 
     }
 
 
+    console.log(
+        "Atmosphere is requesting browser location..."
+    );
+
+
+    /*
+        SAFETY TIMER
+
+        Safari can sometimes leave a
+        geolocation request waiting.
+
+        This timer makes absolutely sure
+        the UI cannot stay stuck forever.
+    */
+
+    const safetyTimer =
+        setTimeout(
+
+            function() {
+
+                if (
+                    locationRequestFinished
+                ) {
+
+                    return;
+
+                }
+
+
+                console.warn(
+                    "Location request is taking too long. Using fallback."
+                );
+
+
+                locationRequestFinished =
+                    true;
+
+
+                updateLocationLabel(
+                    "📍 Using approximate location"
+                );
+
+
+                hideLocationLoading();
+
+
+                /*
+                    Keep the fallback geographic
+                    marker visible.
+                */
+
+                centerMapOnUser();
+
+            },
+
+            5000
+
+        );
+
+
+    /*
+        Ask the browser for the real location.
+    */
+
     navigator.geolocation.getCurrentPosition(
 
         function(position) {
 
+            /*
+                Stop the safety timer.
+            */
+
+            clearTimeout(
+                safetyTimer
+            );
+
 
             /*
-                Get the browser's
-                actual coordinates.
+                Prevent duplicate callbacks.
+            */
+
+            if (
+                locationRequestFinished
+            ) {
+
+                return;
+
+            }
+
+
+            locationRequestFinished =
+                true;
+
+
+            /*
+                REAL GPS COORDINATES
             */
 
             userLat =
@@ -1589,26 +1703,28 @@ function getUserLocation() {
 
 
             console.log(
-                "Atmosphere GPS location:",
+                "REAL Atmosphere GPS location:",
                 userLat,
                 userLon
             );
 
+
+            /*
+                Update the UI.
+            */
 
             updateLocationLabel(
                 "📍 Your current location"
             );
 
 
-            locationLoading.classList.add(
-                "hidden"
-            );
+            hideLocationLoading();
 
 
             /*
-                Center Windy's map and
-                place the real geographic
-                marker.
+                Move the actual Windy map
+                to the actual geographic
+                coordinates.
             */
 
             centerMapOnUser();
@@ -1618,6 +1734,27 @@ function getUserLocation() {
 
         function(error) {
 
+            /*
+                Stop the safety timer.
+            */
+
+            clearTimeout(
+                safetyTimer
+            );
+
+
+            if (
+                locationRequestFinished
+            ) {
+
+                return;
+
+            }
+
+
+            locationRequestFinished =
+                true;
+
 
             console.warn(
                 "Unable to get user location:",
@@ -1625,22 +1762,12 @@ function getUserLocation() {
             );
 
 
-            updateLocationLabel(
-                "📍 Maryland & surrounding region"
-            );
-
-
-            locationLoading.classList.add(
-                "hidden"
-            );
-
-
             /*
-                Still show the blue marker
-                at the fallback coordinates.
+                GPS failed, so use the
+                fallback location.
             */
 
-            centerMapOnUser();
+            useFallbackLocation();
 
         },
 
@@ -1669,18 +1796,8 @@ function getUserLocation() {
 
 const windyOptions = {
 
-
-    /*
-        Windy Map Forecast API key.
-    */
-
     key:
         WINDY_API_KEY,
-
-
-    /*
-        Fallback starting location.
-    */
 
     lat:
         userLat,
@@ -1691,38 +1808,23 @@ const windyOptions = {
     zoom:
         8,
 
-
-    /*
-        Initial weather layer.
-    */
-
     overlay:
         "wind",
-
-
-    /*
-        Weather model.
-    */
 
     product:
         "ecmwf",
 
-
     level:
         "surface",
-
 
     metricTemp:
         "°F",
 
-
     metricWind:
         "mph",
 
-
     metricRain:
         "in",
-
 
     hourFormat:
         "12h"
@@ -1740,7 +1842,6 @@ windyInit(
 
     function(api) {
 
-
         console.log(
             "Windy map initialized."
         );
@@ -1757,15 +1858,14 @@ windyInit(
 
 
         /*
-            Create our marker pane
-            before creating the marker.
+            Create the location pane.
         */
 
         createLocationPane();
 
 
         /*
-            Set initial weather overlay.
+            Set initial weather layer.
         */
 
         store.set(
@@ -1791,22 +1891,35 @@ windyInit(
 
 
         /*
-            Immediately show the blue
-            geographic marker.
+            IMPORTANT:
 
-            This means there is a marker
-            even before GPS finishes.
+            Put the blue dot on the map
+            immediately.
+
+            It is geographically anchored
+            at 38.5, -77 until the real
+            location is returned.
         */
 
         updateUserMarker();
 
 
         /*
-            Then ask the browser for
-            the actual user location.
+            Give the browser a moment to
+            begin its location request.
         */
 
-        getUserLocation();
+        setTimeout(
+
+            function() {
+
+                getUserLocation();
+
+            },
+
+            250
+
+        );
 
     }
 
@@ -1821,13 +1934,11 @@ buttons.forEach(
 
     button => {
 
-
         button.addEventListener(
 
             "click",
 
             () => {
-
 
                 buttons.forEach(
 
@@ -1872,9 +1983,6 @@ buttons.forEach(
                 /*
                     Change Windy's actual
                     weather visualization.
-
-                    The blue geographic
-                    marker remains on the map.
                 */
 
                 if (windyAPI) {
@@ -1886,15 +1994,15 @@ buttons.forEach(
 
 
                     /*
-                        Re-add the marker after
-                        changing the weather layer
-                        just to guarantee that it
-                        remains above the visualization.
+                        Keep the geographic
+                        blue marker on top.
                     */
 
                     setTimeout(
 
                         function() {
+
+                            createLocationPane();
 
                             updateUserMarker();
 
@@ -1940,13 +2048,6 @@ if (initial) {
    WINDOW RESIZE
 ========================================================= */
 
-
-/*
-    When the browser changes size,
-    tell Leaflet to recalculate the
-    geographic marker's screen position.
-*/
-
 window.addEventListener(
 
     "resize",
@@ -1959,6 +2060,7 @@ window.addEventListener(
         ) {
 
             windyAPI.map.invalidateSize();
+
 
             if (
                 userLocationMarker
@@ -1986,9 +2088,9 @@ window.addEventListener(
    END
 ========================================================= */
 
-
 </script>
 
 </body>
 
 </html>
+```
