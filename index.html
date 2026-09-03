@@ -5295,6 +5295,15 @@ async function loadWeather() {
 
         currentLocation =
             position;
+        
+        localStorage.setItem(
+    "atmosphereUserLocation",
+    JSON.stringify({
+        lat: position.lat,
+        lon: position.lon,
+        timestamp: Date.now()
+    })
+);
 
         const url =
             `https://api.openweathermap.org/data/2.5/weather` +
