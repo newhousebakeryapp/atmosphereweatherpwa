@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -9,38 +8,36 @@
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
 <script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
+window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-  OneSignalDeferred.push(async function(OneSignal) {
+OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
-      appId: "cc4fb605-2518-4661-bd12-7e758d182341",
-      safari_web_id: "web.onesignal.auto.40785b5b-169b-4884-a5e0-8aeabe17c634",
+        appId: "cc4fb605-2518-4661-bd12-7e758d182341",
+        safari_web_id: "web.onesignal.auto.40785b5b-169b-4884-a5e0-8aeabe17c634",
 
-      serviceWorkerPath: "atmosphereweatherpwa/push/onesignal/OneSignalSDKWorker.js",
+        serviceWorkerPath: "atmosphereweatherpwa/push/onesignal/OneSignalSDKWorker.js",
 
-      serviceWorkerParam: {
-        scope: "/atmosphereweatherpwa/push/onesignal/"
-      },
+        serviceWorkerParam: {
+            scope: "/atmosphereweatherpwa/push/onesignal/"
+        },
 
-      notifyButton: {
-        enable: true,
-      },
+        notifyButton: {
+            enable: true
+        }
     });
-  });
+});
 </script>
 
 <meta charset="UTF-8">
 
 <meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
-
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
 >
 
 <meta
-name="theme-color"
-content="#07111f"
-
+    name="theme-color"
+    content="#07111f"
 >
 
 <title>Radar • Atmosphere Weather</title>
@@ -53,978 +50,929 @@ content="#07111f"
 
 <style>
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
+:root {
 
-    :root {
+    --background: #07111f;
 
-        --background: #07111f;
+    --card:
+        rgba(255,255,255,0.075);
 
-        --card:
-            rgba(255,255,255,0.075);
+    --border:
+        rgba(255,255,255,0.11);
 
-        --border:
-            rgba(255,255,255,0.11);
+    --blue: #7dd3fc;
 
-        --blue: #7dd3fc;
+    --muted:
+        rgba(255,255,255,0.62);
+}
 
-        --muted:
-            rgba(255,255,255,0.62);
+body {
 
-    }
+    min-height: 100vh;
 
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
 
-    body {
+    color: white;
 
-        min-height: 100vh;
+    background:
 
-        font-family:
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            Roboto,
-            Arial,
-            sans-serif;
+        radial-gradient(
+            circle at 15% 0%,
+            rgba(56,189,248,0.16),
+            transparent 35%
+        ),
 
-        color: white;
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(37,99,235,0.15),
+            transparent 35%
+        ),
 
-        background:
+        var(--background);
 
-            radial-gradient(
-                circle at 15% 0%,
-                rgba(56,189,248,0.16),
-                transparent 35%
-            ),
+    padding-bottom: 100px;
 
-            radial-gradient(
-                circle at 90% 20%,
-                rgba(37,99,235,0.15),
-                transparent 35%
-            ),
+    overflow-x: hidden;
+}
 
-            var(--background);
+.app {
 
-        padding-bottom: 100px;
+    width: 100%;
 
-        overflow-x: hidden;
-    }
+    max-width: 1000px;
 
+    margin: 0 auto;
 
-    .app {
+    padding:
+        24px 14px 30px;
+}
 
-        width: 100%;
+/* HEADER */
 
-        max-width: 1000px;
+.header {
 
-        margin: 0 auto;
+    text-align: center;
 
-        padding:
-            24px 14px 30px;
-    }
+    margin-bottom: 20px;
+}
 
+.header h1 {
 
-    /* HEADER */
+    font-size: 27px;
 
-    .header {
+    font-weight: 750;
 
-        text-align: center;
+    letter-spacing: -0.7px;
+}
 
-        margin-bottom: 20px;
-    }
+.header p {
 
+    color: var(--muted);
 
-    .header h1 {
+    font-size: 14px;
 
-        font-size: 27px;
+    margin-top: 5px;
+}
 
-        font-weight: 750;
+/* LAYER PICKER */
 
-        letter-spacing: -0.7px;
-    }
+.layer-picker {
 
+    display: flex;
 
-    .header p {
+    gap: 8px;
 
-        color: var(--muted);
+    flex-wrap: wrap;
 
-        font-size: 14px;
+    justify-content: center;
 
-        margin-top: 5px;
-    }
+    margin-bottom: 14px;
+}
 
+.layer-button {
 
-    /* LAYER PICKER */
+    padding:
+        9px 15px;
 
-    .layer-picker {
+    border-radius: 13px;
 
-        display: flex;
+    border:
+        1px solid
+        rgba(0,242,255,0.15);
 
-        gap: 8px;
+    cursor: pointer;
 
-        flex-wrap: wrap;
+    font-weight: 650;
 
-        justify-content: center;
+    font-size: 13px;
 
-        margin-bottom: 14px;
-    }
+    color:
+        rgba(255,255,255,0.70);
 
+    background:
+        rgba(0,242,255,0.06);
 
-    .layer-button {
+    transition:
+        transform 0.15s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
 
-        padding:
-            9px 15px;
+    box-shadow:
+        0 4px 16px
+        rgba(0,120,255,0.10);
+}
 
-        border-radius: 13px;
+.layer-button:hover {
 
-        border:
-            1px solid
-            rgba(0,242,255,0.15);
+    transform:
+        translateY(-1px);
 
-        cursor: pointer;
+    background:
+        rgba(0,242,255,0.11);
+}
 
-        font-weight: 650;
+.layer-button:active {
 
-        font-size: 13px;
+    transform:
+        scale(0.96);
+}
 
-        color:
-            rgba(255,255,255,0.70);
+.layer-button.active {
 
-        background:
-            rgba(0,242,255,0.06);
+    border-color:
+        transparent;
 
-        transition:
-            transform 0.15s ease,
-            background 0.2s ease,
-            box-shadow 0.2s ease;
+    color:
+        #07111f;
+}
 
-        box-shadow:
-            0 4px 16px
-            rgba(0,120,255,0.10);
-    }
+/* MAP */
 
+.map-wrapper {
 
-    .layer-button:hover {
+    position: relative;
+
+    width: 100%;
+
+    height: 78vh;
+
+    min-height: 500px;
+
+    max-height: 850px;
+
+    border-radius: 24px;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(0,242,255,0.18);
+
+    box-shadow:
+
+        0 8px 40px
+        rgba(0,120,255,0.20),
+
+        0 1.5px 0
+        rgba(0,242,255,0.20)
+        inset;
+
+    background: #0b1626;
+}
+
+#windy {
+
+    position: absolute;
+
+    left: 0;
+
+    top: 0;
+
+    width: 100%;
+
+    height: 100%;
+}
+
+#windy > * {
+
+    max-width: 100%;
+}
+
+/* =========================================================
+   REAL GEOGRAPHIC BLUE LOCATION DOT
+========================================================= */
+
+.atmosphere-location-marker {
+
+    background: transparent !important;
+
+    border: none !important;
+
+    width: 26px !important;
+
+    height: 26px !important;
+
+    pointer-events: none !important;
+}
+
+.atmosphere-location-dot {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    width: 20px;
+
+    height: 20px;
+
+    transform:
+        translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background:
+        #1683ff;
+
+    border:
+        3px solid white;
+
+    box-shadow:
+
+        0 0 0 3px
+        rgba(22,131,255,0.30),
+
+        0 2px 10px
+        rgba(0,0,0,0.45);
+
+    pointer-events: none;
+}
+
+.atmosphere-location-dot::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    width: 34px;
+
+    height: 34px;
+
+    transform:
+        translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    border:
+        2px solid
+        rgba(22,131,255,0.42);
+
+    animation:
+        locationPulse 2s ease-out infinite;
+
+    pointer-events: none;
+}
+
+@keyframes locationPulse {
+
+    0% {
 
         transform:
-            translateY(-1px);
+            translate(-50%, -50%)
+            scale(0.55);
 
-        background:
-            rgba(0,242,255,0.11);
+        opacity: 0.8;
     }
 
-
-    .layer-button:active {
+    70% {
 
         transform:
-            scale(0.96);
-    }
-
-
-    .layer-button.active {
-
-        border-color:
-            transparent;
-
-        color:
-            #07111f;
-    }
-
-
-    /* =========================================================
-       MAP
-       ========================================================= */
-
-    .map-wrapper {
-
-        position: relative;
-
-        width: 100%;
-
-        height: 78vh;
-
-        min-height: 500px;
-
-        max-height: 850px;
-
-        border-radius: 24px;
-
-        overflow: hidden;
-
-        border:
-            1px solid
-            rgba(0,242,255,0.18);
-
-        box-shadow:
-
-            0 8px 40px
-            rgba(0,120,255,0.20),
-
-            0 1.5px 0
-            rgba(0,242,255,0.20)
-            inset;
-
-        background: #0b1626;
-    }
-
-
-    #windy {
-
-        position: absolute;
-
-        left: 0;
-
-        top: 0;
-
-        width: 100%;
-
-        height: 100%;
-    }
-
-
-    #windy > * {
-
-        max-width: 100%;
-    }
-
-
-    /* =========================================================
-       REAL GEOGRAPHIC BLUE LOCATION DOT
-       ========================================================= */
-
-    .atmosphere-location-marker {
-
-        background:
-            transparent !important;
-
-        border:
-            none !important;
-
-        width:
-            20px !important;
-
-        height:
-            20px !important;
-    }
-
-
-    .atmosphere-location-dot {
-
-        width: 20px;
-
-        height: 20px;
-
-        border-radius: 50%;
-
-        background:
-            #1683ff;
-
-        border:
-            3px solid white;
-
-        box-shadow:
-
-            0 0 0 3px
-            rgba(22,131,255,0.30),
-
-            0 2px 10px
-            rgba(0,0,0,0.45);
-
-        position: relative;
-
-        pointer-events: none;
-    }
-
-
-    .atmosphere-location-dot::after {
-
-        content: "";
-
-        position: absolute;
-
-        left: 50%;
-
-        top: 50%;
-
-        width: 34px;
-
-        height: 34px;
-
-        transform:
-            translate(-50%, -50%);
-
-        border-radius: 50%;
-
-        border:
-            2px solid
-            rgba(22,131,255,0.42);
-
-        animation:
-            locationPulse 2s ease-out infinite;
-
-        pointer-events: none;
-    }
-
-
-    @keyframes locationPulse {
-
-        0% {
-
-            transform:
-                translate(-50%, -50%)
-                scale(0.55);
-
-            opacity: 0.8;
-        }
-
-        70% {
-
-            transform:
-                translate(-50%, -50%)
-                scale(1.15);
-
-            opacity: 0;
-        }
-
-        100% {
-
-            transform:
-                translate(-50%, -50%)
-                scale(1.15);
-
-            opacity: 0;
-        }
-
-    }
-
-
-    .atmosphere-location-pane {
-
-        z-index: 10000 !important;
-
-        pointer-events:
-            none !important;
-    }
-
-
-    /* MAP LOCATION LABEL */
-
-    .map-label {
-
-        position: absolute;
-
-        top: 14px;
-
-        left: 14px;
-
-        z-index: 1000;
-
-        padding:
-            8px 12px;
-
-        border-radius: 12px;
-
-        background:
-            rgba(7,17,31,0.72);
-
-        border:
-            1px solid
-            rgba(255,255,255,0.14);
-
-        color:
-            rgba(255,255,255,0.92);
-
-        font-size: 12px;
-
-        font-weight: 650;
-
-        backdrop-filter:
-            blur(14px)
-            saturate(160%);
-
-        -webkit-backdrop-filter:
-            blur(14px)
-            saturate(160%);
-
-        box-shadow:
-            0 5px 20px
-            rgba(0,0,0,0.20);
-
-        pointer-events: none;
-
-        transition:
-            opacity 0.25s ease;
-    }
-
-
-    /* LOCATION LOADING */
-
-    .location-loading {
-
-        position: absolute;
-
-        left: 50%;
-
-        top: 50%;
-
-        transform:
-            translate(-50%, -50%);
-
-        z-index: 2000;
-
-        padding:
-            12px 16px;
-
-        border-radius: 14px;
-
-        background:
-            rgba(7,17,31,0.78);
-
-        border:
-            1px solid
-            rgba(255,255,255,0.13);
-
-        backdrop-filter:
-            blur(16px);
-
-        -webkit-backdrop-filter:
-            blur(16px);
-
-        color:
-            rgba(255,255,255,0.9);
-
-        font-size: 13px;
-
-        font-weight: 650;
-
-        box-shadow:
-            0 10px 30px
-            rgba(0,0,0,0.28);
-
-        transition:
-            opacity 0.25s ease;
-    }
-
-
-    .location-loading.hidden {
+            translate(-50%, -50%)
+            scale(1.15);
 
         opacity: 0;
-
-        pointer-events: none;
     }
 
-
-    /* =========================================================
-       LIQUID GLASS NAVIGATION
-       ========================================================= */
-
-    .bottom-nav {
-
-        position: fixed;
-
-        left: 50%;
-
-        bottom: 14px;
+    100% {
 
         transform:
-            translateX(-50%);
+            translate(-50%, -50%)
+            scale(1.15);
 
-        width:
-            calc(100% - 24px);
-
-        max-width: 620px;
-
-        height: 72px;
-
-        display: flex;
-
-        justify-content:
-            space-around;
-
-        align-items: center;
-
-        padding: 6px;
-
-        background:
-
-            linear-gradient(
-                135deg,
-                rgba(255,255,255,0.15),
-                rgba(255,255,255,0.055)
-            );
-
-        border:
-            1px solid
-            rgba(255,255,255,0.18);
-
-        border-radius: 999px;
-
-        backdrop-filter:
-            blur(30px)
-            saturate(180%);
-
-        -webkit-backdrop-filter:
-            blur(30px)
-            saturate(180%);
-
-        box-shadow:
-
-            0 20px 55px
-            rgba(0,0,0,0.38),
-
-            0 4px 18px
-            rgba(0,0,0,0.20),
-
-            inset 0 1px 0
-            rgba(255,255,255,0.28),
-
-            inset 0 -1px 0
-            rgba(255,255,255,0.06);
-
-        overflow: hidden;
-
-        z-index: 10000;
-
-        isolation: isolate;
-
-        transition:
-            transform 0.35s
-            cubic-bezier(0.22, 1, 0.36, 1),
-
-            box-shadow 0.35s ease;
+        opacity: 0;
     }
+}
 
+.atmosphere-location-pane {
 
-    .bottom-nav::before {
+    z-index: 10000 !important;
 
-        content: "";
+    pointer-events:
+        none !important;
+}
 
-        position: absolute;
+/* MAP LOCATION LABEL */
 
-        inset: 0;
+.map-label {
 
-        border-radius: inherit;
+    position: absolute;
 
-        background:
+    top: 14px;
 
-            linear-gradient(
-                115deg,
-                rgba(255,255,255,0.20),
-                transparent 28%,
-                transparent 65%,
-                rgba(255,255,255,0.08)
-            );
+    left: 14px;
 
-        pointer-events: none;
+    z-index: 1000;
 
-        z-index: -1;
-    }
+    padding:
+        8px 12px;
 
+    border-radius: 12px;
 
-    .bottom-nav::after {
+    background:
+        rgba(7,17,31,0.72);
 
-        content: "";
+    border:
+        1px solid
+        rgba(255,255,255,0.14);
 
-        position: absolute;
+    color:
+        rgba(255,255,255,0.92);
 
-        width: 190px;
+    font-size: 12px;
 
-        height: 90px;
+    font-weight: 650;
+
+    backdrop-filter:
+        blur(14px)
+        saturate(160%);
+
+    -webkit-backdrop-filter:
+        blur(14px)
+        saturate(160%);
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.20);
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.25s ease;
+}
+
+/* LOCATION LOADING */
+
+.location-loading {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    z-index: 2000;
+
+    padding:
+        12px 16px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(7,17,31,0.78);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.13);
+
+    backdrop-filter:
+        blur(16px);
+
+    -webkit-backdrop-filter:
+        blur(16px);
+
+    color:
+        rgba(255,255,255,0.9);
+
+    font-size: 13px;
+
+    font-weight: 650;
+
+    box-shadow:
+        0 10px 30px
+        rgba(0,0,0,0.28);
+
+    transition:
+        opacity 0.25s ease;
+}
+
+.location-loading.hidden {
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+/* =========================================================
+   LIQUID GLASS NAVIGATION
+========================================================= */
+
+.bottom-nav {
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 14px;
+
+    transform:
+        translateX(-50%);
+
+    width:
+        calc(100% - 24px);
+
+    max-width: 620px;
+
+    height: 72px;
+
+    display: flex;
+
+    justify-content:
+        space-around;
+
+    align-items: center;
+
+    padding: 6px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.15),
+            rgba(255,255,255,0.055)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,0.18);
+
+    border-radius: 999px;
+
+    backdrop-filter:
+        blur(30px)
+        saturate(180%);
+
+    -webkit-backdrop-filter:
+        blur(30px)
+        saturate(180%);
+
+    box-shadow:
+
+        0 20px 55px
+        rgba(0,0,0,0.38),
+
+        0 4px 18px
+        rgba(0,0,0,0.20),
+
+        inset 0 1px 0
+        rgba(255,255,255,0.28),
+
+        inset 0 -1px 0
+        rgba(255,255,255,0.06);
+
+    overflow: hidden;
+
+    z-index: 10000;
+
+    isolation: isolate;
+
+    transition:
+        transform 0.35s
+        cubic-bezier(0.22, 1, 0.36, 1),
+
+        box-shadow 0.35s ease;
+}
+
+.bottom-nav::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: inherit;
+
+    background:
+
+        linear-gradient(
+            115deg,
+            rgba(255,255,255,0.20),
+            transparent 28%,
+            transparent 65%,
+            rgba(255,255,255,0.08)
+        );
+
+    pointer-events: none;
+
+    z-index: -1;
+}
+
+.bottom-nav::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+
+    height: 90px;
+
+    left: -210px;
+
+    top: -10px;
+
+    border-radius: 50%;
+
+    background:
+
+        radial-gradient(
+            ellipse,
+            rgba(255,255,255,0.16),
+            transparent 70%
+        );
+
+    filter:
+        blur(8px);
+
+    pointer-events: none;
+
+    animation:
+        liquidNavShine 7s
+        ease-in-out infinite;
+
+    z-index: -1;
+}
+
+@keyframes liquidNavShine {
+
+    0%, 45% {
 
         left: -210px;
 
-        top: -10px;
-
-        border-radius: 50%;
-
-        background:
-
-            radial-gradient(
-                ellipse,
-                rgba(255,255,255,0.16),
-                transparent 70%
-            );
-
-        filter:
-            blur(8px);
-
-        pointer-events: none;
-
-        animation:
-            liquidNavShine 7s
-            ease-in-out infinite;
-
-        z-index: -1;
-    }
-
-
-    @keyframes liquidNavShine {
-
-        0%, 45% {
-
-            left: -210px;
-
-            opacity: 0;
-        }
-
-        55% {
-
-            opacity: 1;
-        }
-
-        75%, 100% {
-
-            left:
-                calc(100% + 40px);
-
-            opacity: 0;
-        }
-
-    }
-
-
-    .nav-item {
-
-        position: relative;
-
-        flex: 1;
-
-        height: 58px;
-
-        display: flex;
-
-        flex-direction: column;
-
-        align-items: center;
-
-        justify-content: center;
-
-        text-decoration: none;
-
-        color:
-            rgba(255,255,255,0.52);
-
-        text-align: center;
-
-        font-size: 10px;
-
-        font-weight: 650;
-
-        letter-spacing: 0.1px;
-
-        border-radius: 999px;
-
-        min-width: 55px;
-
-        -webkit-tap-highlight-color:
-            transparent;
-
-        user-select: none;
-
-        transition:
-            color 0.3s ease,
-            transform 0.25s
-            cubic-bezier(0.22, 1, 0.36, 1);
-
-        z-index: 2;
-    }
-
-
-    .nav-item::before {
-
-        content: "";
-
-        position: absolute;
-
-        inset: 3px;
-
-        border-radius: 999px;
-
-        background:
-
-            linear-gradient(
-                145deg,
-                rgba(255,255,255,0.17),
-                rgba(255,255,255,0.055)
-            );
-
-        border:
-            1px solid
-            rgba(255,255,255,0.13);
-
-        box-shadow:
-
-            inset 0 1px 0
-            rgba(255,255,255,0.16),
-
-            0 4px 14px
-            rgba(0,0,0,0.10);
-
         opacity: 0;
-
-        transform:
-            scale(0.72);
-
-        transition:
-            opacity 0.35s ease,
-            transform 0.4s
-            cubic-bezier(0.22, 1, 0.36, 1);
-
-        z-index: -1;
     }
 
-
-    .nav-item.active {
-
-        color: #ffffff;
-
-        text-shadow:
-            0 0 12px
-            rgba(101,199,255,0.35);
-    }
-
-
-    .nav-item.active::before {
+    55% {
 
         opacity: 1;
-
-        transform:
-            scale(1);
     }
 
+    75%, 100% {
 
-    .nav-item.active::after {
+        left:
+            calc(100% + 40px);
 
-        content: "";
+        opacity: 0;
+    }
+}
 
-        position: absolute;
+.nav-item {
 
-        width: 32px;
+    position: relative;
 
-        height: 5px;
+    flex: 1;
 
-        bottom: 5px;
+    height: 58px;
 
-        left: 50%;
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-decoration: none;
+
+    color:
+        rgba(255,255,255,0.52);
+
+    text-align: center;
+
+    font-size: 10px;
+
+    font-weight: 650;
+
+    letter-spacing: 0.1px;
+
+    border-radius: 999px;
+
+    min-width: 55px;
+
+    -webkit-tap-highlight-color:
+        transparent;
+
+    user-select: none;
+
+    transition:
+        color 0.3s ease,
+        transform 0.25s
+        cubic-bezier(0.22, 1, 0.36, 1);
+
+    z-index: 2;
+}
+
+.nav-item::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 3px;
+
+    border-radius: 999px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.17),
+            rgba(255,255,255,0.055)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,0.13);
+
+    box-shadow:
+
+        inset 0 1px 0
+        rgba(255,255,255,0.16),
+
+        0 4px 14px
+        rgba(0,0,0,0.10);
+
+    opacity: 0;
+
+    transform:
+        scale(0.72);
+
+    transition:
+        opacity 0.35s ease,
+        transform 0.4s
+        cubic-bezier(0.22, 1, 0.36, 1);
+
+    z-index: -1;
+}
+
+.nav-item.active {
+
+    color: #ffffff;
+
+    text-shadow:
+        0 0 12px
+        rgba(101,199,255,0.35);
+}
+
+.nav-item.active::before {
+
+    opacity: 1;
+
+    transform:
+        scale(1);
+}
+
+.nav-item.active::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 32px;
+
+    height: 5px;
+
+    bottom: 5px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 999px;
+
+    background:
+        rgba(101,199,255,0.65);
+
+    filter:
+        blur(7px);
+
+    opacity: 0.55;
+
+    pointer-events: none;
+}
+
+.nav-icon {
+
+    position: relative;
+
+    display: block;
+
+    font-size: 21px;
+
+    line-height: 1;
+
+    margin-bottom: 4px;
+
+    transition:
+        transform 0.35s
+        cubic-bezier(0.22, 1, 0.36, 1),
+
+        filter 0.3s ease;
+}
+
+.nav-item.active .nav-icon {
+
+    transform:
+        translateY(-1px)
+        scale(1.08);
+
+    filter:
+        drop-shadow(
+            0 2px 8px
+            rgba(101,199,255,0.35)
+        );
+}
+
+.nav-item:active {
+
+    transform:
+        scale(0.88);
+}
+
+.nav-item:active::before {
+
+    background:
+        rgba(255,255,255,0.20);
+
+    transform:
+        scale(0.92);
+}
+
+.nav-item:active .nav-icon {
+
+    transform:
+        scale(0.90);
+}
+
+@media (hover: hover) {
+
+    .nav-item:hover {
+
+        color:
+            rgba(255,255,255,0.88);
 
         transform:
-            translateX(-50%);
+            translateY(-1px);
+    }
 
-        border-radius: 999px;
-
-        background:
-            rgba(101,199,255,0.65);
-
-        filter:
-            blur(7px);
+    .nav-item:hover::before {
 
         opacity: 0.55;
 
-        pointer-events: none;
+        transform:
+            scale(0.94);
+    }
+}
+
+@media (max-width: 520px) {
+
+    .bottom-nav {
+
+        bottom:
+            max(
+                12px,
+                env(safe-area-inset-bottom)
+            );
+
+        width:
+            calc(100% - 18px);
+
+        height: 70px;
+
+        padding: 5px;
+
+        border-radius: 999px;
+
+        box-shadow:
+
+            0 18px 48px
+            rgba(0,0,0,0.42),
+
+            inset 0 1px 0
+            rgba(255,255,255,0.26),
+
+            inset 0 -1px 0
+            rgba(255,255,255,0.05);
     }
 
+    .nav-item {
+
+        height: 58px;
+
+        font-size: 10px;
+    }
 
     .nav-icon {
 
-        position: relative;
+        font-size: 20px;
+    }
+}
 
-        display: block;
+@media (prefers-reduced-motion: reduce) {
 
-        font-size: 21px;
+    .bottom-nav::after {
 
-        line-height: 1;
-
-        margin-bottom: 4px;
-
-        transition:
-            transform 0.35s
-            cubic-bezier(0.22, 1, 0.36, 1),
-
-            filter 0.3s ease;
+        animation: none;
     }
 
+    .atmosphere-location-dot::after {
 
-    .nav-item.active .nav-icon {
+        animation: none;
+    }
+}
 
-        transform:
-            translateY(-1px)
-            scale(1.08);
+/* MOBILE */
 
-        filter:
-            drop-shadow(
-                0 2px 8px
-                rgba(101,199,255,0.35)
-            );
+@media (max-width: 600px) {
+
+    .app {
+
+        padding-top: 20px;
+
+        padding-left: 10px;
+
+        padding-right: 10px;
     }
 
+    .header h1 {
 
-    .nav-item:active {
-
-        transform:
-            scale(0.88);
+        font-size: 24px;
     }
 
+    .layer-picker {
 
-    .nav-item:active::before {
+        justify-content:
+            flex-start;
 
-        background:
-            rgba(255,255,255,0.20);
+        overflow-x: auto;
 
-        transform:
-            scale(0.92);
+        flex-wrap: nowrap;
+
+        padding-bottom: 5px;
+
+        scrollbar-width: none;
     }
 
+    .layer-picker::-webkit-scrollbar {
 
-    .nav-item:active .nav-icon {
-
-        transform:
-            scale(0.90);
+        display: none;
     }
 
+    .layer-button {
 
-    @media (hover: hover) {
-
-        .nav-item:hover {
-
-            color:
-                rgba(255,255,255,0.88);
-
-            transform:
-                translateY(-1px);
-        }
-
-        .nav-item:hover::before {
-
-            opacity: 0.55;
-
-            transform:
-                scale(0.94);
-        }
-
+        flex-shrink: 0;
     }
 
+    .map-wrapper {
 
-    @media (max-width: 520px) {
+        height: 72vh;
 
-        .bottom-nav {
+        min-height: 450px;
 
-            bottom:
-                max(
-                    12px,
-                    env(safe-area-inset-bottom)
-                );
-
-            width:
-                calc(100% - 18px);
-
-            height: 70px;
-
-            padding: 5px;
-
-            border-radius: 999px;
-
-            box-shadow:
-
-                0 18px 48px
-                rgba(0,0,0,0.42),
-
-                inset 0 1px 0
-                rgba(255,255,255,0.26),
-
-                inset 0 -1px 0
-                rgba(255,255,255,0.05);
-        }
-
-        .nav-item {
-
-            height: 58px;
-
-            font-size: 10px;
-        }
-
-        .nav-icon {
-
-            font-size: 20px;
-        }
-
+        border-radius: 20px;
     }
-
-
-    @media (prefers-reduced-motion: reduce) {
-
-        .bottom-nav::after {
-
-            animation: none;
-        }
-
-        .atmosphere-location-dot::after {
-
-            animation: none;
-        }
-
-    }
-
-
-    /* MOBILE */
-
-    @media (max-width: 600px) {
-
-        .app {
-
-            padding-top: 20px;
-
-            padding-left: 10px;
-
-            padding-right: 10px;
-        }
-
-
-        .header h1 {
-
-            font-size: 24px;
-        }
-
-
-        .layer-picker {
-
-            justify-content:
-                flex-start;
-
-            overflow-x: auto;
-
-            flex-wrap: nowrap;
-
-            padding-bottom: 5px;
-
-            scrollbar-width: none;
-        }
-
-
-        .layer-picker::-webkit-scrollbar {
-
-            display: none;
-        }
-
-
-        .layer-button {
-
-            flex-shrink: 0;
-        }
-
-
-        .map-wrapper {
-
-            height: 72vh;
-
-            min-height: 450px;
-
-            border-radius: 20px;
-        }
-
-    }
+}
 
 </style>
 
@@ -1034,199 +982,166 @@ content="#07111f"
 
 <div class="app">
 
-<!-- HEADER -->
-
 <header class="header">
 
-```
-<h1>
-    Atmosphere Radar
-</h1>
+    <h1>
+        Atmosphere Radar
+    </h1>
 
-<p>
-    Interactive weather conditions
-</p>
-```
+    <p>
+        Interactive weather conditions
+    </p>
 
 </header>
 
-<!-- LAYER BUTTONS -->
-
 <div class="layer-picker">
 
-```
-<button
-    class="layer-button active"
-    data-layer="wind"
-    data-color="#38bdf8">
+    <button
+        class="layer-button active"
+        data-layer="wind"
+        data-color="#38bdf8">
 
-    💨 Wind
+        💨 Wind
 
-</button>
+    </button>
 
+    <button
+        class="layer-button"
+        data-layer="rain"
+        data-color="#818cf8">
 
-<button
-    class="layer-button"
-    data-layer="rain"
-    data-color="#818cf8">
+        🌧️ Rain
 
-    🌧️ Rain
+    </button>
 
-</button>
+    <button
+        class="layer-button"
+        data-layer="temp"
+        data-color="#f97316">
 
+        🌡️ Temp
 
-<button
-    class="layer-button"
-    data-layer="temp"
-    data-color="#f97316">
+    </button>
 
-    🌡️ Temp
+    <button
+        class="layer-button"
+        data-layer="clouds"
+        data-color="#94a3b8">
 
-</button>
+        ☁️ Clouds
 
+    </button>
 
-<button
-    class="layer-button"
-    data-layer="clouds"
-    data-color="#94a3b8">
+    <button
+        class="layer-button"
+        data-layer="pressure"
+        data-color="#34d399">
 
-    ☁️ Clouds
+        🔵 Pressure
 
-</button>
-
-
-<button
-    class="layer-button"
-    data-layer="pressure"
-    data-color="#34d399">
-
-    🔵 Pressure
-
-</button>
-```
+    </button>
 
 </div>
-
-<!-- MAP -->
 
 <div class="map-wrapper">
 
-```
-<div
-    class="map-label"
-    id="map-location-label">
+    <div
+        class="map-label"
+        id="map-location-label">
 
-    📍 Finding your location...
+        📍 Finding your location...
 
-</div>
+    </div>
 
+    <div
+        class="location-loading"
+        id="location-loading">
 
-<div
-    class="location-loading"
-    id="location-loading">
+        📍 Getting your current location...
 
-    📍 Using your Atmosphere location...
+    </div>
 
-</div>
-
-
-<div id="windy"></div>
-```
+    <div id="windy"></div>
 
 </div>
 
 </div>
-
-<!-- NAVIGATION -->
 
 <nav class="bottom-nav">
 
-<a
- href="index.html"
- class="nav-item">
+    <a
+        href="index.html"
+        class="nav-item">
 
-```
-<span class="nav-icon">
-    ⌂
-</span>
+        <span class="nav-icon">
+            ⌂
+        </span>
 
-Home
-```
+        Home
 
-</a>
+    </a>
 
-<a
- href="radar.html"
- class="nav-item active">
+    <a
+        href="radar.html"
+        class="nav-item active">
 
-```
-<span class="nav-icon">
-    ◉
-</span>
+        <span class="nav-icon">
+            ◉
+        </span>
 
-Radar
-```
+        Radar
 
-</a>
+    </a>
 
-<a
- href="alerts.html"
- class="nav-item">
+    <a
+        href="alerts.html"
+        class="nav-item">
 
-```
-<span class="nav-icon">
-    ⚠
-</span>
+        <span class="nav-icon">
+            ⚠
+        </span>
 
-Alerts
-```
+        Alerts
 
-</a>
+    </a>
 
-<a
- href="updates.html"
- class="nav-item">
+    <a
+        href="updates.html"
+        class="nav-item">
 
-```
-<span class="nav-icon">
-    ✨
-</span>
+        <span class="nav-icon">
+            ✨
+        </span>
 
-Updates
-```
+        Updates
 
-</a>
+    </a>
 
 </nav>
 
 <script>
 
-
 /* =========================================================
    ATMOSPHERE RADAR
-   WINDY + SHARED ATMOSPHERE USER LOCATION
+   SHARED LOCATION + WINDY
 ========================================================= */
-
 
 /* =========================================================
    WINDY API KEY
 ========================================================= */
 
-
-/*
-    Put your Windy Map Forecast API key here.
-
-    IMPORTANT:
-    This is left as your existing key so the rest of
-    the radar page remains unchanged.
-*/
-
 const WINDY_API_KEY =
     "WOz89BK1t4WWAed5Xb28eMdK5yJm9NXe";
 
+/* =========================================================
+   LOCATION STORAGE
+========================================================= */
+
+const LOCATION_STORAGE_KEY =
+    "atmosphereUserLocation";
 
 /* =========================================================
-   DEFAULT / FALLBACK LOCATION
+   FALLBACK LOCATION
 ========================================================= */
 
 let userLat =
@@ -1235,7 +1150,6 @@ let userLat =
 let userLon =
     -77.0;
 
-
 /* =========================================================
    CURRENT LAYER
 ========================================================= */
@@ -1243,9 +1157,8 @@ let userLon =
 let currentLayer =
     "wind";
 
-
 /* =========================================================
-   DOM ELEMENTS
+   DOM
 ========================================================= */
 
 const buttons =
@@ -1253,53 +1166,46 @@ const buttons =
         ".layer-button"
     );
 
-
 const locationLabel =
     document.getElementById(
         "map-location-label"
     );
-
 
 const locationLoading =
     document.getElementById(
         "location-loading"
     );
 
-
 /* =========================================================
-   WINDY API STATE
+   WINDY STATE
 ========================================================= */
 
 let windyAPI =
     null;
 
-
 let userLocationMarker =
     null;
 
+let locationReady =
+    false;
 
 /* =========================================================
-   SHARED LOCATION STORAGE
-========================================================= */
-
-const LOCATION_STORAGE_KEY =
-    "atmosphereUserLocation";
-
-
-/* =========================================================
-   UPDATE LOCATION LABEL
+   LOCATION LABEL
 ========================================================= */
 
 function updateLocationLabel(text) {
 
-    locationLabel.textContent =
-        text;
+    if (locationLabel) {
+
+        locationLabel.textContent =
+            text;
+
+    }
 
 }
 
-
 /* =========================================================
-   HIDE LOCATION LOADING
+   HIDE LOADING
 ========================================================= */
 
 function hideLocationLoading() {
@@ -1314,9 +1220,8 @@ function hideLocationLoading() {
 
 }
 
-
 /* =========================================================
-   READ LOCATION SAVED BY HOMEPAGE
+   GET SAVED LOCATION
 ========================================================= */
 
 function getSavedAtmosphereLocation() {
@@ -1328,52 +1233,68 @@ function getSavedAtmosphereLocation() {
                 LOCATION_STORAGE_KEY
             );
 
-
         if (!saved) {
 
             return null;
 
         }
 
-
-        const location =
+        const data =
             JSON.parse(saved);
 
-
-        if (
-            !location ||
-            typeof location.lat !== "number" ||
-            typeof location.lon !== "number"
-        ) {
+        if (!data) {
 
             return null;
 
         }
-
 
         /*
-            Make sure the coordinates are
-            legitimate latitude/longitude values.
+            Convert to numbers.
+
+            This is important because
+            localStorage stores text.
         */
 
+        const lat =
+            Number(data.lat);
+
+        const lon =
+            Number(data.lon);
+
         if (
-            location.lat < -90 ||
-            location.lat > 90 ||
-            location.lon < -180 ||
-            location.lon > 180
+            !Number.isFinite(lat) ||
+            !Number.isFinite(lon)
         ) {
 
             return null;
 
         }
 
+        if (
+            lat < -90 ||
+            lat > 90 ||
+            lon < -180 ||
+            lon > 180
+        ) {
 
-        return location;
+            return null;
+
+        }
+
+        return {
+
+            lat:
+                lat,
+
+            lon:
+                lon
+
+        };
 
     } catch (error) {
 
         console.warn(
-            "Unable to read saved Atmosphere location:",
+            "Could not read saved location:",
             error
         );
 
@@ -1383,12 +1304,14 @@ function getSavedAtmosphereLocation() {
 
 }
 
-
 /* =========================================================
    SAVE LOCATION
 ========================================================= */
 
-function saveAtmosphereLocation(lat, lon) {
+function saveAtmosphereLocation(
+    lat,
+    lon
+) {
 
     try {
 
@@ -1399,10 +1322,10 @@ function saveAtmosphereLocation(lat, lon) {
             JSON.stringify({
 
                 lat:
-                    lat,
+                    Number(lat),
 
                 lon:
-                    lon,
+                    Number(lon),
 
                 timestamp:
                     Date.now()
@@ -1414,7 +1337,7 @@ function saveAtmosphereLocation(lat, lon) {
     } catch (error) {
 
         console.warn(
-            "Unable to save Atmosphere location:",
+            "Could not save location:",
             error
         );
 
@@ -1422,6 +1345,58 @@ function saveAtmosphereLocation(lat, lon) {
 
 }
 
+/* =========================================================
+   APPLY LOCATION
+========================================================= */
+
+function applyLocation(
+    lat,
+    lon
+) {
+
+    userLat =
+        Number(lat);
+
+    userLon =
+        Number(lon);
+
+    locationReady =
+        true;
+
+    console.log(
+        "Atmosphere location:",
+        userLat,
+        userLon
+    );
+
+    updateLocationLabel(
+        "📍 Your current location"
+    );
+
+    if (windyAPI && windyAPI.map) {
+
+        windyAPI.map.setView(
+
+            [
+                userLat,
+                userLon
+            ],
+
+            8,
+
+            {
+                animate: false
+            }
+
+        );
+
+        placeUserMarker();
+
+    }
+
+    hideLocationLoading();
+
+}
 
 /* =========================================================
    CREATE LOCATION PANE
@@ -1429,22 +1404,22 @@ function saveAtmosphereLocation(lat, lon) {
 
 function createLocationPane() {
 
-    if (!windyAPI) {
+    if (
+        !windyAPI ||
+        !windyAPI.map
+    ) {
 
-        return;
+        return null;
 
     }
 
-
     const map =
         windyAPI.map;
-
 
     let pane =
         map.getPane(
             "atmosphereLocationPane"
         );
-
 
     if (!pane) {
 
@@ -1455,39 +1430,40 @@ function createLocationPane() {
 
     }
 
-
     pane.style.zIndex =
-        "10000";
+        "100000";
 
     pane.style.pointerEvents =
         "none";
 
+    return pane;
+
 }
 
-
 /* =========================================================
-   CREATE REAL GEOGRAPHIC BLUE DOT
+   PLACE BLUE DOT
 ========================================================= */
 
-function updateUserMarker() {
+function placeUserMarker() {
 
-    if (!windyAPI) {
+    if (
+        !windyAPI ||
+        !windyAPI.map ||
+        !locationReady
+    ) {
 
         return;
 
     }
 
-
     const map =
         windyAPI.map;
 
-
     createLocationPane();
 
-
     /*
-        If a marker already exists,
-        move the same geographic marker.
+        If marker already exists,
+        simply move it.
     */
 
     if (userLocationMarker) {
@@ -1501,44 +1477,47 @@ function updateUserMarker() {
 
         );
 
+        /*
+            Make absolutely sure
+            it is still on the map.
+        */
+
+        if (
+            !map.hasLayer(
+                userLocationMarker
+            )
+        ) {
+
+            userLocationMarker.addTo(
+                map
+            );
+
+        }
+
         return;
 
     }
 
+    /*
+        Create the blue dot.
+    */
 
-    const locationIcon =
+    const icon =
         L.divIcon({
 
             className:
                 "atmosphere-location-marker",
 
             html:
-                `
-                <div
-                    class="atmosphere-location-dot"
-                    aria-label="Your current location">
-                </div>
-                `,
+                '<div class="atmosphere-location-dot"></div>',
 
             iconSize:
-                [20, 20],
+                [26, 26],
 
             iconAnchor:
-                [10, 10],
-
-            popupAnchor:
-                [0, -10]
+                [13, 13]
 
         });
-
-
-    /*
-        This is a REAL geographic Leaflet
-        marker.
-
-        It is attached to latitude/longitude,
-        not to a fixed position on the screen.
-    */
 
     userLocationMarker =
         L.marker(
@@ -1551,26 +1530,32 @@ function updateUserMarker() {
             {
 
                 icon:
-                    locationIcon,
+                    icon,
 
                 pane:
                     "atmosphereLocationPane",
 
-                zIndexOffset:
-                    10000,
-
                 interactive:
-                    false
+                    false,
+
+                keyboard:
+                    false,
+
+                zIndexOffset:
+                    100000
 
             }
 
         );
 
-
     userLocationMarker.addTo(
         map
     );
 
+    /*
+        Explicitly move it to the
+        current geographic coordinates.
+    */
 
     userLocationMarker.setLatLng(
 
@@ -1581,53 +1566,13 @@ function updateUserMarker() {
 
     );
 
-
     console.log(
-        "Atmosphere blue dot placed at:",
+        "BLUE DOT CREATED:",
         userLat,
         userLon
     );
 
 }
-
-
-/* =========================================================
-   CENTER MAP ON USER
-========================================================= */
-
-function centerMapOnUser() {
-
-    if (!windyAPI) {
-
-        return;
-
-    }
-
-
-    const map =
-        windyAPI.map;
-
-
-    map.setView(
-
-        [
-            userLat,
-            userLon
-        ],
-
-        8,
-
-        {
-            animate: true
-        }
-
-    );
-
-
-    updateUserMarker();
-
-}
-
 
 /* =========================================================
    USE SAVED HOMEPAGE LOCATION
@@ -1635,61 +1580,38 @@ function centerMapOnUser() {
 
 function useSavedLocation() {
 
-    const savedLocation =
+    const saved =
         getSavedAtmosphereLocation();
 
-
-    if (!savedLocation) {
+    if (!saved) {
 
         return false;
 
     }
 
-
-    userLat =
-        savedLocation.lat;
-
-    userLon =
-        savedLocation.lon;
-
-
     console.log(
-        "Atmosphere reused homepage location:",
-        userLat,
-        userLon
+        "Using location saved by homepage:",
+        saved.lat,
+        saved.lon
     );
 
-
-    updateLocationLabel(
-        "📍 Your current location"
+    applyLocation(
+        saved.lat,
+        saved.lon
     );
-
-
-    hideLocationLoading();
-
-
-    centerMapOnUser();
-
 
     return true;
 
 }
 
-
 /* =========================================================
-   GET LOCATION ONLY IF HOMEPAGE LOCATION IS UNAVAILABLE
+   GET GPS IF NEEDED
 ========================================================= */
 
-function getUserLocationIfNeeded() {
+function requestLocationIfNeeded() {
 
     /*
-        FIRST:
-
-        Try the exact coordinates that
-        the homepage already obtained.
-
-        This prevents a second GPS
-        permission/location request.
+        First try localStorage.
     */
 
     if (
@@ -1700,13 +1622,10 @@ function getUserLocationIfNeeded() {
 
     }
 
-
     /*
-        There is no saved homepage location.
+        No location was saved.
 
-        This can happen if someone opens
-        radar.html directly before visiting
-        the homepage.
+        Request it directly.
     */
 
     if (!navigator.geolocation) {
@@ -1715,94 +1634,71 @@ function getUserLocationIfNeeded() {
             "Geolocation is not supported."
         );
 
-
         updateLocationLabel(
             "📍 Maryland & surrounding region"
         );
 
-
         hideLocationLoading();
-
-
-        centerMapOnUser();
 
         return;
 
     }
 
-
     updateLocationLabel(
         "📍 Finding your location..."
     );
 
+    if (locationLoading) {
+
+        locationLoading.textContent =
+            "📍 Finding your current location...";
+
+    }
 
     console.log(
-        "No saved Atmosphere location found. Requesting location once..."
+        "Requesting browser location..."
     );
-
 
     navigator.geolocation.getCurrentPosition(
 
         function(position) {
 
-            userLat =
-                position.coords.latitude;
+            const lat =
+                Number(
+                    position.coords.latitude
+                );
 
-            userLon =
-                position.coords.longitude;
-
-
-            /*
-                Save it so every other
-                Atmosphere page can reuse it.
-            */
+            const lon =
+                Number(
+                    position.coords.longitude
+                );
 
             saveAtmosphereLocation(
-                userLat,
-                userLon
+                lat,
+                lon
             );
 
-
-            console.log(
-                "Atmosphere GPS location:",
-                userLat,
-                userLon
+            applyLocation(
+                lat,
+                lon
             );
-
-
-            updateLocationLabel(
-                "📍 Your current location"
-            );
-
-
-            hideLocationLoading();
-
-
-            centerMapOnUser();
 
         },
-
 
         function(error) {
 
             console.warn(
-                "Unable to get user location:",
+                "Location request failed:",
                 error
             );
-
 
             updateLocationLabel(
                 "📍 Maryland & surrounding region"
             );
 
-
             hideLocationLoading();
 
-
-            centerMapOnUser();
-
         },
-
 
         {
 
@@ -1821,10 +1717,40 @@ function getUserLocationIfNeeded() {
 
 }
 
-
 /* =========================================================
-   WINDY MAP OPTIONS
+   WINDY OPTIONS
 ========================================================= */
+
+/*
+    IMPORTANT:
+
+    Read localStorage BEFORE Windy starts.
+
+    This means Windy itself starts at the
+    homepage's saved location.
+*/
+
+const initialSavedLocation =
+    getSavedAtmosphereLocation();
+
+if (initialSavedLocation) {
+
+    userLat =
+        initialSavedLocation.lat;
+
+    userLon =
+        initialSavedLocation.lon;
+
+    locationReady =
+        true;
+
+    console.log(
+        "Windy starting at saved location:",
+        userLat,
+        userLon
+    );
+
+}
 
 const windyOptions = {
 
@@ -1863,110 +1789,186 @@ const windyOptions = {
 
 };
 
-
 /* =========================================================
-   INITIALIZE WINDY
+   WINDY INITIALIZATION
 ========================================================= */
 
-windyInit(
+let windyStarted =
+    false;
 
-    windyOptions,
+try {
 
-    function(api) {
+    windyInit(
 
-        console.log(
-            "Windy map initialized."
-        );
+        windyOptions,
 
+        function(api) {
 
-        windyAPI =
-            api;
+            windyStarted =
+                true;
 
+            console.log(
+                "Windy map initialized."
+            );
 
-        const {
-            map,
-            store
-        } = windyAPI;
+            windyAPI =
+                api;
 
+            const map =
+                windyAPI.map;
 
-        createLocationPane();
+            const store =
+                windyAPI.store;
 
+            createLocationPane();
 
-        store.set(
-            "overlay",
-            currentLayer
-        );
+            store.set(
+                "overlay",
+                currentLayer
+            );
 
+            /*
+                Re-read the shared location
+                after Windy has initialized.
+            */
 
-        /*
-            Try the location that the homepage
-            already stored.
+            const saved =
+                getSavedAtmosphereLocation();
 
-            If it exists, this does NOT call
-            navigator.geolocation again.
-        */
+            if (saved) {
 
-        const savedLocation =
-            getSavedAtmosphereLocation();
+                userLat =
+                    saved.lat;
 
+                userLon =
+                    saved.lon;
 
-        if (savedLocation) {
+                locationReady =
+                    true;
 
-            userLat =
-                savedLocation.lat;
+                updateLocationLabel(
+                    "📍 Your current location"
+                );
 
-            userLon =
-                savedLocation.lon;
+                map.setView(
+
+                    [
+                        userLat,
+                        userLon
+                    ],
+
+                    8,
+
+                    {
+                        animate: false
+                    }
+
+                );
+
+                placeUserMarker();
+
+                hideLocationLoading();
+
+            } else {
+
+                /*
+                    No saved location.
+
+                    Get GPS now.
+                */
+
+                requestLocationIfNeeded();
+
+            }
+
+            /*
+                Extra marker passes.
+
+                Windy can take a moment to finish
+                building its map layers.
+            */
+
+            setTimeout(
+                function() {
+
+                    placeUserMarker();
+
+                },
+                500
+            );
+
+            setTimeout(
+                function() {
+
+                    placeUserMarker();
+
+                },
+                1500
+            );
+
+            setTimeout(
+                function() {
+
+                    placeUserMarker();
+
+                },
+                3000
+            );
 
         }
 
+    );
 
-        map.setView(
+} catch (error) {
 
-            [
-                userLat,
-                userLon
-            ],
+    console.error(
+        "Windy initialization failed:",
+        error
+    );
 
-            8
+    updateLocationLabel(
+        "📍 Radar location unavailable"
+    );
 
-        );
+    hideLocationLoading();
 
+}
+
+/* =========================================================
+   SAFETY TIMEOUT
+========================================================= */
+
+/*
+    This prevents the center loading message
+    from being stuck forever.
+*/
+
+setTimeout(
+
+    function() {
+
+        hideLocationLoading();
 
         /*
-            Put the geographic blue dot
-            at the saved location.
+            If Windy has initialized but the
+            location hasn't been found yet,
+            try the location system one more time.
         */
 
-        updateUserMarker();
+        if (
+            windyAPI &&
+            !locationReady
+        ) {
 
+            requestLocationIfNeeded();
 
-        /*
-            Now finish the location process.
+        }
 
-            In the normal flow, this simply
-            reuses localStorage.
+    },
 
-            It only asks for GPS if there
-            is no saved location.
-        */
-
-        setTimeout(
-
-            function() {
-
-                getUserLocationIfNeeded();
-
-            },
-
-            100
-
-        );
-
-    }
+    12000
 
 );
-
 
 /* =========================================================
    LAYER BUTTONS
@@ -1980,7 +1982,7 @@ buttons.forEach(
 
             "click",
 
-            () => {
+            function() {
 
                 buttons.forEach(
 
@@ -2000,40 +2002,34 @@ buttons.forEach(
 
                 );
 
-
                 button.classList.add(
                     "active"
                 );
 
-
                 currentLayer =
                     button.dataset.layer;
-
 
                 const color =
                     button.dataset.color;
 
-
                 button.style.background =
                     color;
-
 
                 button.style.boxShadow =
                     `0 0 14px ${color}55`;
 
-
-                if (windyAPI) {
+                if (
+                    windyAPI &&
+                    windyAPI.store
+                ) {
 
                     windyAPI.store.set(
                         "overlay",
                         currentLayer
                     );
 
-
                     /*
-                        Make sure the blue dot
-                        remains above the radar
-                        visualization.
+                        Reassert the blue dot.
                     */
 
                     setTimeout(
@@ -2042,11 +2038,23 @@ buttons.forEach(
 
                             createLocationPane();
 
-                            updateUserMarker();
+                            placeUserMarker();
 
                         },
 
-                        150
+                        250
+
+                    );
+
+                    setTimeout(
+
+                        function() {
+
+                            placeUserMarker();
+
+                        },
+
+                        1000
 
                     );
 
@@ -2060,30 +2068,27 @@ buttons.forEach(
 
 );
 
-
 /* =========================================================
-   INITIAL ACTIVE BUTTON COLOR
+   INITIAL ACTIVE BUTTON
 ========================================================= */
 
-const initial =
+const initialButton =
     document.querySelector(
         ".layer-button.active"
     );
 
+if (initialButton) {
 
-if (initial) {
+    initialButton.style.background =
+        initialButton.dataset.color;
 
-    initial.style.background =
-        initial.dataset.color;
-
-    initial.style.boxShadow =
-        `0 0 14px ${initial.dataset.color}55`;
+    initialButton.style.boxShadow =
+        `0 0 14px ${initialButton.dataset.color}55`;
 
 }
 
-
 /* =========================================================
-   WINDOW RESIZE
+   MAP MOVEMENT / ZOOM
 ========================================================= */
 
 window.addEventListener(
@@ -2099,21 +2104,17 @@ window.addEventListener(
 
             windyAPI.map.invalidateSize();
 
+            setTimeout(
 
-            if (
-                userLocationMarker
-            ) {
+                function() {
 
-                userLocationMarker.setLatLng(
+                    placeUserMarker();
 
-                    [
-                        userLat,
-                        userLon
-                    ]
+                },
 
-                );
+                100
 
-            }
+            );
 
         }
 
@@ -2121,10 +2122,31 @@ window.addEventListener(
 
 );
 
-
 /* =========================================================
-   END
+   EXTRA MARKER PROTECTION
 ========================================================= */
+
+setInterval(
+
+    function() {
+
+        if (
+            windyAPI &&
+            windyAPI.map &&
+            locationReady
+        ) {
+
+            createLocationPane();
+
+            placeUserMarker();
+
+        }
+
+    },
+
+    2000
+
+);
 
 </script>
 
